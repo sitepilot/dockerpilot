@@ -1,0 +1,40 @@
+version: '3'
+
+services:
+
+  app:
+    build:
+        context: .
+        args:
+            - APP_TAG
+    container_name: serverpilot-app-${APP_NAME}
+    depends_on:
+      - db
+    expose:
+      - 80
+    environment:
+      WORDPRESS_DB_NAME: ${APP_DB_NAME}
+      WORDPRESS_DB_USER: ${APP_DB_USER}
+      WORDPRESS_DB_PASSWORD: ${APP_DB_PASSWORD}
+      WORDPRESS_DB_HOST: db:3306
+      VIRTUAL_HOST: ${APP_DOMAINS}
+    volumes:
+      - ./app:/var/www/html
+      - ./app.ini:/usr/local/etc/php/conf.d/app.ini
+      - ./inc/serverpilot-smtp.php:/var/www/html/wp-content/mu-plugins/serverpilot-smtp.php
+
+  db:
+    image: mysql:5.7
+    container_name: serverpilot-db-${APP_NAME}
+    volumes:
+      - "./data/db:/var/lib/mysql"
+    environment:
+      MYSQL_ROOT_PASSWORD: ${APP_DB_PASSWORD}
+      MYSQL_DATABASE: ${APP_DB_NAME}
+      MYSQL_USER: ${APP_DB_USER}
+      MYSQL_PASSWORD: ${APP_DB_PASSWORD}
+
+networks:
+  default:
+    external:
+      name: serverpilot

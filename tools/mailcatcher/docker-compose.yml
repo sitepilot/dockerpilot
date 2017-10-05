@@ -1,0 +1,18 @@
+version: '3'
+services:
+
+  serverpilot-mailcatcher:
+     image: schickling/mailcatcher
+     container_name: serverpilot-mailcatcher
+     restart: always
+     ports:
+       - "1025:1025"
+       - "1080:1080"
+     environment:
+       MAILCATCHER_PORT: 1025
+       VIRTUAL_HOST: mailcatcher.dev
+
+networks:
+  default:
+    external:
+      name: serverpilot
