@@ -8,3 +8,6 @@ RUN cd ~/ && curl -O https://raw.githubusercontent.com/wp-cli/builds/gh-pages/ph
 RUN cd ~/ && chmod +x wp-cli.phar
 RUN cd ~/ && mv wp-cli.phar /usr/local/bin/wp
 RUN wp --info --allow-root
+
+# Install php zip
+RUN docker-php-ext-install zip
