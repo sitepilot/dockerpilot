@@ -14,11 +14,23 @@ This is a Docker based development and production environment for web applicatio
 2. `cd serverpilot`
 3. `php sp` to see a list of commands.
 
+## Start server (nginx-proxy with letsencrypt)
+
+1. Run `php sp server:start`.
+
+This will start a nginx proxy server with Letsencrypt support. The proxy will redirect trafic to the right application container based on the domainname (defined in the .env file of each application).
+
+## Start mailcatcher
+
+1. Run `php sp mailcatcher:start`.
+
+This command will start Mailcatcher which is listening at address serverpilot-mailcatcher:1025 for smtp connections. Navigate to <docker-ip>:1080 for the webinterface.
+
 ## Create a new application
 
 1. `php sp app:create`
 2. Choose an application name and a template.
-3. Modify the .env file to your needs.
+3. Modify the generated .env file (in apps/your-app) to your needs.
 
 ## Start an application
 
