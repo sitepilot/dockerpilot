@@ -14,7 +14,8 @@ services:
     volumes:
       - ./app:{{$env['APP_MOUNT_POINT']}}
       - ./php.ini:/usr/local/etc/php/php.ini
-      
+      @if(! empty($env['APP_VOLUME_1']))- {{$env['APP_VOLUME_1']}}@endif
+
   db:
     image: mysql:5.7
     container_name: sp-db-{{$env['APP_NAME']}}
