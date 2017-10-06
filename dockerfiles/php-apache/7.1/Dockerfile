@@ -18,7 +18,7 @@ RUN php -r "copy('https://getcomposer.org/installer', 'composer-setup.php');" \
 RUN cd ~/ && curl -O https://raw.githubusercontent.com/wp-cli/builds/gh-pages/phar/wp-cli.phar \
     && cd ~/ && chmod +x wp-cli.phar \
     && cd ~/ && mv wp-cli.phar /usr/local/bin/wp \
-    && wp --info --allow-root \
+    && wp --info --allow-root
 
 # Enable Apache rewrite module
 RUN a2enmod rewrite
