@@ -49,8 +49,11 @@ $serverpilot->add( new Serverpilot\Command\AppCreateCommand() );
 $apps = sp_get_apps();
 foreach($apps as $dir=>$app) {
     $interface = $dir . '/interface.php';
-    if(file_exists($interface)) {
-        require_once $interface;
+    $appId = sp_get_container_id('serverpilot-app-'.$app);
+    if($appId) {
+        if(file_exists($interface)) {
+            require_once $interface;
+        }
     }
 }
 
