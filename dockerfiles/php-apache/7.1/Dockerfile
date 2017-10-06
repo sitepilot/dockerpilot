@@ -3,7 +3,7 @@ MAINTAINER Sitepilot <support@sitepilot.io>
 
 # Install PHP extensions
 RUN apt-get update && apt-get install -y \
-    && docker-php-ext-install -j$(nproc) mysqli
+    && docker-php-ext-install -j$(nproc) mysqli opcache
 
 # Install packages
 RUN apt-get update \
