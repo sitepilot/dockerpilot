@@ -1,6 +1,8 @@
 data/certs/*
 data/html/*
 data/vhost.d/*
+data/logs/nginx/*
 !data/certs/.gitkeep
 !data/html/.gitkeep
 !data/vhost.d/.gitkeep
+!data/logs/nginx/.gitkeep
