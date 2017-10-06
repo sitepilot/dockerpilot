@@ -1,13 +1,15 @@
 FROM php:7.1-apache
 MAINTAINER Sitepilot <support@sitepilot.io>
 
-# Install PHP extensions
-RUN apt-get update && apt-get install -y \
-    && docker-php-ext-install -j$(nproc) mysqli opcache
+COPY php.ini /usr/local/etc/php/
 
 # Install packages
 RUN apt-get update \
-    && apt-get install nano -y
+    && apt-get install nano zlib1g-dev -y
+
+# Install PHP extensions
+RUN apt-get update && apt-get install -y \
+    && docker-php-ext-install -j$(nproc) mysqli opcache zip
 
 # Install Composer
 RUN php -r "copy('https://getcomposer.org/installer', 'composer-setup.php');" \
@@ -17,8 +19,7 @@ RUN php -r "copy('https://getcomposer.org/installer', 'composer-setup.php');" \
 # Install WPCLI
 RUN cd ~/ && curl -O https://raw.githubusercontent.com/wp-cli/builds/gh-pages/phar/wp-cli.phar \
     && cd ~/ && chmod +x wp-cli.phar \
-    && cd ~/ && mv wp-cli.phar /usr/local/bin/wp \
-    && wp --info --allow-root
+    && cd ~/ && mv wp-cli.phar /usr/local/bin/wp
 
 # Enable Apache rewrite module
 RUN a2enmod rewrite
