@@ -69,9 +69,9 @@ class AppStopCommand extends Command
 
             // Check which apps are not running
             foreach($apps as $dir=>$app) {
-                sp_load_env($dir);
-                if($appName = getenv('APP_NAME')) {
-                    $id = sp_get_container_id("serverpilot-app-".$appName);
+                $env = sp_get_env($dir);
+                if($appName = $env['APP_NAME']) {
+                    $id = sp_get_container_id("sp-app-".$appName);
 
                     if($id) {
                         $stopApps[] = $app;

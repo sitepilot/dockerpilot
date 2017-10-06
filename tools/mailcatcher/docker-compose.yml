@@ -3,7 +3,7 @@ services:
 
   serverpilot-mailcatcher:
      image: schickling/mailcatcher
-     container_name: serverpilot-mailcatcher
+     container_name: sp-mailcatcher
      restart: always
      ports:
        - "1025:1025"

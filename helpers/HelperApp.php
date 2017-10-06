@@ -59,11 +59,11 @@ function sp_get_apps()
  */
 function sp_get_templates()
 {
-    $dirs = array_filter( glob( SERVER_TEMPLATE_DIR . '/*'), 'is_dir' );
+    $dirs = array_filter( glob( SERVER_STACK_DIR . '/*'), 'is_dir' );
     $templates = array();
 
     foreach( $dirs as $dir ){
-        $templates[sp_path($dir)] = str_replace( SERVER_TEMPLATE_DIR . '/', '', $dir );
+        $templates[sp_path($dir)] = str_replace( SERVER_STACK_DIR . '/', '', $dir );
     }
 
     if( count( $templates ) > 0 ){
@@ -78,13 +78,12 @@ function sp_get_templates()
  *
  * @return array
  */
-function sp_load_env($dir)
+function sp_get_env($dir)
 {
     if(file_exists($dir.'/.env')){
-        $dotenv = new Dotenv\Dotenv($dir);
-        $dotenv->overload();
+        $environment = (new josegonzalez\Dotenv\Loader($dir.'/.env'))->parse()->toArray();
 
-        return true;
+        return $environment;
     }
 
     return false;

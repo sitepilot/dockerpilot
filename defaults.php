@@ -11,6 +11,6 @@ if(! defined('SERVER_APP_DIR')) {
     define( 'SERVER_APP_DIR', SERVER_WORKDIR . '/apps' );
 }
 
-if(! defined('SERVER_TEMPLATE_DIR')) {
-    define( 'SERVER_TEMPLATE_DIR', SERVER_WORKDIR . '/templates' );
+if(! defined('SERVER_STACK_DIR')) {
+    define( 'SERVER_STACK_DIR', SERVER_WORKDIR . '/stacks' );
 }

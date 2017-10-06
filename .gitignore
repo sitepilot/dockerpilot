@@ -2,3 +2,6 @@ composer.lock
 
 apps/*
 !apps/.gitkeep
+
+cache/*
+!cache/.gitkeep

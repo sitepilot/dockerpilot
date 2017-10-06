@@ -11,6 +11,8 @@ use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Process\Process;
 use Symfony\Component\Process\Exception\ProcessFailedException;
 
+use Philo\Blade\Blade;
+
 class AppStartCommand extends Command
 {
     /**
@@ -48,8 +50,10 @@ class AppStartCommand extends Command
     protected function execute(InputInterface $input, OutputInterface $output)
     {
         if($this->userInput($input, $output)) {
-            if($this->startApp($output)) {
-                $output->writeln('<info>App started!</info>');
+            if($this->generateFiles($output)){
+                if($this->startApp($output)) {
+                    $output->writeln('<info>App started!</info>');
+                }
             }
         }
     }
@@ -69,9 +73,9 @@ class AppStartCommand extends Command
 
             // Check which apps are not running
             foreach($apps as $dir=>$app) {
-                sp_load_env($dir);
-                if($appName = getenv('APP_NAME')) {
-                    $id = sp_get_container_id("serverpilot-app-".$appName);
+                $env = sp_get_env($dir);
+                if($appName = $env['APP_NAME']) {
+                    $id = sp_get_container_id("sp-app-".$appName);
 
                     if(!$id) {
                         $startApps[] = $app;
@@ -102,6 +106,41 @@ class AppStartCommand extends Command
         }
 
         return false;
+    }
+
+    /**
+     * Generate application files based on template.
+     *
+     * @since 1.0.0
+     * @return bool
+     */
+    protected function generateFiles($output) {
+        // Get app environment
+        $env = sp_get_env($this->appDir);
+
+        if(isset($env['APP_TEMPLATE'])) {
+            $output->writeln("<info>Generating app configuration...</info>");
+
+            $bladeFolder = SERVER_STACK_DIR.'/'.$env['APP_TEMPLATE'].'/config';
+            $cache = SERVER_WORKDIR . '/cache';
+            $views = sp_path($bladeFolder);
+
+            $generate = ['docker-compose' => 'yml', 'php' => 'ini'];
+
+            foreach($generate as $file=>$ext) {
+                $filePath = $bladeFolder.'/'.$file.'.blade.php';
+                if(file_exists($filePath)) {
+                    $blade = new Blade($views, $cache);
+                    $content = $blade->view()->make($file, ['env' => $env])->render();
+                    $destFile = sp_path($this->appDir.'/'.$file.($ext ? '.'.$ext : ''));
+                    $writeFile = fopen($destFile, "w") or die("Unable to open file!");
+                    fwrite($writeFile, $content);
+                    fclose($writeFile);
+                }
+            }
+        }
+
+        return true;
     }
 
     /**

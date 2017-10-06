@@ -92,7 +92,7 @@ class AppCreateCommand extends Command
         {
             $appSlug = sp_create_slug($this->appName);
             $appDir = SERVER_APP_DIR . '/' . $appSlug;
-            $templateDir = SERVER_TEMPLATE_DIR . '/' . $this->appTemplate;
+            $templateDir = SERVER_STACK_DIR . '/' . $this->appTemplate;
 
             if(! file_exists($appDir)) {
                 sp_copy_directory($templateDir, $appDir);
