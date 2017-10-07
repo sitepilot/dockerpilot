@@ -134,3 +134,24 @@ function sp_copy_directory( $src, $dst ) {
     }
     closedir($dir);
 }
+
+/**
+ * Change an environment variable in a .env file.
+ *
+ * @return void
+ */
+function sp_change_env_var($dir, $key, $value)
+{
+    $path = sp_path($dir.'/.env');
+
+    if(file_exists($path)) {
+      $env = sp_get_env($dir);
+      $old = (isset($env[$key]) ? $env[$key] : '');
+
+      if (file_exists($path)) {
+          file_put_contents($path, str_replace(
+              "$key=".$old, "$key=".$value, file_get_contents($path)
+          ));
+      }
+    }
+}
