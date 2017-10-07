@@ -1,7 +1,7 @@
 version: '3'
 services:
 
-  serverpilot-mailcatcher:
+  mailcatcher:
      image: schickling/mailcatcher
      container_name: sp-mailcatcher
      restart: always
