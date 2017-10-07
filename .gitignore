@@ -5,3 +5,4 @@ apps/*
 
 cache/*
 !cache/.gitkeep
+*.log
