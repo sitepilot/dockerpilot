@@ -49,14 +49,16 @@ $serverpilot->add( new Serverpilot\Command\SFTPStopCommand() );
 
 // Include application command interface
 $apps = sp_get_apps();
-foreach($apps as $dir=>$app) {
-    $interface = $dir . '/interface.php';
-    $appId = sp_get_container_id('serverpilot-app-'.$app);
-    if($appId) {
-        if(file_exists($interface)) {
-            require_once $interface;
-        }
-    }
+if(is_array($apps)) {
+  foreach($apps as $dir=>$app) {
+      $interface = $dir . '/interface.php';
+      $appId = sp_get_container_id('serverpilot-app-'.$app);
+      if($appId) {
+          if(file_exists($interface)) {
+              require_once $interface;
+          }
+      }
+  }
 }
 
 // Run application
