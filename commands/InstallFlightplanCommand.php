@@ -52,7 +52,7 @@ class InstallFlightplanCommand extends Command
     {
         if($this->userInput($input, $output)) {
             if($this->installFlightplan($output)) {
-                $output->writeln('<info>Flightplan initialized in app directory! Don\'t forget to update APP_MOUNT_POINT in the .env file to /var/www.</info>');
+                $output->writeln('<info>Flightplan initialized in app directory!</info>');
             }
         }
     }
@@ -138,6 +138,7 @@ class InstallFlightplanCommand extends Command
                 $output->writeln("Updating app environment...");
                 $flightplanEnv = file_get_contents($flightplanEnvFile);
                 file_put_contents($this->appDir.'/.env', $flightplanEnv.PHP_EOL , FILE_APPEND | LOCK_EX);
+                sp_change_env_var($this->appDir, 'APP_MOUNT_POINT', '/var/www');
               }
 
               return true;
