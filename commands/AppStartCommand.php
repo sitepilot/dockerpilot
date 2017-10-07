@@ -125,7 +125,7 @@ class AppStartCommand extends Command
             $cache = SERVER_WORKDIR . '/cache';
             $views = sp_path($bladeFolder);
 
-            $generate = ['docker-compose' => 'yml', 'php' => 'ini'];
+            $generate = ['docker-compose' => 'yml', 'php' => 'ini', 'varnish' => 'vcl'];
 
             foreach($generate as $file=>$ext) {
                 $filePath = $bladeFolder.'/'.$file.'.blade.php';
