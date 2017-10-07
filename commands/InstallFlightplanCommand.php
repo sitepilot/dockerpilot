@@ -140,14 +140,14 @@ class InstallFlightplanCommand extends Command
               sp_change_env_var($this->appDir, 'FLIGHTPLAN_WP_ENV', 'development');
               sp_change_env_var($this->appDir, 'FLIGHTPLAN_WP_HOME', 'http://example.com');
               sp_change_env_var($this->appDir, 'FLIGHTPLAN_WP_SITEURL', '${FLIGHTPLAN_WP_HOME}/wp');
-              sp_change_env_var($this->appDir, 'FLIGHTPLAN_AUTH_KEY', crypt(md5(uniqid())));
-              sp_change_env_var($this->appDir, 'FLIGHTPLAN_SECURE_AUTH_KEY', crypt(md5(uniqid())));
-              sp_change_env_var($this->appDir, 'FLIGHTPLAN_LOGGED_IN_KEY', crypt(md5(uniqid())));
-              sp_change_env_var($this->appDir, 'FLIGHTPLAN_NONCE_KEY', crypt(md5(uniqid())));
-              sp_change_env_var($this->appDir, 'FLIGHTPLAN_AUTH_SALT', crypt(md5(uniqid())));
-              sp_change_env_var($this->appDir, 'FLIGHTPLAN_SECURE_AUTH_SALT', crypt(md5(uniqid())));
-              sp_change_env_var($this->appDir, 'FLIGHTPLAN_LOGGED_IN_SALT', crypt(md5(uniqid())));
-              sp_change_env_var($this->appDir, 'FLIGHTPLAN_NONCE_SALT', crypt(md5(uniqid())));
+              sp_change_env_var($this->appDir, 'FLIGHTPLAN_AUTH_KEY', crypt(md5(uniqid()), 'serverpilot'));
+              sp_change_env_var($this->appDir, 'FLIGHTPLAN_SECURE_AUTH_KEY', crypt(md5(uniqid()), 'serverpilot'));
+              sp_change_env_var($this->appDir, 'FLIGHTPLAN_LOGGED_IN_KEY', crypt(md5(uniqid()), 'serverpilot'));
+              sp_change_env_var($this->appDir, 'FLIGHTPLAN_NONCE_KEY', crypt(md5(uniqid()), 'serverpilot'));
+              sp_change_env_var($this->appDir, 'FLIGHTPLAN_AUTH_SALT', crypt(md5(uniqid()), 'serverpilot'));
+              sp_change_env_var($this->appDir, 'FLIGHTPLAN_SECURE_AUTH_SALT', crypt(md5(uniqid()), 'serverpilot'));
+              sp_change_env_var($this->appDir, 'FLIGHTPLAN_LOGGED_IN_SALT', crypt(md5(uniqid()), 'serverpilot'));
+              sp_change_env_var($this->appDir, 'FLIGHTPLAN_NONCE_SALT', crypt(md5(uniqid()), 'serverpilot'));
 
               return true;
             } catch (ProcessFailedException $e){
