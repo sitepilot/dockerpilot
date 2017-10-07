@@ -15,6 +15,8 @@ services:
       - 80
     environment:
       VIRTUAL_HOST: {{$env['APP_DOMAINS']}}
+      LETSENCRYPT_HOST: {{$env['APP_SSL_DOMAINS']}}
+      LETSENCRYPT_EMAIL: support@sitepilot.io
       VCL_CONFIG: /etc/serverpilot/varnish.vcl
 
   @endif
@@ -27,17 +29,15 @@ services:
     expose:
       - 80
     environment:
-      @if(! isset($env['APP_VARNISH']) || $env['APP_VARNISH'] == 'off')
-      VIRTUAL_HOST: {{$env['APP_DOMAINS']}}
-      LETSENCRYPT_HOST: {{$env['APP_SSL_DOMAINS']}}
-      LETSENCRYPT_EMAIL: support@sitepilot.io
-      @endif
+      {{ ! isset($env['APP_VARNISH']) || $env['APP_VARNISH'] == 'off' ? "VIRTUAL_HOST: " . $env['APP_DOMAINS'] : "" }}
+      {{ ! isset($env['APP_VARNISH']) || $env['APP_VARNISH'] == 'off' ? "LETSENCRYPT_HOST: " . $env['APP_SSL_DOMAINS'] : "" }}
+      {{ ! isset($env['APP_VARNISH']) || $env['APP_VARNISH'] == 'off' ? "LETSENCRYPT_EMAIL: support@sitepilot.io" : "" }}
       DUMMY_ENV: "serverpilot"
     volumes:
       - ./app:{{$env['APP_MOUNT_POINT']}}
       - ./php.ini:/usr/local/etc/php/php.ini
-      @if(! empty($env['APP_VOLUME_1']))- {{$env['APP_VOLUME_1']}} @endif
-
+      {{ ! empty($env['APP_VOLUME_1']) ? "- " . $env['APP_VOLUME_1'] : "" }}
+      
   db:
     image: mysql:5.7
     container_name: sp-db-{{$env['APP_NAME']}}
