@@ -53,7 +53,7 @@ class AppCreateCommand extends Command
     }
 
     /**
-     * Ask user for name and template.
+     * Ask user for name and stack.
      *
      * @return bool
      */
@@ -65,15 +65,15 @@ class AppCreateCommand extends Command
         $question = new Question('Application name? ');
         $this->appName = trim($questionHelper->ask($input, $output, $question));
 
-        // ask for template name
-        $templates = array_values(sp_get_templates());
+        // ask for stack name
+        $templates = array_values(sp_get_stacks());
 
         // ask for template
         $question = new ChoiceQuestion(
-            'Please select a template:',
+            'Please select a stack:',
             $templates, 0
         );
-        $question->setErrorMessage('Template %s is invalid.');
+        $question->setErrorMessage('Stack %s is invalid.');
         $this->appTemplate = $questionHelper->ask($input, $output, $question);
 
         return true;
@@ -92,10 +92,13 @@ class AppCreateCommand extends Command
         {
             $appSlug = sp_create_slug($this->appName);
             $appDir = SERVER_APP_DIR . '/' . $appSlug;
-            $templateDir = SERVER_STACK_DIR . '/' . $this->appTemplate;
+            $stackDir = SERVER_STACK_DIR . '/' . $this->appTemplate . '/1.0';
 
             if(! file_exists($appDir)) {
-                sp_copy_directory($templateDir, $appDir);
+                sp_copy_directory($stackDir, $appDir);
+                // generate db credentials
+                sp_change_env_var($appDir, 'APP_DB_ROOT_PASSWORD', crypt(md5(uniqid())));
+                sp_change_env_var($appDir, 'APP_DB_USER_PASSWORD', crypt(md5(uniqid())));
                 return true;
             } else {
                 $output->writeln("<error>Application directory already exists.</error>");

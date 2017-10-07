@@ -57,7 +57,7 @@ function sp_get_apps()
  *
  * @return array
  */
-function sp_get_templates()
+function sp_get_stacks()
 {
     $dirs = array_filter( glob( SERVER_STACK_DIR . '/*'), 'is_dir' );
     $templates = array();
@@ -124,11 +124,13 @@ function sp_copy_directory( $src, $dst ) {
     @mkdir($dst);
     while(false !== ( $file = readdir($dir)) ) {
         if (( $file != '.' ) && ( $file != '..' )) {
-            if ( is_dir($src . '/' . $file) ) {
-                sp_copy_directory($src . '/' . $file,$dst . '/' . $file);
-            }
-            else {
-                copy($src . '/' . $file,$dst . '/' . $file);
+            if($file != 'config') {
+              if ( is_dir($src . '/' . $file) ) {
+                  sp_copy_directory($src . '/' . $file,$dst . '/' . $file);
+              }
+              else {
+                  copy($src . '/' . $file,$dst . '/' . $file);
+              }
             }
         }
     }
