@@ -29,6 +29,8 @@ services:
     environment:
       @if(! isset($env['APP_VARNISH']) || $env['APP_VARNISH'] == 'off')
       VIRTUAL_HOST: {{$env['APP_DOMAINS']}}
+      LETSENCRYPT_HOST: {{$env['APP_SSL_DOMAINS']}}
+      LETSENCRYPT_EMAIL: support@sitepilot.io
       @endif
       DUMMY_ENV: "serverpilot"
     volumes:
