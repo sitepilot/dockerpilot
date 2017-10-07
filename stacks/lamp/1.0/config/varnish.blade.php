@@ -307,6 +307,8 @@ sub vcl_deliver {
         set resp.http.X-Cache = "MISS";
     }
 
+    set resp.http.X-Powered-By = "Sitepilot (sitepilot.io)";
+
     return (deliver);
 
 }
