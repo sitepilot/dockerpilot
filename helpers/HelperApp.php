@@ -146,12 +146,17 @@ function sp_change_env_var($dir, $key, $value)
 
     if(file_exists($path)) {
       $env = sp_get_env($dir);
-      $old = (isset($env[$key]) ? $env[$key] : '');
+      $old = (isset($env[$key]) ? $env[$key] : false);
 
-      if (file_exists($path)) {
-          file_put_contents($path, str_replace(
-              "$key=".$old, "$key=".$value, file_get_contents($path)
-          ));
+      // Change existing value
+      if ($old && file_exists($path)) {
+        file_put_contents($path, str_replace(
+          "$key=".$old, "$key=".$value, file_get_contents($path)
+        ));
+      } else {
+        // Add value
+        $content = file_get_contents($path) . "\n" . $key . '=' . $value;
+        file_put_contents($path, $content);
       }
     }
 }

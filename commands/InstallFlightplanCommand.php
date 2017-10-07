@@ -133,13 +133,21 @@ class InstallFlightplanCommand extends Command
             try {
               $process->mustRun();
 
-              $flightplanEnvFile = $installDir.'/serverpilot.env';
-              if(file_exists($flightplanEnvFile)){
-                $output->writeln("Updating app environment...");
-                $flightplanEnv = file_get_contents($flightplanEnvFile);
-                file_put_contents($this->appDir.'/.env', $flightplanEnv.PHP_EOL , FILE_APPEND | LOCK_EX);
-                sp_change_env_var($this->appDir, 'APP_MOUNT_POINT', '/var/www');
-              }
+              sp_change_env_var($this->appDir, 'APP_MOUNT_POINT', '/var/www');
+              sp_change_env_var($this->appDir, 'APP_VOLUME_1', '.env:/var/www/.env');
+              sp_change_env_var($this->appDir, 'APP_TEMPLATE', 'flightplan');
+              sp_change_env_var($this->appDir, 'FLIGHTPLAN_DB_PREFIX', 'sp_');
+              sp_change_env_var($this->appDir, 'FLIGHTPLAN_WP_ENV', 'development');
+              sp_change_env_var($this->appDir, 'FLIGHTPLAN_WP_HOME', 'http://example.com');
+              sp_change_env_var($this->appDir, 'FLIGHTPLAN_WP_SITEURL', '${FLIGHTPLAN_WP_HOME}/wp');
+              sp_change_env_var($this->appDir, 'FLIGHTPLAN_AUTH_KEY', crypt(md5(uniqid())));
+              sp_change_env_var($this->appDir, 'FLIGHTPLAN_SECURE_AUTH_KEY', crypt(md5(uniqid())));
+              sp_change_env_var($this->appDir, 'FLIGHTPLAN_LOGGED_IN_KEY', crypt(md5(uniqid())));
+              sp_change_env_var($this->appDir, 'FLIGHTPLAN_NONCE_KEY', crypt(md5(uniqid())));
+              sp_change_env_var($this->appDir, 'FLIGHTPLAN_AUTH_SALT', crypt(md5(uniqid())));
+              sp_change_env_var($this->appDir, 'FLIGHTPLAN_SECURE_AUTH_SALT', crypt(md5(uniqid())));
+              sp_change_env_var($this->appDir, 'FLIGHTPLAN_LOGGED_IN_SALT', crypt(md5(uniqid())));
+              sp_change_env_var($this->appDir, 'FLIGHTPLAN_NONCE_SALT', crypt(md5(uniqid())));
 
               return true;
             } catch (ProcessFailedException $e){
