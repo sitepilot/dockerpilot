@@ -118,10 +118,10 @@ class AppStartCommand extends Command
         // Get app environment
         $env = sp_get_env($this->appDir);
 
-        if(isset($env['APP_TEMPLATE'])) {
+        if(isset($env['APP_STACK'])) {
             $output->writeln("<info>Generating app configuration...</info>");
 
-            $bladeFolder = SERVER_STACK_DIR.'/'.$env['APP_TEMPLATE'].'/config';
+            $bladeFolder = SERVER_STACK_DIR.'/'.$env['APP_STACK'].'/config';
             $cache = SERVER_WORKDIR . '/cache';
             $views = sp_path($bladeFolder);
 
