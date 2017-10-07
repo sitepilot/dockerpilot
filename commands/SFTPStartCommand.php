@@ -56,7 +56,7 @@ class SFTPStartCommand extends Command
               $config .= $env['APP_NAME'].":".$env['APP_SFTP_PASS'].":1001:100\n";
             }
           }
-          $writeFile = SERVER_WORKDIR.'/tools/sftp/config/users.conf';
+          $writeFile = SERVER_WORKDIR.'/server/sftp/config/users.conf';
           if(file_exists($writeFile)) {
             unlink($writeFile);
           }
@@ -74,7 +74,7 @@ class SFTPStartCommand extends Command
     protected function startServer($output)
     {
         $output->writeln("Starting SFTP server, please wait...");
-        $process = new Process('cd tools/sftp && docker-compose up -d');
+        $process = new Process('cd server/sftp && docker-compose up -d');
 
         try {
             $process->mustRun();

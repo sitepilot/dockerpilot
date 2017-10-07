@@ -42,7 +42,7 @@ class SFTPStopCommand extends Command
     protected function stopServer($output)
     {
         $output->writeln("Stopping SFTP server, please wait...");
-        $process = new Process('cd tools/sftp && docker-compose down && docker-compose rm');
+        $process = new Process('cd server/sftp && docker-compose down && docker-compose rm');
 
         try {
             $process->mustRun();
