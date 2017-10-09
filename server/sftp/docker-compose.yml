@@ -4,6 +4,7 @@ services:
   sftp:
     image: atmoz/sftp
     container_name: sp-sftp
+    restart: always
     volumes:
         - ../../apps:/home
         - ./config/users.conf:/etc/sftp/users.conf:ro

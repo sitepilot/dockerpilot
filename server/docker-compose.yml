@@ -6,7 +6,7 @@ services:
     labels:
         com.github.jrcs.letsencrypt_nginx_proxy_companion.nginx_proxy: "true"
     container_name: sp-nginx
-    restart: unless-stopped
+    restart: always
     ports:
       - "80:80"
       - "443:443"
@@ -21,7 +21,7 @@ services:
     image: jwilder/docker-gen
     command: -notify-sighup sp-nginx -watch -wait 5s:30s /etc/docker-gen/templates/nginx.tmpl /etc/nginx/conf.d/default.conf
     container_name: sp-nginx-gen
-    restart: unless-stopped
+    restart: always
     volumes:
       - serverpilot-data:/etc/nginx/conf.d
       - ./data/vhost.d:/etc/nginx/vhost.d
@@ -33,7 +33,7 @@ services:
   nginx-letsencrypt:
     image: jrcs/letsencrypt-nginx-proxy-companion
     container_name: sp-letsencrypt
-    restart: unless-stopped
+    restart: always
     volumes:
       - serverpilot-data:/etc/nginx/conf.d
       - ./data/vhost.d:/etc/nginx/vhost.d
