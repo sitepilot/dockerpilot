@@ -1,6 +1,9 @@
 <?php
 require __DIR__.'/vendor/autoload.php';
 
+// Set max execution time (5 min)
+ini_set('max_execution_time', 300);
+
 use Symfony\Component\Console\Application;
 
 if(! defined('SERVER_WORKDIR')) {
