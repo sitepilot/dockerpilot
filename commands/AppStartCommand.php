@@ -78,7 +78,7 @@ class AppStartCommand extends Command
                     $id = sp_get_container_id("sp-app-".$appName);
 
                     if(!$id) {
-                        $startApps[] = $app;
+                        $startApps[] = $appName;
                     }
                 }
             }
