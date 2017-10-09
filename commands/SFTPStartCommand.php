@@ -4,9 +4,12 @@ namespace Serverpilot\Command;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
+use Symfony\Component\Console\Input\ArrayInput;
 
 use Symfony\Component\Process\Process;
 use Symfony\Component\Process\Exception\ProcessFailedException;
+
+use Philo\Blade\Blade;
 
 class SFTPStartCommand extends Command
 {
@@ -43,24 +46,43 @@ class SFTPStartCommand extends Command
      */
     protected function createConfig($output)
     {
-        $output->writeln("Generating users config file...");
         $apps = sp_get_apps();
+        $sftpApps = '';
+        $config = '';
 
-        $apps = sp_get_apps();
+        // Create users config
+        $output->writeln("Generating users config file...");
 
         if(is_array($apps) && count($apps) > 0) {
           foreach($apps as $dir=>$app) {
             $env = sp_get_env($dir);
-            $config = '';
             if(! empty($env['APP_NAME']) && ! empty($env['APP_SFTP_PASS'])) {
               $config .= $env['APP_NAME'].":".$env['APP_SFTP_PASS'].":1001:100\n";
+              $sftpAppVolumes .= "        - ".$dir.(isset($env['APP_SFTP_DIR']) ? '/'.$env['APP_SFTP_DIR'] : '' ).":/home/".$env['APP_NAME']."\n";
             }
           }
-          $writeFile = SERVER_WORKDIR.'/server/sftp/config/users.conf';
+          $writeFile = SERVER_WORKDIR.'/server/sftp/users.conf';
           if(file_exists($writeFile)) {
             unlink($writeFile);
           }
           file_put_contents($writeFile, $config);
+        }
+
+        // Create docker-compose file
+        $output->writeln("Generating docker-compose file...");
+        $filePath = SERVER_WORKDIR.'/server/sftp/config/docker-compose.blade.php';
+
+        $bladeFolder = SERVER_WORKDIR.'/server/sftp/config';
+        $cache = SERVER_WORKDIR . '/cache';
+        $views = sp_path($bladeFolder);
+
+        if(file_exists($filePath)) {
+            $blade = new Blade($views, $cache);
+            $content = $blade->view()->make('docker-compose', ['sftpAppVolumes' => $sftpAppVolumes])->render();
+            $destFile = sp_path(SERVER_WORKDIR.'/server/sftp/docker-compose.yml');
+            $writeFile = fopen($destFile, "w") or die("Unable to open file!");
+            fwrite($writeFile, $content);
+            fclose($writeFile);
         }
 
         return true;
@@ -73,6 +95,9 @@ class SFTPStartCommand extends Command
      */
     protected function startServer($output)
     {
+        $command = $this->getApplication()->find('sftp:stop');
+        $command->run(new ArrayInput([]), $output);
+
         $output->writeln("Starting SFTP server, please wait...");
         $process = new Process('cd server/sftp && docker-compose up -d');
 

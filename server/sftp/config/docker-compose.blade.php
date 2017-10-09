@@ -6,9 +6,7 @@ services:
     container_name: sp-sftp
     restart: always
     volumes:
-        - /Users/nickjansen/Code/serverpilot/apps/lipdubman:/home/lipdubman
-        - /Users/nickjansen/Code/serverpilot/apps/test/app/html:/home/test
-
+{{ $sftpAppVolumes }}
         - ./users.conf:/etc/sftp/users.conf:ro
     ports:
         - "2222:22"

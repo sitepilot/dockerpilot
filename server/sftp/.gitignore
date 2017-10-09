@@ -1,1 +1,2 @@
-config/users.conf
+users.conf
+docker-compose.yml
