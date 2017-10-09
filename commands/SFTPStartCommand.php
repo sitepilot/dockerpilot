@@ -49,6 +49,7 @@ class SFTPStartCommand extends Command
         $apps = sp_get_apps();
         $sftpApps = '';
         $config = '';
+        $sftpAppVolumes = '';
 
         // Create users config
         $output->writeln("Generating users config file...");
