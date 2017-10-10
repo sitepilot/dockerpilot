@@ -68,6 +68,15 @@ sub vcl_recv {
         return (pass);
     }
 
+    # Remove the wp test cookie
+    if(
+        req.url !~ "^/wp-admin" ||
+        req.url !~ "^/wp-login.php" ||
+        req.url !~ "^/admin"
+    ) {
+      set req.http.Cookie = regsuball(req.http.Cookie, "wordpress_test_cookie=[^;]+(; )?", "");
+    }
+
     # Don't cache HTTP authorization/authentication pages and pages with certain headers or cookies
     if (
         req.http.Authorization ||
@@ -96,7 +105,8 @@ sub vcl_recv {
         req.url ~ "^/contact" ||
         req.url ~ "^/connect" ||
         req.url ~ "^/wp-admin" ||
-        req.url ~ "^/wp-login.php"
+        req.url ~ "^/wp-login.php" ||
+        req.url ~ "^/admin"
     ) {
         #set req.http.Cache-Control = "private, max-age=0, no-cache, no-store";
         #set req.http.Expires = "Mon, 01 Jan 2001 00:00:00 GMT";
