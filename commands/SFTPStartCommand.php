@@ -58,7 +58,7 @@ class SFTPStartCommand extends Command
           foreach($apps as $dir=>$app) {
             $env = sp_get_env($dir);
             if(! empty($env['APP_NAME']) && ! empty($env['APP_SFTP_PASS'])) {
-              $config .= $env['APP_NAME'].":".$env['APP_SFTP_PASS'].":1001:100\n";
+              $config .= $env['APP_NAME'].":".$env['APP_SFTP_PASS'].":www-data:www-data\n";
               $sftpAppVolumes .= "        - ".$dir.(isset($env['APP_SFTP_DIR']) ? '/'.$env['APP_SFTP_DIR'] : '' ).":/home/".$env['APP_NAME']."\n";
             }
           }
