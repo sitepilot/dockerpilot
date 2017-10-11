@@ -3,6 +3,12 @@ MAINTAINER Sitepilot <support@sitepilot.io>
 
 COPY php.ini /usr/local/etc/php/
 
+# Set permissions
+RUN groupadd serverpilot \
+    && useradd -g serverpilot serverpilot
+
+COPY envvars /etc/apache2/envvars
+
 # Install packages
 RUN apt-get update \
     && apt-get install nano zlib1g-dev -y
