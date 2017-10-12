@@ -65,7 +65,7 @@ class SFTPStartCommand extends Command
             $env = sp_get_env($dir);
             if(! empty($env['APP_NAME']) && ! empty($env['APP_SFTP_PASS'])) {
               $config .= $env['APP_NAME'].":".$env['APP_SFTP_PASS'].":".$uID.":".$gID."\n";
-              $sftpAppVolumes .= "        - ".$dir.(isset($env['APP_SFTP_DIR']) ? '/'.$env['APP_SFTP_DIR'] : '' ).":/home/".$env['APP_NAME']."\n";
+              $sftpAppVolumes .= "        - ".$dir.(isset($env['APP_SFTP_DIR']) ? '/'.$env['APP_SFTP_DIR'] : '' ).":/home/".$env['APP_NAME']."/public\n";
             }
           }
           $writeFile = SERVER_WORKDIR.'/server/sftp/users.conf';
