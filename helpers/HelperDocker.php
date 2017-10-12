@@ -14,4 +14,3 @@ function sp_get_container_id( $name )
 
     return false;
 }
-docker ps -aqf "name=sp-app-test" --filter "status=running
