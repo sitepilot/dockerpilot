@@ -41,7 +41,7 @@ services:
       - ./app:{{$env['APP_MOUNT_POINT']}}
       - ./php.ini:/usr/local/etc/php/php.ini
       {{ ! empty($env['APP_VOLUME_1']) ? "- " . $env['APP_VOLUME_1'] : "" }}
-    cpus: {{ ! empty($env['APP_CPUS']) ? $env['APP_CPUS'] : "0.5" }}
+    cpus: {{ ! empty($env['APP_CPUS']) ? $env['APP_CPUS'] : "1" }}
     mem_limit: {{ ! empty($env['APP_MEMORY']) ? $env['APP_MEMORY'] * 1000000 : 512 * 1000000 }}
 
   db:
