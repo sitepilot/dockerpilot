@@ -97,8 +97,12 @@ class AppCreateCommand extends Command
             if(! file_exists($appDir)) {
                 sp_copy_directory($stackDir, $appDir);
                 // generate db credentials
+                sp_change_env_var($appDir, 'APP_NAME', $appSlug);
+                sp_change_env_var($appDir, 'APP_DOMAINS', $appSlug.'.dev');
+                sp_change_env_var($appDir, 'APP_DB_HOST', 'sp-db-'.$appSlug);
                 sp_change_env_var($appDir, 'APP_DB_ROOT_PASSWORD', crypt(md5(uniqid()), 'serverpilot'));
                 sp_change_env_var($appDir, 'APP_DB_USER_PASSWORD', crypt(md5(uniqid()), 'serverpilot'));
+                sp_change_env_var($appDir, 'APP_SFTP_PASS', crypt(md5(uniqid()), 'serverpilot'));
                 return true;
             } else {
                 $output->writeln("<error>Application directory already exists.</error>");

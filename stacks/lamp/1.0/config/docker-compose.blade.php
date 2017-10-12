@@ -16,8 +16,8 @@ services:
     restart: always
     environment:
       VIRTUAL_HOST: {{$env['APP_DOMAINS']}}
-      LETSENCRYPT_HOST: {{$env['APP_SSL_DOMAINS']}}
-      LETSENCRYPT_EMAIL: support@sitepilot.io
+      {{ ! empty($env['APP_SSL_DOMAINS']) ? "LETSENCRYPT_HOST: " . $env['APP_SSL_DOMAINS'] : "" }}
+      {{ ! empty($env['APP_SSL_EMAIL']) ? "LETSENCRYPT_EMAIL: ".$env['APP_SSL_EMAIL'] : "" }}
       VCL_CONFIG: /etc/serverpilot/varnish.vcl
 
   @endif
@@ -32,8 +32,8 @@ services:
     restart: always
     environment:
       {{ ! isset($env['APP_VARNISH']) || $env['APP_VARNISH'] == 'off' ? "VIRTUAL_HOST: " . $env['APP_DOMAINS'] : "" }}
-      {{ ! isset($env['APP_VARNISH']) || $env['APP_VARNISH'] == 'off' ? "LETSENCRYPT_HOST: " . $env['APP_SSL_DOMAINS'] : "" }}
-      {{ ! isset($env['APP_VARNISH']) || $env['APP_VARNISH'] == 'off' ? "LETSENCRYPT_EMAIL: support@sitepilot.io" : "" }}
+      {{ (! isset($env['APP_VARNISH']) || $env['APP_VARNISH'] == 'off') && ! empty($env['APP_SSL_DOMAINS']) ? "LETSENCRYPT_HOST: " . $env['APP_SSL_DOMAINS'] : "" }}
+      {{ (! isset($env['APP_VARNISH']) || $env['APP_VARNISH'] == 'off') && ! empty($env['APP_SSL_EMAIL']) ? "LETSENCRYPT_EMAIL: ".$env['APP_SSL_EMAIL'] : "" }}
       DUMMY_ENV: "serverpilot"
     volumes:
       - ./app:{{$env['APP_MOUNT_POINT']}}
