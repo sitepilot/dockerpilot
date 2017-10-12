@@ -6,7 +6,7 @@
  */
 function sp_get_container_id( $name )
 {
-    $container_id = shell_exec( 'docker ps -aqf "name=' . $name . '" --filter "status=running"' );
+    $container_id = shell_exec( 'docker ps -aqf "name=^/' . $name . '$" --filter "status=running"' );
 
     if( $container_id ){
         return trim( preg_replace( '/\s\s+/', ' ', $container_id ) );
@@ -14,3 +14,4 @@ function sp_get_container_id( $name )
 
     return false;
 }
+docker ps -aqf "name=sp-app-test" --filter "status=running
