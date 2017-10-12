@@ -53,9 +53,9 @@ class SFTPStartCommand extends Command
 
         // Get user and group id of current user (serverpilot)
         $process = new Process('id -u');
-        $uID  = $process->mustRun()->getOutput();
+        $uID  = trim($process->mustRun()->getOutput());
         $process = new Process('id -g');
-        $gID = $process->mustRun()->getOutput();
+        $gID = trim($process->mustRun()->getOutput());
 
         // Create users config
         $output->writeln("Generating users config file...");
