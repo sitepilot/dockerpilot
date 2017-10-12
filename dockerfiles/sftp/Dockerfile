@@ -7,3 +7,4 @@ RUN groupadd serverpilot \
 
 # Copy entrypoint file
 COPY entrypoint /
+RUN ["chmod", "+x", "/entrypoint"]
