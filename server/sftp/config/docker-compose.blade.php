@@ -2,7 +2,7 @@ version: '3'
 services:
 
   sftp:
-    image: atmoz/sftp
+    image: sitepilot/sftp:1.0
     container_name: sp-sftp
     restart: always
     volumes:
