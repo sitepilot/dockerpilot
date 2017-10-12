@@ -1,1 +1,0 @@
-2017/10/06 16:42:34 [warn] 8#8: *225 a client request body is buffered to a temporary file /var/cache/nginx/client_temp/0000000001, client: 172.20.0.1, server: test.dev, request: "POST /wp-admin/update.php?action=upload-plugin HTTP/1.1", host: "test.dev", referrer: "http://test.dev/wp-admin/plugin-install.php"
