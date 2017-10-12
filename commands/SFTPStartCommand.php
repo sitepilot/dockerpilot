@@ -51,6 +51,12 @@ class SFTPStartCommand extends Command
         $config = '';
         $sftpAppVolumes = '';
 
+        // Get user and group id of current user (serverpilot)
+        $process = new Process('id -u');
+        $uID  = $process->mustRun()->getOutput();
+        $process = new Process('id -g');
+        $gID = $process->mustRun()->getOutput();
+
         // Create users config
         $output->writeln("Generating users config file...");
 
@@ -58,7 +64,7 @@ class SFTPStartCommand extends Command
           foreach($apps as $dir=>$app) {
             $env = sp_get_env($dir);
             if(! empty($env['APP_NAME']) && ! empty($env['APP_SFTP_PASS'])) {
-              $config .= $env['APP_NAME'].":".$env['APP_SFTP_PASS'].":serverpilot:serverpilot\n";
+              $config .= $env['APP_NAME'].":".$env['APP_SFTP_PASS'].":".$uID.":".$gID."\n";
               $sftpAppVolumes .= "        - ".$dir.(isset($env['APP_SFTP_DIR']) ? '/'.$env['APP_SFTP_DIR'] : '' ).":/home/".$env['APP_NAME']."\n";
             }
           }
