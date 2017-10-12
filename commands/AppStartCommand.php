@@ -151,7 +151,8 @@ class AppStartCommand extends Command
     protected function startApp($output) {
         $output->writeln("Starting app ".$this->appName.", please wait...");
         $process = new Process('cd '.$this->appDir.' && docker-compose up -d');
-
+        $process->setTimeout(3600);
+        
         try {
             $process->mustRun();
             return true;

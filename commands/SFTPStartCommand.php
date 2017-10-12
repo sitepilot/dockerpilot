@@ -107,7 +107,8 @@ class SFTPStartCommand extends Command
 
         $output->writeln("Starting SFTP server, please wait...");
         $process = new Process('cd server/sftp && docker-compose up -d');
-
+        $process->setTimeout(3600);
+        
         try {
             $process->mustRun();
             return true;

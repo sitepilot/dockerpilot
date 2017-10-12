@@ -60,7 +60,8 @@ class ServerStartCommand extends Command
     {
         $output->writeln("Starting server, please wait...");
         $process = new Process('cd server && docker-compose up -d');
-
+        $process->setTimeout(3600);
+        
         try {
             $process->mustRun();
             return true;
