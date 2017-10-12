@@ -19,6 +19,8 @@ services:
       {{ ! empty($env['APP_SSL_DOMAINS']) ? "LETSENCRYPT_HOST: " . $env['APP_SSL_DOMAINS'] : "" }}
       {{ ! empty($env['APP_SSL_EMAIL']) ? "LETSENCRYPT_EMAIL: ".$env['APP_SSL_EMAIL'] : "" }}
       VCL_CONFIG: /etc/serverpilot/varnish.vcl
+    cpus: {{ ! empty($env['APP_CPUS']) ? $env['APP_CPUS'] : "0.5" }}
+    mem_limit: {{ ! empty($env['APP_MEMORY']) ? $env['APP_MEMORY'] * 1000000 : 512 * 1000000 }}
 
   @endif
 
@@ -39,6 +41,8 @@ services:
       - ./app:{{$env['APP_MOUNT_POINT']}}
       - ./php.ini:/usr/local/etc/php/php.ini
       {{ ! empty($env['APP_VOLUME_1']) ? "- " . $env['APP_VOLUME_1'] : "" }}
+    cpus: {{ ! empty($env['APP_CPUS']) ? $env['APP_CPUS'] : "0.5" }}
+    mem_limit: {{ ! empty($env['APP_MEMORY']) ? $env['APP_MEMORY'] * 1000000 : 512 * 1000000 }}
 
   db:
     image: mysql:5.7
@@ -51,6 +55,8 @@ services:
       MYSQL_DATABASE: {{$env['APP_DB_DATABASE']}}
       MYSQL_USER: {{$env['APP_DB_USER']}}
       MYSQL_PASSWORD: {{$env['APP_DB_USER_PASSWORD']}}
+    cpus: {{ ! empty($env['APP_CPUS']) ? $env['APP_CPUS'] : "0.5" }}
+    mem_limit: {{ ! empty($env['APP_MEMORY']) ? $env['APP_MEMORY'] * 1000000 : 512 * 1000000 }}
 
 networks:
   default:
