@@ -6,7 +6,7 @@ services:
 
   varnish:
     image: million12/varnish
-    container_name: sp-varish-{{$env['APP_NAME']}}
+    container_name: sp-varnish-{{$env['APP_NAME']}}
     depends_on:
       - app
     volumes:
