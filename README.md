@@ -65,3 +65,10 @@ COMMIT
 13. Allow ports `sudo ufw allow http` (allow http, https and port 2222 for sftp)
 
 Source: https://svenv.nl/unixandlinux/dockerufw/
+
+## Install PHP 7.1 on host machine (Ubuntu)
+1. `sudo apt-get install -y python-software-properties`
+2. `sudo add-apt-repository -y ppa:ondrej/php`
+3. `sudo apt-get update -y`
+4. `apt-cache pkgnames | grep php7.1`
+5. Install the packages you need (e.g. `sudo apt-get install php7.1 php7.1-curl php7.1-xml php7.1-mbstring php7.1-zip`)
