@@ -38,3 +38,30 @@ This command will start Mailcatcher which is listening at address serverpilot-ma
 2. Choose the application you would like te start.
 3. Edit the hosts file on your computer and add the domains you've defined in the application .env file (under APP_DOMAINS).
 3. Navigate to the application domain in your browser (on the host machine).
+
+## Configure UFW (Ubuntu 14.04 and 16.04)
+Ubuntu ships with a very nice and simple frontend for iptables called ufw (uncomplicated firewall). Ufw makes it possible to setup a firewall without having to fully understand iptables itself. When you however are using Docker and you want to combine Docker with the ufw service. Things do get complicated.
+
+The docker service talks directly to iptables for networking, basically bypassing everything that’s getting setup in the ufw utility and therefore ignoring the firewall. Additional configuration is required to prevent this behavior. The official Docker documentation however, seems to be incomplete.
+
+1. Edit ufw config `sudo nano /etc/default/ufw`
+2. Set `DEFAULT_FORWARD_POLICY="ACCEPT"`
+3. Reload ufw `sudo ufw reload`
+4. Allow port 2375 `sudo ufw allow 2375/tcp`
+5. Edit `sudo nano /etc/default/docker`
+6. Uncomment DOCKER_OPTS and add --iptables=false `DOCKER_OPTS="--dns 8.8.8.8 --dns 8.8.4.4 —iptables=false"`
+7. Edit / create `/etc/docker/daemon.json`
+8. Add `{ "iptables": false }`
+9. Run `service docker restart`
+10. Edit `sudo nano /etc/ufw/before.rules`
+11. Add the following filter:
+```
+*nat
+:POSTROUTING ACCEPT [0:0]
+-A POSTROUTING ! -o docker0 -s 172.17.0.0/16 -j MASQUERADE
+COMMIT
+```
+12. Reboot `sudo reboot now`
+13. Allow ports `sudo ufw allow http` (allow http, https and port 2222 for sftp)
+
+Source: https://svenv.nl/unixandlinux/dockerufw/
