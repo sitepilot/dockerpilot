@@ -10,3 +10,4 @@ RUN apt-get update \
     && apt-get install fail2ban iptables -y
 
 RUN touch /var/log/auth.log
+RUN service fail2ban start
