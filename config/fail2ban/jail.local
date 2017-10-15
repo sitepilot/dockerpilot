@@ -780,3 +780,9 @@ returntype   = DROP
 bantime      = 3600
 maxretry     = 1
 findtime     = 1
+
+[docker-sftp]
+enabled = true
+logpath = /var/log/serverpilot_syslog
+maxretry = 4
+filter = docker-sftp
