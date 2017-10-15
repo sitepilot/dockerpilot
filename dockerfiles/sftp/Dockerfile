@@ -9,8 +9,4 @@ RUN groupadd serverpilot \
 RUN apt-get update \
     && apt-get install fail2ban iptables -y
 
-# Add entrypoint
-ADD entrypoint.sh /usr/bin/entrypoint.sh
-RUN chmod +x /usr/bin/entrypoint.sh
-
-ENTRYPOINT ["/usr/bin/entrypoint.sh"]
+RUN touch /var/log/auth.log
