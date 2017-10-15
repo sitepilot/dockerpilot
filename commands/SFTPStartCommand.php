@@ -108,10 +108,19 @@ class SFTPStartCommand extends Command
         $output->writeln("Starting SFTP server, please wait...");
         $process = new Process('cd server/sftp && docker-compose up -d');
         $process->setTimeout(3600);
-        
+
         try {
             $process->mustRun();
-            return true;
+
+            $output->writeln("Starting Fail2Ban, please wait...");
+            $process = new Process("docker exec sp-sftp service fail2ban start");
+
+            try {
+              $process->mustRun();
+              return true;
+            }catch (ProcessFailedException $e) {
+                $output->writeln("<error>".$e->getMessage()."</error>");
+            }
         } catch (ProcessFailedException $e) {
             $output->writeln("<error>".$e->getMessage()."</error>");
         }
