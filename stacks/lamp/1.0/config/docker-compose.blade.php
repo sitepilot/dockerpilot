@@ -27,8 +27,6 @@ services:
   app:
     image: sitepilot/php-apache:7.1
     container_name: sp-app-{{$env['APP_NAME']}}
-    depends_on:
-      - db
     expose:
       - 80
     restart: always
@@ -42,20 +40,6 @@ services:
       - ./php.ini:/usr/local/etc/php/php.ini
       {{ ! empty($env['APP_VOLUME_1']) ? "- " . $env['APP_VOLUME_1'] : "" }}
     cpus: {{ ! empty($env['APP_CPUS']) ? $env['APP_CPUS'] : "1" }}
-    mem_limit: {{ ! empty($env['APP_MEMORY']) ? $env['APP_MEMORY'] * 1000000 : 512 * 1000000 }}
-
-  db:
-    image: mysql:5.7
-    container_name: sp-db-{{$env['APP_NAME']}}
-    volumes:
-      - "./data/db:/var/lib/mysql"
-    restart: always
-    environment:
-      MYSQL_ROOT_PASSWORD: {{$env['APP_DB_ROOT_PASSWORD']}}
-      MYSQL_DATABASE: {{$env['APP_DB_DATABASE']}}
-      MYSQL_USER: {{$env['APP_DB_USER']}}
-      MYSQL_PASSWORD: {{$env['APP_DB_USER_PASSWORD']}}
-    cpus: {{ ! empty($env['APP_CPUS']) ? $env['APP_CPUS'] : "0.5" }}
     mem_limit: {{ ! empty($env['APP_MEMORY']) ? $env['APP_MEMORY'] * 1000000 : 512 * 1000000 }}
 
 networks:

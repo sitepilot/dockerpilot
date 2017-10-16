@@ -7,15 +7,13 @@ COPY php.ini /usr/local/etc/php/
 RUN groupadd serverpilot \
     && useradd -g serverpilot serverpilot
 
-COPY envvars /etc/apache2/envvars
-
 # Install packages
 RUN apt-get update \
     && apt-get install nano zlib1g-dev -y
 
 # Install PHP extensions
 RUN apt-get update && apt-get install -y \
-    && docker-php-ext-install -j$(nproc) mysqli opcache zip
+    && docker-php-ext-install -j$(nproc) mysqli opcache zip pdo pdo_mysql
 
 # Install Composer
 RUN php -r "copy('https://getcomposer.org/installer', 'composer-setup.php');" \
@@ -28,5 +26,6 @@ RUN cd ~/ && curl -O https://raw.githubusercontent.com/wp-cli/builds/gh-pages/ph
     && cd ~/ && mv wp-cli.phar /usr/local/bin/wp
 
 # Enable Apache rewrite module
+COPY envvars /etc/apache2/envvars
 RUN a2enmod rewrite
 RUN service apache2 restart
