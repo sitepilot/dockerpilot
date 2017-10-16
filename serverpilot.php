@@ -55,7 +55,7 @@ $apps = sp_get_apps();
 if(is_array($apps)) {
   foreach($apps as $dir=>$app) {
       $interface = $dir . '/interface.php';
-      $appId = sp_get_container_id('serverpilot-app-'.$app);
+      $appId = sp_get_container_id('sp-app-'.$app);
       if($appId) {
           if(file_exists($interface)) {
               require_once $interface;
