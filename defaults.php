@@ -14,3 +14,7 @@ if(! defined('SERVER_APP_DIR')) {
 if(! defined('SERVER_STACK_DIR')) {
     define( 'SERVER_STACK_DIR', SERVER_WORKDIR . '/stacks' );
 }
+
+if(! defined('MYSQL_ROOT_PASSWORD')) {
+    define( 'MYSQL_ROOT_PASSWORD', 'secret' );
+}

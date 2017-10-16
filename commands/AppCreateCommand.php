@@ -94,15 +94,30 @@ class AppCreateCommand extends Command
             $appDir = SERVER_APP_DIR . '/' . $appSlug;
             $stackDir = SERVER_STACK_DIR . '/' . $this->appTemplate . '/1.0';
 
+            $dbPassword = sp_random_password(16);
+            $dbUser = $appSlug;
+            $dbName = $appSlug.'_'.sp_random_password(6);
+
+            $command = "docker exec sp-db bash -c \"MYSQL_PWD=".MYSQL_ROOT_PASSWORD." mysql -u root -e ".'\"'."CREATE DATABASE IF NOT EXISTS $dbName; CREATE USER '$dbUser'@'%' IDENTIFIED BY '$dbPassword'; GRANT ALL ON $dbName.* TO '$dbUser'@'%';".'\"'."\"";
+            $process = new Process($command);
+
             if(! file_exists($appDir)) {
                 sp_copy_directory($stackDir, $appDir);
-                // generate db credentials
+
+                try {
+                    $output->writeln("Creating database...");
+                    $process->mustRun();
+                    sp_change_env_var($appDir, 'APP_DB_USER', $dbUser);
+                    sp_change_env_var($appDir, 'APP_DB_DATABASE', $dbName);
+                    sp_change_env_var($appDir, 'APP_DB_USER_PASSWORD', $dbPassword);
+                } catch (ProcessFailedException $e) {
+                    $output->writeln("<error>".$e->getMessage()."</error>");
+                }
+
                 sp_change_env_var($appDir, 'APP_NAME', $appSlug);
                 sp_change_env_var($appDir, 'APP_DOMAINS', $appSlug.'.dev');
-                sp_change_env_var($appDir, 'APP_DB_HOST', 'sp-db-'.$appSlug);
-                sp_change_env_var($appDir, 'APP_DB_ROOT_PASSWORD', crypt(md5(uniqid()), 'serverpilot'));
-                sp_change_env_var($appDir, 'APP_DB_USER_PASSWORD', crypt(md5(uniqid()), 'serverpilot'));
                 sp_change_env_var($appDir, 'APP_SFTP_PASS', crypt(md5(uniqid()), 'serverpilot'));
+
                 return true;
             } else {
                 $output->writeln("<error>Application directory already exists.</error>");
