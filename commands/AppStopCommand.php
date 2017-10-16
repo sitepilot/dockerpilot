@@ -111,6 +111,16 @@ class AppStopCommand extends Command
      */
     protected function stopApp($output) {
         $output->writeln("Stopping app ".$this->appName.", please wait...");
+
+        // Run stop command (if exists)
+        if(file_exists($this->appDir.'/interface.php')){
+            require_once $this->appDir.'/interface.php';
+            $appInterfaceClass = '\Serverpilot\App\\'.ucfirst($this->appName).'\AppInterface';
+            if(method_exists($appInterfaceClass, 'stop')){
+                $appInterfaceClass::stop($output);
+            }
+        }
+
         $process = new Process('cd '.$this->appDir.' && docker-compose down');
 
         try {

@@ -152,9 +152,19 @@ class AppStartCommand extends Command
         $output->writeln("Starting app ".$this->appName.", please wait...");
         $process = new Process('cd '.$this->appDir.' && docker-compose up -d');
         $process->setTimeout(3600);
-        
+
         try {
             $process->mustRun();
+
+            // Run start command (if exists)
+            if(file_exists($this->appDir.'/interface.php')){
+                require_once $this->appDir.'/interface.php';
+                $appInterfaceClass = '\Serverpilot\App\\'.ucfirst($this->appName).'\AppInterface';
+                if(method_exists($appInterfaceClass, 'start')){
+                    $appInterfaceClass::start($output);
+                }
+            }
+
             return true;
         } catch (ProcessFailedException $e) {
             $output->writeln("<error>".$e->getMessage()."</error>");
