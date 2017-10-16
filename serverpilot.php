@@ -29,7 +29,6 @@ require_once 'commands/MailcatcherStopCommand.php';
 require_once 'commands/AppStartCommand.php';
 require_once 'commands/AppStopCommand.php';
 require_once 'commands/AppCreateCommand.php';
-require_once 'commands/InstallFlightplanCommand.php';
 require_once 'commands/SFTPStartCommand.php';
 require_once 'commands/SFTPStopCommand.php';
 
@@ -46,7 +45,6 @@ $serverpilot->add( new Serverpilot\Command\MailcatcherStopCommand() );
 $serverpilot->add( new Serverpilot\Command\AppStartCommand() );
 $serverpilot->add( new Serverpilot\Command\AppStopCommand() );
 $serverpilot->add( new Serverpilot\Command\AppCreateCommand() );
-$serverpilot->add( new Serverpilot\Command\InstallFlightplanCommand() );
 $serverpilot->add( new Serverpilot\Command\SFTPStartCommand() );
 $serverpilot->add( new Serverpilot\Command\SFTPStopCommand() );
 
