@@ -139,12 +139,13 @@ class WPInstallCommand extends Command
             } catch (ProcessFailedException $e) {
                 $output->writeln("<error>".$e->getMessage()."</error>");
             }
+          } else {
+            $output->writeln("<error>Can't find application container ID.</error>");
           }
-          return false;
         }
       } else {
-        $output->writeln("<error>WordPress is already installed in: $this->appName.</error>");
+        $output->writeln("<error>WordPress is already installed in app: $this->appName.</error>");
       }
-
+      return false;
     }
 }
