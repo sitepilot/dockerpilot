@@ -32,6 +32,7 @@ This is a Docker based development and production environment for web applicatio
 3. `sudo apt-get update -y`
 4. `apt-cache pkgnames | grep php7.1`
 5. Install the packages you need (e.g. `sudo apt-get install php7.1 php7.1-cli php7.1-curl php7.1-xml php7.1-mbstring php7.1-zip`)
+6. Remove preinstalled Apache (otherwise Serverpilot can't start): `sudo apt-get autoremove && sudo apt-get remove apache2*`.
 
 ### Install Composer
 [Tutorial on DigitalOcean](https://www.digitalocean.com/community/tutorials/how-to-install-and-use-composer-on-ubuntu-16-04)
