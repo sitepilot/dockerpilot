@@ -65,7 +65,7 @@ class AppStartCommand extends ServerpilotCommand
         $env = sp_get_env($this->appDir);
 
         if(isset($env['APP_STACK'])) {
-            $output->writeln("<info>Generating app configuration...</info>");
+            $output->writeln("Generating app configuration...");
 
             $bladeFolder = SERVER_STACK_DIR.'/'.$env['APP_STACK'].'/config';
             $cache = SERVER_WORKDIR . '/cache';
