@@ -11,22 +11,8 @@ use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Process\Process;
 use Symfony\Component\Process\Exception\ProcessFailedException;
 
-class WPUpdateCommand extends Command
+class WPUpdateCommand extends ServerpilotCommand
 {
-    /**
-     * The app name.
-     *
-     * @var string
-     */
-    protected $appName = '';
-
-    /**
-     * The app dir.
-     *
-     * @var string
-     */
-    protected $appDir = '';
-
     /**
      * Command configuration.
      *
@@ -61,49 +47,14 @@ class WPUpdateCommand extends Command
      */
     protected function userInput($input, $output)
     {
-        $questionHelper = $this->getHelper('question');
-        $apps = sp_get_apps();
-
-        if(is_array($apps) && count($apps) > 0) {
-            $updateApps = array();
-
-            // Check which apps are not running
-            foreach($apps as $dir=>$app) {
-                $env = sp_get_env($dir);
-                if($appName = $env['APP_NAME']) {
-                    $id = sp_get_container_id("sp-app-".$appName);
-
-                    if($id) {
-                        $updateApps[] = $app;
-                    }
-                }
-            }
-            if(count($updateApps) > 0) {
-                if( ! $input->getOption('appName') ) {
-                    // ask for appication
-                    $question = new ChoiceQuestion(
-                        'In which app would you like to update WordPress?',
-                        $updateApps, 0
-                    );
-                    $question->setErrorMessage('App %s is invalid.');
-                    $this->appName = $questionHelper->ask($input, $output, $question);
-                } else {
-                    $this->appName = $input->getOption('appName');
-                }
-
-                $this->appDir  = sp_path(SERVER_APP_DIR . '/' . $this->appName);
-
-                return true;
-            } else {
-                $output->writeln("<info>No apps are running, start an app to update WordPress.</info>");
-            }
-        } else {
-            $output->writeln("<error>Couldn't find any apps, create or install an app!</error>");
-        }
-
-        return false;
+        return $this->askForApp($input, $output, 'In which app would you like to update WordPress?', 'running');
     }
 
+    /**
+     * Update WordPress in app directory.
+     *
+     * @return bool
+     */
     protected function updateWP($output)
     {
       $env = sp_get_env($this->appDir);

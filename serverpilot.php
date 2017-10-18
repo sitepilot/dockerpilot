@@ -21,6 +21,7 @@ if(file_exists(__DIR__.'/config.php')) {
 require __DIR__.'/defaults.php';
 
 // Include commands
+require_once 'commands/ServerpilotCommand.php';
 require_once 'commands/ServerStartCommand.php';
 require_once 'commands/ServerStopCommand.php';
 require_once 'commands/ServerUpdateCommand.php';

@@ -13,22 +13,8 @@ use Symfony\Component\Process\Exception\ProcessFailedException;
 
 use Philo\Blade\Blade;
 
-class AppStartCommand extends Command
+class AppStartCommand extends ServerpilotCommand
 {
-    /**
-     * The application name.
-     *
-     * @var string
-     */
-    protected $appName = '';
-
-    /**
-     * The application dir.
-     *
-     * @var string
-     */
-    protected $appDir = '';
-
     /**
      * Command configuration.
      *
@@ -65,47 +51,7 @@ class AppStartCommand extends Command
      */
     protected function userInput($input, $output)
     {
-        $questionHelper = $this->getHelper('question');
-        $apps = sp_get_apps();
-
-        if(is_array($apps) && count($apps) > 0) {
-            $startApps = array();
-
-            // Check which apps are not running
-            foreach($apps as $dir=>$app) {
-                $env = sp_get_env($dir);
-                if($appName = $env['APP_NAME']) {
-                    $id = sp_get_container_id("sp-app-".$appName);
-
-                    if(!$id) {
-                        $startApps[] = $appName;
-                    }
-                }
-            }
-            if(count($startApps) > 0) {
-                if( ! $input->getOption('appName') ) {
-                    // ask for appication
-                    $question = new ChoiceQuestion(
-                        'Which app would you like to start?',
-                        $startApps, 0
-                    );
-                    $question->setErrorMessage('App %s is invalid.');
-                    $this->appName = $questionHelper->ask($input, $output, $question);
-                } else {
-                    $this->appName = $input->getOption('appName');
-                }
-
-                $this->appDir  = sp_path(SERVER_APP_DIR . '/' . $this->appName);
-
-                return true;
-            } else {
-                $output->writeln("<info>All apps are running.</info>");
-            }
-        } else {
-            $output->writeln("<error>Couldn't find any apps, create or install an app!</error>");
-        }
-
-        return false;
+        return $this->askForApp($input, $output, 'Which app would you like to start?', 'stopped');
     }
 
     /**

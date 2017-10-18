@@ -11,22 +11,8 @@ use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Process\Process;
 use Symfony\Component\Process\Exception\ProcessFailedException;
 
-class AppStopCommand extends Command
+class AppStopCommand extends ServerpilotCommand
 {
-    /**
-     * The app name.
-     *
-     * @var string
-     */
-    protected $appName = '';
-
-    /**
-     * The app dir.
-     *
-     * @var string
-     */
-    protected $appDir = '';
-
     /**
      * Command configuration.
      *
@@ -61,47 +47,7 @@ class AppStopCommand extends Command
      */
     protected function userInput($input, $output)
     {
-        $questionHelper = $this->getHelper('question');
-        $apps = sp_get_apps();
-
-        if(is_array($apps) && count($apps) > 0) {
-            $stopApps = array();
-
-            // Check which apps are not running
-            foreach($apps as $dir=>$app) {
-                $env = sp_get_env($dir);
-                if($appName = $env['APP_NAME']) {
-                    $id = sp_get_container_id("sp-app-".$appName);
-
-                    if($id) {
-                        $stopApps[] = $app;
-                    }
-                }
-            }
-            if(count($stopApps) > 0) {
-                if( ! $input->getOption('appName') ) {
-                    // ask for appication
-                    $question = new ChoiceQuestion(
-                        'Which app would you like to stop?',
-                        $stopApps, 0
-                    );
-                    $question->setErrorMessage('App %s is invalid.');
-                    $this->appName = $questionHelper->ask($input, $output, $question);
-                } else {
-                    $this->appName = $input->getOption('appName');
-                }
-
-                $this->appDir  = sp_path(SERVER_APP_DIR . '/' . $this->appName);
-
-                return true;
-            } else {
-                $output->writeln("<info>No apps are running.</info>");
-            }
-        } else {
-            $output->writeln("<error>Couldn't find any apps, create or install an app!</error>");
-        }
-
-        return false;
+        return $this->askForApp($input, $output, 'Which app would you like to stop?', 'running');
     }
 
     /**
