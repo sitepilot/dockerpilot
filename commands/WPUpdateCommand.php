@@ -28,15 +28,6 @@ class WPUpdateCommand extends Command
     protected $appDir = '';
 
     /**
-     * List of valid plugins to update.
-     *
-     * @var array
-     */
-    protected $validPlugins = [
-      'sitepilot'
-    ];
-
-    /**
      * Command configuration.
      *
      * @return void
