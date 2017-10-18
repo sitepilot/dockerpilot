@@ -28,6 +28,15 @@ class WPUpdateCommand extends Command
     protected $appDir = '';
 
     /**
+     * List of valid plugins to update.
+     *
+     * @var array
+     */
+    protected $validPlugins = [
+      'sitepilot'
+    ];
+
+    /**
      * Command configuration.
      *
      * @return void
@@ -117,13 +126,37 @@ class WPUpdateCommand extends Command
           $command1 = "docker exec --user serverpilot $container wp core update --path=/var/www/html";
           $process1 = new Process($command1);
 
+          $command2 = "docker exec --user serverpilot $container wp plugin list --format=json --path=/var/www/html";
+          $process2 = new Process($command2);
+
           try {
               $output->writeln('Updating WordPress core in app: '.$this->appName.'...');
               $process1->mustRun();
 
               $output->writeln(trim($process1->getOutput()));
 
-              sp_change_env_var($this->appDir, 'APP_LAST_WP_UPDATE', time());
+              $process2->mustRun();
+              $plugins = json_decode($process2->getOutput());
+              $updatePlugins = explode(',', $env['APP_WP_UPDATE_PLUGINS']);
+              $updateList = '';
+
+              if(is_array($plugins))
+              {
+                foreach($plugins as $plugin) {
+                  if(in_array($plugin->name, $updatePlugins)) {
+                    $updateList .= ' '.$plugin->name;
+                  }
+                }
+                if(! empty($updateList)){
+                  $output->writeln('Updating plugins:'.$updateList);
+                  $command3 = "docker exec --user serverpilot $container wp plugin update $updateList --path=/var/www/html";
+                  $process3 = new Process($command3);
+                  $process3->mustRun();
+                  $output->writeln(trim($process3->getOutput()));
+                }
+              }
+
+              sp_change_env_var($this->appDir, 'APP_WP_LAST_UPDATE', time());
 
               return true;
           } catch (ProcessFailedException $e) {
