@@ -49,7 +49,7 @@ class WPInstallCommand extends Command
     {
       if($this->userInput($input, $output)) {
         if($this->installWP($output)) {
-            $output->writeln('<info>WordPress isntalled!</info>');
+            $output->writeln('<info>WordPress installed!</info>');
         }
       }
     }
