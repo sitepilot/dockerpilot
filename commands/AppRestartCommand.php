@@ -55,18 +55,17 @@ class AppRestartCommand extends ServerpilotCommand
      * @return bool
      */
     protected function restartApp($output) {
-      $command = $this->getApplication()->find('app:stop');
       $arguments = array(
           '--appName'  => $this->appName
       );
-      $stopInput = new ArrayInput($arguments);
-      $command->run($stopInput, $output);
+      $input = new ArrayInput($arguments);
+
+      $command = $this->getApplication()->find('app:stop');
+      $command->run($input, $output);
 
       $command = $this->getApplication()->find('app:start');
-      $arguments = array(
-          '--appName'  => $this->appName
-      );
-      $startInput = new ArrayInput($arguments);
-      $command->run($startInput, $output);
+      $command->run($input, $output);
+
+      return true;
     }
 }
