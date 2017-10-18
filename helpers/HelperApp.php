@@ -138,6 +138,25 @@ function sp_copy_directory( $src, $dst ) {
 }
 
 /**
+ * Remove a non empty directory.
+ *
+ * @return bool
+ */
+function sp_rmdir($dir) {
+  if (is_dir($dir)) {
+    $objects = scandir($dir);
+    foreach ($objects as $object) {
+      if ($object != "." && $object != "..") {
+        if (filetype($dir."/".$object) == "dir") sp_rmdir($dir."/".$object); else unlink($dir."/".$object);
+      }
+    }
+    reset($objects);
+    return rmdir($dir);
+  }
+  return false;
+}
+
+/**
  * Change an environment variable in a .env file.
  *
  * @return void
