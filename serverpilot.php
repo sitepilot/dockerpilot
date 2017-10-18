@@ -33,6 +33,7 @@ require_once 'commands/AppCreateCommand.php';
 require_once 'commands/SFTPStartCommand.php';
 require_once 'commands/SFTPStopCommand.php';
 require_once 'commands/WPInstallCommand.php';
+require_once 'commands/WPUpdateCommand.php';
 
 // Create application instance
 global $serverpilot;
@@ -51,6 +52,7 @@ $serverpilot->add( new Serverpilot\Command\AppCreateCommand() );
 $serverpilot->add( new Serverpilot\Command\SFTPStartCommand() );
 $serverpilot->add( new Serverpilot\Command\SFTPStopCommand() );
 $serverpilot->add( new Serverpilot\Command\WPInstallCommand() );
+$serverpilot->add( new Serverpilot\Command\WPUpdateCommand() );
 
 // Include application command interface
 $apps = sp_get_apps();
