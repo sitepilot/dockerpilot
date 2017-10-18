@@ -50,6 +50,7 @@ services:
     container_name: sp-db
     volumes:
       - "./data/mysql:/var/lib/mysql"
+      - {{ SERVER_BACKUP_DIR }}:/serverpilot/backup
     restart: always
     environment:
       MYSQL_ROOT_PASSWORD: {{ MYSQL_ROOT_PASSWORD }}

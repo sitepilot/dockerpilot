@@ -9,3 +9,6 @@ cache/*
 
 vendor
 config.php
+
+storage/backup/*
+!storage/backup/.gitkeep

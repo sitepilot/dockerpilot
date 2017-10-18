@@ -18,3 +18,11 @@ if(! defined('SERVER_STACK_DIR')) {
 if(! defined('MYSQL_ROOT_PASSWORD')) {
     define( 'MYSQL_ROOT_PASSWORD', 'secret' );
 }
+
+if(! defined('SERVER_BACKUP_DIR')) {
+    define( 'SERVER_BACKUP_DIR', SERVER_WORKDIR . '/storage/backup' );
+}
+
+if(! defined('SERVER_BACKUP_TIMESTAMP')) {
+    define( 'SERVER_BACKUP_TIMESTAMP', false );  
+}
