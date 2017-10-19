@@ -79,22 +79,25 @@ class WPUpdateCommand extends ServerpilotCommand
 
               $process2->mustRun();
               $plugins = json_decode($process2->getOutput());
-              $updatePlugins = explode(',', $env['APP_WP_UPDATE_PLUGINS']);
-              $updateList = '';
 
-              if(is_array($plugins))
-              {
-                foreach($plugins as $plugin) {
-                  if(in_array($plugin->name, $updatePlugins)) {
-                    $updateList .= ' '.$plugin->name;
+              if(! empty($env['APP_WP_UPDATE_PLUGINS'])) {
+                $updatePlugins = explode(',', $env['APP_WP_UPDATE_PLUGINS']);
+                $updateList = '';
+
+                if(is_array($plugins))
+                {
+                  foreach($plugins as $plugin) {
+                    if(in_array($plugin->name, $updatePlugins)) {
+                      $updateList .= ' '.$plugin->name;
+                    }
                   }
-                }
-                if(! empty($updateList)){
-                  $output->writeln('Updating plugins:'.$updateList);
-                  $command3 = "docker exec --user serverpilot $container wp plugin update $updateList --path=/var/www/html";
-                  $process3 = new Process($command3);
-                  $process3->mustRun();
-                  $output->writeln(trim($process3->getOutput()));
+                  if(! empty($updateList)){
+                    $output->writeln('Updating plugins:'.$updateList);
+                    $command3 = "docker exec --user serverpilot $container wp plugin update $updateList --path=/var/www/html";
+                    $process3 = new Process($command3);
+                    $process3->mustRun();
+                    $output->writeln(trim($process3->getOutput()));
+                  }
                 }
               }
 
