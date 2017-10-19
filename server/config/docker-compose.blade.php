@@ -46,7 +46,7 @@ services:
       NGINX_PROXY_CONTAINER: "sp-nginx"
 
   database:
-    image: mysql:5.7
+    image: sitepilot/mysql:5.7
     container_name: sp-db
     volumes:
       - "./data/mysql:/var/lib/mysql"
