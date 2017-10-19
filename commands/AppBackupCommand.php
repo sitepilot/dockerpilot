@@ -106,7 +106,7 @@ class AppBackupCommand extends ServerpilotCommand
         }
 
         $dbName = $env['APP_DB_DATABASE'];
-        $command = "docker exec sp-db bash -c \"MYSQL_PWD=".MYSQL_ROOT_PASSWORD." mysqldump $dbName > /serverpilot/backup/".$backupFileName ."\"";
+        $command = "docker exec sp-db bash -c \"MYSQL_PWD=".MYSQL_ROOT_PASSWORD." mysqldump $dbName > /serverpilot/backup/".$backupFileName ." && chown serverpilot:serverpilot /serverpilot/backup/".$backupFileName ."\"";
         $process = new Process($command);
 
         try {
