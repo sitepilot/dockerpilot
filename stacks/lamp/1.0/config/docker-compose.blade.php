@@ -36,7 +36,7 @@ services:
       {{ (! isset($env['APP_VARNISH']) || $env['APP_VARNISH'] == 'off') && ! empty($env['APP_SSL_EMAIL']) ? "LETSENCRYPT_EMAIL: ".$env['APP_SSL_EMAIL'] : "" }}
       DUMMY_ENV: "serverpilot"
     volumes:
-      - ./app:{{$env['APP_MOUNT_POINT']}}
+      - ./app:{{$env['APP_MOUNT_POINT']}}:delegated
       - ./php.ini:/usr/local/etc/php/php.ini
       {{ ! empty($env['APP_VOLUME_1']) ? "- " . $env['APP_VOLUME_1'] : "" }}
     cpus: {{ ! empty($env['APP_CPUS']) ? $env['APP_CPUS'] : "1" }}

@@ -49,7 +49,7 @@ services:
     image: sitepilot/mysql:5.7
     container_name: sp-db
     volumes:
-      - "./data/mysql:/var/lib/mysql"
+      - ./data/mysql:/var/lib/mysql:delegated
       - {{ SERVER_BACKUP_DIR }}:/serverpilot/backup
     restart: always
     environment:
