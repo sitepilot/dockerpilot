@@ -15,7 +15,7 @@ services:
       - ./data/vhost.d:/etc/nginx/vhost.d
       - ./data/html:/usr/share/nginx/html
       - ./data/certs:/etc/nginx/certs:ro
-      - ./data/logs/nginx:/var/log/nginx
+      - ./data/logs/nginx:/var/log/nginx:delegated
       - ./nginx.conf:/etc/nginx/nginx.conf
 
   nginx-gen:
