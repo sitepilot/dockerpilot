@@ -37,6 +37,12 @@ This is a Docker based development and production environment for web applicatio
 ### Install Composer
 [Tutorial on DigitalOcean](https://www.digitalocean.com/community/tutorials/how-to-install-and-use-composer-on-ubuntu-16-04)
 
+### Install zip
+1. `sudo apt-get install -y zip`
+
+### Install Dropbox for syncing backups
+[Tutorial on Ubuntu](https://help.ubuntu.com/community/Dropbox)
+
 ## Setup Serverpilot
 
 1. `cd ~ && git clone git@github.com:sitepilot/serverpilot.git`
