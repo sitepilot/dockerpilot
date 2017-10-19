@@ -47,7 +47,7 @@ class WPInstallCommand extends ServerpilotCommand
      */
     protected function userInput($input, $output)
     {
-        return $this->askForApp($input, $output, 'In which app would you like to install WordPress?', 'stopped');
+        return $this->askForApp($input, $output, 'In which app would you like to install WordPress?', 'running');
     }
 
     /**
