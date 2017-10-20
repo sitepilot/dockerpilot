@@ -46,6 +46,8 @@ ENV \
         php7.1-json \
         php7.1-posix \
         php7.1-apache2 \
+        php7.1-pdo_mysql \
+        php7.1-mysqli
         curl \
         ca-certificates \
         runit \
@@ -68,6 +70,7 @@ RUN set -x \
 
 COPY apache /
 COPY httpd.conf /etc/apache2/httpd.conf
+COPY php.ini /etc/php/7.1/php.ini
 
 # Set permissions
 RUN set -x \
