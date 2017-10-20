@@ -57,7 +57,7 @@ ADD https://repos.php.earth/alpine/phpearth.rsa.pub /etc/apk/keys/phpearth.rsa.p
 # Add permissions
 RUN set -x \
   && addgroup -g 1000 -S serverpilot \
-  && adduser -u 82 -D -S -G serverpilot serverpilot
+  && adduser -u 1000 -D -S -G serverpilot serverpilot
 
 RUN set -x \
     && echo "https://repos.php.earth/alpine" >> /etc/apk/repositories \
