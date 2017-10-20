@@ -77,8 +77,6 @@ proxy_set_header X-Forwarded-Proto $proxy_x_forwarded_proto;
 proxy_set_header X-Forwarded-Ssl $proxy_x_forwarded_ssl;
 proxy_set_header X-Forwarded-Port $proxy_x_forwarded_port;
 
-proxy_cache_path /etc/nginx/cache levels=1:2 keys_zone=STATIC:10m inactive=24h max_size=1g;
-
 # Mitigate httpoxy attack (see README for details)
 proxy_set_header Proxy "";
 {{ end }}
@@ -222,7 +220,6 @@ server {
 
 	client_max_body_size 64M;
 
-
 	location / {
 		{{ if eq $proto "uwsgi" }}
 		include uwsgi_params;
@@ -230,10 +227,6 @@ server {
 		{{ else }}
 		proxy_pass {{ trim $proto }}://{{ trim $upstream_name }};
 		{{ end }}
-
-		proxy_cache            STATIC;
-        proxy_cache_valid      200  1d;
-        proxy_cache_use_stale  error timeout invalid_header updating http_500 http_502 http_503 http_504;
 
 		{{ if (exists (printf "/etc/nginx/htpasswd/%s" $host)) }}
 		auth_basic	"Restricted {{ $host }}";
@@ -274,10 +267,6 @@ server {
 		{{ else }}
 		proxy_pass {{ trim $proto }}://{{ trim $upstream_name }};
 		{{ end }}
-
-		proxy_cache            STATIC;
-        proxy_cache_valid      200  1d;
-        proxy_cache_use_stale  error timeout invalid_header updating http_500 http_502 http_503 http_504;
 
 		{{ if (exists (printf "/etc/nginx/htpasswd/%s" $host)) }}
 		auth_basic	"Restricted {{ $host }}";
