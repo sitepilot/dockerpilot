@@ -69,6 +69,12 @@ RUN set -x \
 COPY apache /
 COPY httpd.conf /etc/apache2/httpd.conf
 
+# Set permissions
+RUN set -x \
+    && chmod +x /etc/service/apache/run \
+    && chmod +x /sbin/runit-wrapper \
+    && chmod +x /sbin/runsvdir-start
+
 EXPOSE 80
 
 CMD ["/sbin/runit-wrapper"]
