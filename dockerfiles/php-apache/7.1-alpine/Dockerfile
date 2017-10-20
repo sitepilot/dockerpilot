@@ -47,7 +47,7 @@ ENV \
         php7.1-posix \
         php7.1-apache2 \
         php7.1-pdo_mysql \
-        php7.1-mysqli
+        php7.1-mysqli \
         curl \
         ca-certificates \
         runit \
