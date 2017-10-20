@@ -29,7 +29,7 @@ RUN apk add --no-cache \
 RUN  rm -rf /etc/init.d/*; \
      mkdir /run/apache2; \
      addgroup -g 1000 -S serverpilot; \
-     adduser -G site -u 1000 -s /bin/sh -D serverpilot; \
+     adduser -G serverpilot -u 1000 -s /bin/sh -D serverpilot; \
      sed -rie 's|;error_log = log/php7/error.log|error_log = /dev/stdout|g' /etc/php7/php-fpm.conf
 COPY httpd.conf /etc/apache2/httpd.conf
 COPY www.conf /etc/php7/php-fpm.d/www.conf
