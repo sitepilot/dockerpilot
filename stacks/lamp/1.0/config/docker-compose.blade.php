@@ -25,7 +25,7 @@ services:
   @endif
 
   app:
-    image: sitepilot/php-apache:7.1
+    image: sitepilot/php-apache:7.1-alpine
     container_name: sp-app-{{$env['APP_NAME']}}
     expose:
       - 80
@@ -37,7 +37,7 @@ services:
       DUMMY_ENV: "serverpilot"
     volumes:
       - ./app:{{$env['APP_MOUNT_POINT']}}:delegated
-      - ./php.ini:/usr/local/etc/php/php.ini
+      - ./php.ini:/etc/php/7.1/php.ini
       {{ ! empty($env['APP_VOLUME_1']) ? "- " . $env['APP_VOLUME_1'] : "" }}
     cpus: {{ ! empty($env['APP_CPUS']) ? $env['APP_CPUS'] : "1" }}
     mem_limit: {{ ! empty($env['APP_MEMORY']) ? $env['APP_MEMORY'] * 1000000 : 512 * 1000000 }}
