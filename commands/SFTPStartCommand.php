@@ -102,9 +102,14 @@ class SFTPStartCommand extends Command
      */
     protected function startServer($output)
     {
-        $command = $this->getApplication()->find('sftp:stop');
-        $command->run(new ArrayInput([]), $output);
+        $sftpID = sp_get_container_id('sp-sftp');
 
+        // Stop container if running
+        if($sftpID) {
+            $command = $this->getApplication()->find('sftp:stop');
+            $command->run(new ArrayInput([]), $output);
+        }
+        
         $output->writeln("Starting SFTP server, please wait...");
         $process = new Process('cd server/sftp && docker-compose up -d');
         $process->setTimeout(3600);
