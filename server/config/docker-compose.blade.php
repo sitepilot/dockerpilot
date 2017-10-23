@@ -15,7 +15,7 @@ services:
       - ./data/vhost.d:/etc/nginx/vhost.d
       - ./data/html:/usr/share/nginx/html
       - ./data/certs:/etc/nginx/certs:ro
-      - ./data/logs/nginx:/var/log/nginx:delegated
+      - ./data/logs/nginx:/var/log/nginx:cached
       - ./nginx.conf:/etc/nginx/nginx.conf
 
   nginx-gen:
@@ -49,7 +49,7 @@ services:
     image: sitepilot/mysql:5.7
     container_name: sp-db
     volumes:
-      - ./data/mysql:/var/lib/mysql:delegated
+      - ./data/mysql:/var/lib/mysql:cached
       - {{ SERVER_BACKUP_DIR }}:/serverpilot/backup
     restart: always
     environment:
