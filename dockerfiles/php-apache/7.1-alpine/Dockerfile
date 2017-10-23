@@ -48,6 +48,7 @@ ENV \
         php7.1-apache2 \
         php7.1-pdo_mysql \
         php7.1-mysqli \
+        php7.1-phar \
         curl \
         ca-certificates \
         runit \
@@ -77,6 +78,19 @@ RUN set -x \
     && chmod +x /etc/service/apache/run \
     && chmod +x /sbin/runit-wrapper \
     && chmod +x /sbin/runsvdir-start
+
+# Install Composer
+RUN php -r "copy('https://getcomposer.org/installer', 'composer-setup.php');" \
+    && php composer-setup.php --install-dir=/usr/local/bin --filename=composer \
+    && /usr/local/bin/composer --version
+
+# Install WPCLI
+RUN cd ~/ && curl -O https://raw.githubusercontent.com/wp-cli/builds/gh-pages/phar/wp-cli.phar \
+    && cd ~/ && chmod +x wp-cli.phar \
+    && cd ~/ && mv wp-cli.phar /usr/local/bin/wp 
+
+# Create webserver dir
+RUN mkdir -p /var/www/html && chown serverpilot:serverpilot /var/www/html
 
 EXPOSE 80
 
