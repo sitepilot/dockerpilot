@@ -20,7 +20,7 @@ services:
       {{ ! empty($env['APP_SSL_EMAIL']) ? "LETSENCRYPT_EMAIL: ".$env['APP_SSL_EMAIL'] : "" }}
       VCL_CONFIG: /etc/serverpilot/varnish.vcl
     cpus: {{ ! empty($env['APP_CPUS']) ? $env['APP_CPUS'] : "0.5" }}
-    mem_limit: {{ ! empty($env['APP_MEMORY']) ? $env['APP_MEMORY'] * 1000000 : 512 * 1000000 }}
+    mem_limit: {{ 64 * 1000000 }}
 
   @endif
 
