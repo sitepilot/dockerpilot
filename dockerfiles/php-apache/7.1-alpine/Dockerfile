@@ -52,7 +52,8 @@ ENV \
         curl \
         ca-certificates \
         runit \
-        apache2"
+        apache2 \
+        varnish"
 
 # PHP.earth Alpine repository for better developer experience
 ADD https://repos.php.earth/alpine/phpearth.rsa.pub /etc/apk/keys/phpearth.rsa.pub
@@ -72,6 +73,7 @@ RUN set -x \
 COPY apache /
 COPY httpd.conf /etc/apache2/httpd.conf
 COPY php.ini /etc/php/7.1/php.ini
+COPY varnish.vcl /etc/varnish/default.vcl
 
 # Set permissions
 RUN set -x \
@@ -87,7 +89,7 @@ RUN php -r "copy('https://getcomposer.org/installer', 'composer-setup.php');" \
 # Install WPCLI
 RUN cd ~/ && curl -O https://raw.githubusercontent.com/wp-cli/builds/gh-pages/phar/wp-cli.phar \
     && cd ~/ && chmod +x wp-cli.phar \
-    && cd ~/ && mv wp-cli.phar /usr/local/bin/wp 
+    && cd ~/ && mv wp-cli.phar /usr/local/bin/wp
 
 # Create webserver dir
 RUN mkdir -p /var/www/html && chown serverpilot:serverpilot /var/www/html
