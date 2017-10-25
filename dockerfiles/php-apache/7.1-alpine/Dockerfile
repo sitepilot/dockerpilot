@@ -52,8 +52,7 @@ ENV \
         curl \
         ca-certificates \
         runit \
-        apache2 \
-        varnish"
+        apache2"
 
 # PHP.earth Alpine repository for better developer experience
 ADD https://repos.php.earth/alpine/phpearth.rsa.pub /etc/apk/keys/phpearth.rsa.pub
@@ -73,7 +72,6 @@ RUN set -x \
 COPY apache /
 COPY httpd.conf /etc/apache2/httpd.conf
 COPY php.ini /etc/php/7.1/php.ini
-COPY varnish.vcl /etc/varnish/default.vcl
 
 # Set permissions
 RUN set -x \
