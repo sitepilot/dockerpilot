@@ -25,7 +25,7 @@ services:
   @endif
 
   app:
-    image: sitepilot/php-apache:7.1
+    image: sitepilot/php-apache:php7.1
     container_name: sp-app-{{$env['APP_NAME']}}
     expose:
       - 80
