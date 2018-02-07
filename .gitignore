@@ -12,3 +12,5 @@ config.php
 
 storage/backup/*
 !storage/backup/.gitkeep
+
+.idea
