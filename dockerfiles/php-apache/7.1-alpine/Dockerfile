@@ -82,12 +82,15 @@ RUN set -x \
 # Install Composer
 RUN php -r "copy('https://getcomposer.org/installer', 'composer-setup.php');" \
     && php composer-setup.php --install-dir=/usr/local/bin --filename=composer \
-    && /usr/local/bin/composer --version
+    && /usr/local/bin/composer --version \
+    && export PATH=~/.composer/vendor/bin:$PATH
 
 # Install WPCLI
 RUN cd ~/ && curl -O https://raw.githubusercontent.com/wp-cli/builds/gh-pages/phar/wp-cli.phar \
     && cd ~/ && chmod +x wp-cli.phar \
-    && cd ~/ && mv wp-cli.phar /usr/local/bin/wp
+    && cd ~/ && mv wp-cli.phar /usr/local/bin/wp \
+    && composer global config repositories.wpsnapshots vcs https://github.com/10up/wpsnapshots \
+    && composer global require 10up/wpsnapshots:dev-master -n
 
 # Create webserver dir
 RUN mkdir -p /var/www/html && chown serverpilot:serverpilot /var/www/html
