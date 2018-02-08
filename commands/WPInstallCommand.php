@@ -1,15 +1,12 @@
 <?php
+
 namespace Serverpilot\Command;
 
-use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputInterface;
-use Symfony\Component\Console\Output\OutputInterface;
-use Symfony\Component\Console\Question\ChoiceQuestion;
-use Symfony\Component\Console\Question\Question;
 use Symfony\Component\Console\Input\InputOption;
-
-use Symfony\Component\Process\Process;
+use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\Process\Exception\ProcessFailedException;
+use Symfony\Component\Process\Process;
 
 class WPInstallCommand extends ServerpilotCommand
 {
@@ -21,9 +18,9 @@ class WPInstallCommand extends ServerpilotCommand
     protected function configure()
     {
         $this->setName('wp:install')
-             ->setDescription('Install WordPress in an app.')
-             ->setHelp('This command installs WordPress in an app.')
-             ->addOption('appName', null, InputOption::VALUE_OPTIONAL);
+            ->setDescription('Install WordPress in an app.')
+            ->setHelp('This command installs WordPress in an app.')
+            ->addOption('appName', null, InputOption::VALUE_OPTIONAL);
     }
 
     /**
@@ -33,11 +30,11 @@ class WPInstallCommand extends ServerpilotCommand
      */
     protected function execute(InputInterface $input, OutputInterface $output)
     {
-      if($this->userInput($input, $output)) {
-        if($this->installWP($output)) {
-            $output->writeln('<info>WordPress installed!</info>');
+        if ($this->userInput($input, $output)) {
+            if ($this->installWP($output)) {
+                $output->writeln('<info>WordPress installed!</info>');
+            }
         }
-      }
     }
 
     /**
@@ -57,46 +54,51 @@ class WPInstallCommand extends ServerpilotCommand
      */
     protected function installWP($output)
     {
-      $env = sp_get_env($this->appDir);
-      $wpConfigFile = $this->appDir.'/app/wp-config.php';
+        $env = sp_get_env($this->appDir);
+        $wpConfigFile = $this->appDir . '/app/wp-config.php';
 
-      if(! file_exists($wpConfigFile)) {
-        if(! empty($env['APP_DB_DATABASE']) && ! empty($env['APP_DB_USER']) && ! empty($env['APP_DB_HOST']) && ! empty($env['APP_DB_USER_PASSWORD'])) {
+        if (!file_exists($wpConfigFile)) {
+            if (!empty($env['APP_DB_DATABASE']) && !empty($env['APP_DB_USER']) && !empty($env['APP_DB_HOST']) && !empty($env['APP_DB_USER_PASSWORD'])) {
 
-          $dbName = $env['APP_DB_DATABASE'];
-          $dbHost = $env['APP_DB_HOST'];
-          $dbUser = $env['APP_DB_USER'];
-          $dbPass = $env['APP_DB_USER_PASSWORD'];
-          $container = 'sp-app-'.$env['APP_NAME'];
-          $containerID = sp_get_container_id($container);
+                $dbName = $env['APP_DB_DATABASE'];
+                $dbHost = $env['APP_DB_HOST'];
+                $dbUser = $env['APP_DB_USER'];
+                $dbPass = $env['APP_DB_USER_PASSWORD'];
+                $container = 'sp-app-' . $env['APP_NAME'];
+                $containerID = sp_get_container_id($container);
 
-          if($containerID) {
-            $command1 = "docker exec --user serverpilot $container wp core download --path=/var/www/html";
-            $command2 = 'docker exec --user serverpilot '.$container.' wp config create --path=/var/www/html --skip-check --dbname='.$dbName.' --dbhost='.$dbHost.' --dbuser='.$dbUser.' --dbpass='.$dbPass.' --dbprefix=sp_ --extra-php="$_SERVER[\'HTTPS\'] = (! empty($_SERVER[\'HTTP_X_FORWARDED_PROTO\']) && $_SERVER[\'HTTP_X_FORWARDED_PROTO\'] === \"https\" ? \"on\" : \"off\");"';
+                if ($containerID) {
+                    $command1 = "docker exec --user serverpilot $container wp core download --path=/var/www/html";
 
-            $process1 = new Process($command1);
-            $process2 = new Process($command2);
+                    if (!sp_is_windows()) {
+                        $command2 = 'docker exec --user serverpilot ' . $container . ' wp config create --path=/var/www/html --skip-check --dbname=' . $dbName . ' --dbhost=' . $dbHost . ' --dbuser=' . $dbUser . ' --dbpass=' . $dbPass . ' --dbprefix=sp_ --extra-php="\$_SERVER[\'HTTPS\'] = (! empty(\$_SERVER[\'HTTP_X_FORWARDED_PROTO\']) && \$_SERVER[\'HTTP_X_FORWARDED_PROTO\'] === \"https\" ? \"on\" : \"off\");"';
+                    } else {
+                        $command2 = 'docker exec --user serverpilot ' . $container . ' wp config create --path=/var/www/html --skip-check --dbname=' . $dbName . ' --dbhost=' . $dbHost . ' --dbuser=' . $dbUser . ' --dbpass=' . $dbPass . ' --dbprefix=sp_ --extra-php="$_SERVER[\'HTTPS\'] = (! empty($_SERVER[\'HTTP_X_FORWARDED_PROTO\']) && $_SERVER[\'HTTP_X_FORWARDED_PROTO\'] === \"https\" ? \"on\" : \"off\");"';
+                    }
 
-            try {
-                $output->writeln('Downloading WordPress core...');
-                $process1->mustRun();
+                    $process1 = new Process($command1);
+                    $process2 = new Process($command2);
 
-                $output->writeln('Creating configuration...');
-                $process2->mustRun();
+                    try {
+                        $output->writeln('Downloading WordPress core...');
+                        $process1->mustRun();
 
-                sp_change_env_var($this->appDir, 'APP_TEMPLATE', 'wordpress');
+                        $output->writeln('Creating configuration...');
+                        $process2->mustRun();
 
-                return true;
-            } catch (ProcessFailedException $e) {
-                $output->writeln("<error>".$e->getMessage()."</error>");
+                        sp_change_env_var($this->appDir, 'APP_TEMPLATE', 'wordpress');
+
+                        return true;
+                    } catch (ProcessFailedException $e) {
+                        $output->writeln("<error>" . $e->getMessage() . "</error>");
+                    }
+                } else {
+                    $output->writeln("<error>Can't find application container ID.</error>");
+                }
             }
-          } else {
-            $output->writeln("<error>Can't find application container ID.</error>");
-          }
+        } else {
+            $output->writeln("<error>WordPress is already installed in app: $this->appName.</error>");
         }
-      } else {
-        $output->writeln("<error>WordPress is already installed in app: $this->appName.</error>");
-      }
-      return false;
+        return false;
     }
 }
