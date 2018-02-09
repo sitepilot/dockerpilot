@@ -125,6 +125,9 @@ server {
 
 add_header X-Powered-By "Sitepilot (https://sitepilot.io)";
 
+{{/* Get the VIRTUAL_CACHE By containers */}}
+{{ $vhost_cache := or (first (groupByKeys $containers "Env.VIRTUAL_CACHE")) "false" }}
+
 {{ if eq $vhost_cache "true" }}
 fastcgi_cache_path /data/nginx/cache levels=1:2 keys_zone=serverpilot:10m max_size=1024m inactive=1h;
 add_header X-Cache $upstream_cache_status;
@@ -180,9 +183,6 @@ upstream {{ $upstream_name }} {
 
 {{/* Get the VIRTUAL_NAME By containers */}}
 {{ $vhost_public := or (first (groupByKeys $containers "Env.VIRTUAL_PUBLIC")) "undefined" }}
-
-{{/* Get the VIRTUAL_CACHE By containers */}}
-{{ $vhost_cache := or (first (groupByKeys $containers "Env.VIRTUAL_CACHE")) "false" }}
 
 {{/* Get the first cert name defined by containers w/ the same vhost */}}
 {{ $certName := (first (groupByKeys $containers "Env.CERT_NAME")) }}
