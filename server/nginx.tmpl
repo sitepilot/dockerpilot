@@ -57,8 +57,6 @@ map $scheme $proxy_x_forwarded_ssl {
   https on;
 }
 
-{{ range $host, $containers := groupByMulti $ "Env.VIRTUAL_HOST" "," }}
-
 add_header X-Powered-By "Sitepilot (https://sitepilot.io)";
 
 gzip_types text/plain text/css application/javascript application/json application/x-javascript text/xml application/xml application/xml+rss text/javascript;
@@ -121,6 +119,7 @@ server {
 }
 {{ end }}
 
+{{ range $host, $containers := groupByMulti $ "Env.VIRTUAL_HOST" "," }}
 
 {{ $host := trim $host }}
 {{ $is_regexp := hasPrefix "~" $host }}
