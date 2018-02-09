@@ -208,6 +208,8 @@ server {
 	listen [::]:443 ssl http2 {{ $default_server }};
 	{{ end }}
 	access_log /var/log/nginx/access.log vhost;
+	
+	root {{ $vhost_public }};
 
 	{{ if eq $network_tag "internal" }}
 	# Only allow traffic from internal clients
@@ -271,9 +273,11 @@ server {
 	include /etc/nginx/vhost.d/default;
 	{{ end }}
 
+    location / {
+        try_files $uri $uri/ /index.php?$args;
+    }
 
-
-	location / {
+	location ~ \.php$ {
 		{{ if eq $proto "uwsgi" }}
 		include uwsgi_params;
 		uwsgi_pass {{ trim $proto }}://{{ trim $upstream_name }};
