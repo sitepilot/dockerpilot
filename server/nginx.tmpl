@@ -273,9 +273,18 @@ server {
 	include /etc/nginx/vhost.d/default;
 	{{ end }}
 
-    location / {
-        try_files $uri $uri/ /index.php?$args;
-    }
+    location / { 
+		index index.php index.html index.htm; 
+
+		if (-f $request_filename) { 
+		  expires 30d; 
+		  break; 
+		} 
+
+		if (!-e $request_filename) { 
+		  rewrite ^(.+)$ /index.php?q=$1 last; 
+		} 
+	}
 
 	location ~ \.php$ {
 		{{ if eq $proto "uwsgi" }}
@@ -284,6 +293,7 @@ server {
 		{{ else if eq $proto "fastcgi" }}
 		root   {{ trim $vhost_root }};
 		include fastcgi.conf;
+		fastcgi_param HTTPS on;
 		fastcgi_pass {{ trim $upstream_name }};
 		{{ else }}
 		proxy_pass {{ trim $proto }}://{{ trim $upstream_name }};
@@ -326,9 +336,18 @@ server {
 
 	root {{ $vhost_public }};
 
-	location / {
-        try_files $uri $uri/ /index.php?$args;
-    }
+	location / { 
+		index index.php index.html index.htm; 
+
+		if (-f $request_filename) { 
+		  expires 30d; 
+		  break; 
+		} 
+
+		if (!-e $request_filename) { 
+		  rewrite ^(.+)$ /index.php?q=$1 last; 
+		} 
+	}
 
 	location ~ \.php$ {
 		{{ if eq $proto "uwsgi" }}
