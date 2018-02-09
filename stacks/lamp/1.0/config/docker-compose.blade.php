@@ -7,13 +7,14 @@ services:
     container_name: sp-app-{{$env['APP_NAME']}}
     restart: always
     environment:
-      VIRTUAL_HOST: {{ $env['APP_DOMAINS'] }}
-      VIRTUAL_ROOT: /var/www/html{{ ! empty($env['APP_PUBLIC']) ? "/" . $env['APP_PUBLIC'] : "" }}
-      VIRTUAL_PORT: 9000
-      VIRTUAL_PROTO: fastcgi
-      VIRTUAL_PUBLIC: /apps/{{$env['APP_NAME']}}/app{{ ! empty($env['APP_PUBLIC']) ? "/" . $env['APP_PUBLIC'] : "" }}
-      {{ ! empty($env['APP_SSL_DOMAINS']) ? "LETSENCRYPT_HOST: " . $env['APP_SSL_DOMAINS'] : "" }}
-      {{ ! empty($env['APP_SSL_EMAIL']) ? "LETSENCRYPT_EMAIL: ".$env['APP_SSL_EMAIL'] : "" }}
+      - VIRTUAL_HOST={{ $env['APP_DOMAINS'] }}
+      - VIRTUAL_ROOT=/var/www/html{{ ! empty($env['APP_PUBLIC']) ? "/" . $env['APP_PUBLIC'] : "" }}
+      - VIRTUAL_PORT=9000
+      - VIRTUAL_PROTO=fastcgi
+      - VIRTUAL_PUBLIC=/apps/{{$env['APP_NAME']}}/app{{ ! empty($env['APP_PUBLIC']) ? "/" . $env['APP_PUBLIC'] : "" }}
+      {{ ! empty($env['APP_CACHE']) && $env['APP_CACHE'] == 'on' || empty($env['APP_CACHE']) ? "- VIRTUAL_CACHE=true" : "" }}
+      {{ ! empty($env['APP_SSL_DOMAINS']) ? "- LETSENCRYPT_HOST=" . $env['APP_SSL_DOMAINS'] : "" }}
+      {{ ! empty($env['APP_SSL_EMAIL']) ? "- LETSENCRYPT_EMAIL=".$env['APP_SSL_EMAIL'] : "" }}
     volumes:
       - ./app:/var/www/html
       - ./php.ini:/usr/local/etc/php/php.ini

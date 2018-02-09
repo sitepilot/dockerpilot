@@ -57,6 +57,10 @@ map $scheme $proxy_x_forwarded_ssl {
   https on;
 }
 
+{{ range $host, $containers := groupByMulti $ "Env.VIRTUAL_HOST" "," }}
+
+add_header X-Powered-By "Sitepilot (https://sitepilot.io)";
+
 gzip_types text/plain text/css application/javascript application/json application/x-javascript text/xml application/xml application/xml+rss text/javascript;
 
 log_format vhost '$host $remote_addr - $remote_user [$time_local] '
@@ -88,6 +92,8 @@ proxy_set_header X-Forwarded-Port $proxy_x_forwarded_port;
 proxy_set_header Proxy "";
 {{ end }}
 
+
+
 {{ $enable_ipv6 := eq (or ($.Env.ENABLE_IPV6) "") "true" }}
 server {
 	server_name _; # This is just an invalid value which will never trigger on a real hostname.
@@ -115,7 +121,6 @@ server {
 }
 {{ end }}
 
-{{ range $host, $containers := groupByMulti $ "Env.VIRTUAL_HOST" "," }}
 
 {{ $host := trim $host }}
 {{ $is_regexp := hasPrefix "~" $host }}
@@ -170,7 +175,10 @@ upstream {{ $upstream_name }} {
 {{ $vhost_root := or (first (groupByKeys $containers "Env.VIRTUAL_ROOT")) "/var/www/public" }}
 
 {{/* Get the VIRTUAL_NAME By containers */}}
-{{ $vhost_public := (first (groupByKeys $containers "Env.VIRTUAL_PUBLIC")) "undefined" }}
+{{ $vhost_public := or (first (groupByKeys $containers "Env.VIRTUAL_PUBLIC")) "undefined" }}
+
+{{/* Get the VIRTUAL_CACHE By containers */}}
+{{ $vhost_cache := or (first (groupByKeys $containers "Env.VIRTUAL_CACHE")) "false" }}
 
 {{/* Get the first cert name defined by containers w/ the same vhost */}}
 {{ $certName := (first (groupByKeys $containers "Env.CERT_NAME")) }}
@@ -184,6 +192,11 @@ upstream {{ $upstream_name }} {
 
 {{/* Use the cert specified on the container or fallback to the best vhost match */}}
 {{ $cert := (coalesce $certName $vhostCert) }}
+
+{{ if eq $vhost_cache "true" }}
+fastcgi_cache_path /data/nginx/cache levels=1:2 keys_zone=serverpilot:10m max_size=1024m inactive=1h;
+add_header X-Cache $upstream_cache_status;
+{{ end }}
 
 {{ $is_https := (and (ne $https_method "nohttps") (ne $cert "") (exists (printf "/etc/nginx/certs/%s.crt" $cert)) (exists (printf "/etc/nginx/certs/%s.key" $cert))) }}
 
@@ -210,6 +223,10 @@ server {
 	access_log /var/log/nginx/access.log vhost;
 	
 	root {{ $vhost_public }};
+
+	{{ if eq $vhost_cache "true" }}
+    include /etc/nginx/no-cache.conf;
+    {{ end }}
 
 	{{ if eq $network_tag "internal" }}
 	# Only allow traffic from internal clients
@@ -294,6 +311,9 @@ server {
 		root   {{ trim $vhost_root }};
 		include fastcgi.conf;
 		fastcgi_param HTTPS on;
+		{{ if eq $vhost_cache "true" }}
+        include /etc/nginx/cache.conf;
+        {{ end }}
 		fastcgi_pass {{ trim $upstream_name }};
 		{{ else }}
 		proxy_pass {{ trim $proto }}://{{ trim $upstream_name }};
@@ -336,6 +356,10 @@ server {
 
 	root {{ $vhost_public }};
 
+    {{ if eq $vhost_cache "true" }}
+	include /etc/nginx/no-cache.conf;
+	{{ end }}
+
 	location / { 
 		index index.php index.html index.htm; 
 
@@ -356,6 +380,9 @@ server {
 		{{ else if eq $proto "fastcgi" }}
 		root   {{ trim $vhost_root }};
 		include fastcgi.conf;
+		{{ if eq $vhost_cache "true" }}
+        include /etc/nginx/cache.conf;
+        {{ end }}
 		fastcgi_pass {{ trim $upstream_name }};
 		{{ else }}
 		proxy_pass {{ trim $proto }}://{{ trim $upstream_name }};

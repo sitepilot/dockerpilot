@@ -18,6 +18,8 @@ services:
       - ./data/logs/nginx:/var/log/nginx:cached
       - ./nginx.conf:/etc/nginx/nginx.conf
       - ./fastcgi.conf:/etc/nginx/fastcgi.conf
+      - ./no-cache.conf:/etc/nginx/no-cache.conf
+      - ./cache.conf:/etc/nginx/cache.conf
       - ../apps:/apps
 
   nginx-gen:
