@@ -66,7 +66,6 @@ log_format vhost '$host $remote_addr - $remote_user [$time_local] '
 access_log off;
 
 fastcgi_cache_path /data/nginx/cache levels=1:2 keys_zone=serverpilot:10m max_size=1024m inactive=1h;
-add_header X-Powered-By "Sitepilot (https://sitepilot.io)";
 
 {{ if $.Env.RESOLVERS }}
 resolver {{ $.Env.RESOLVERS }};
@@ -219,6 +218,8 @@ server {
 	
 	root {{ $vhost_public }};
 
+    add_header X-Powered-By "Sitepilot (https://sitepilot.io)";
+
 	{{ if eq $vhost_cache "true" }}
 	add_header X-Cache $upstream_cache_status;
     include /etc/nginx/no-cache.conf;
@@ -351,6 +352,8 @@ server {
 	{{ end }}
 
 	root {{ $vhost_public }};
+
+	add_header X-Powered-By "Sitepilot (https://sitepilot.io)";
 
     {{ if eq $vhost_cache "true" }}
     add_header X-Cache $upstream_cache_status;
