@@ -2,7 +2,7 @@ version: '3'
 services:
 
   nginx:
-    image: nginx
+    image: sitepilot/nginx
     labels:
         com.github.jrcs.letsencrypt_nginx_proxy_companion.nginx_proxy: "true"
     container_name: sp-nginx
