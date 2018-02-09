@@ -65,6 +65,9 @@ log_format vhost '$host $remote_addr - $remote_user [$time_local] '
 
 access_log off;
 
+fastcgi_cache_path /data/nginx/cache levels=1:2 keys_zone=serverpilot:10m max_size=1024m inactive=1h;
+add_header X-Powered-By "Sitepilot (https://sitepilot.io)";
+
 {{ if $.Env.RESOLVERS }}
 resolver {{ $.Env.RESOLVERS }};
 {{ end }}
@@ -122,16 +125,6 @@ server {
 {{ $host := trim $host }}
 {{ $is_regexp := hasPrefix "~" $host }}
 {{ $upstream_name := when $is_regexp (sha1 $host) $host }}
-
-add_header X-Powered-By "Sitepilot (https://sitepilot.io)";
-
-{{/* Get the VIRTUAL_CACHE By containers */}}
-{{ $vhost_cache := or (first (groupByKeys $containers "Env.VIRTUAL_CACHE")) "false" }}
-
-{{ if eq $vhost_cache "true" }}
-fastcgi_cache_path /data/nginx/cache levels=1:2 keys_zone=serverpilot:10m max_size=1024m inactive=1h;
-add_header X-Cache $upstream_cache_status;
-{{ end }}
 
 # {{ $host }}
 upstream {{ $upstream_name }} {
@@ -197,6 +190,9 @@ upstream {{ $upstream_name }} {
 {{/* Use the cert specified on the container or fallback to the best vhost match */}}
 {{ $cert := (coalesce $certName $vhostCert) }}
 
+{{/* Get the VIRTUAL_CACHE By containers */}}
+{{ $vhost_cache := or (first (groupByKeys $containers "Env.VIRTUAL_CACHE")) "false" }}
+
 {{ $is_https := (and (ne $https_method "nohttps") (ne $cert "") (exists (printf "/etc/nginx/certs/%s.crt" $cert)) (exists (printf "/etc/nginx/certs/%s.key" $cert))) }}
 
 {{ if $is_https }}
@@ -224,6 +220,7 @@ server {
 	root {{ $vhost_public }};
 
 	{{ if eq $vhost_cache "true" }}
+	add_header X-Cache $upstream_cache_status;
     include /etc/nginx/no-cache.conf;
     {{ end }}
 
@@ -356,6 +353,7 @@ server {
 	root {{ $vhost_public }};
 
     {{ if eq $vhost_cache "true" }}
+    add_header X-Cache $upstream_cache_status;
 	include /etc/nginx/no-cache.conf;
 	{{ end }}
 
