@@ -2,7 +2,7 @@ version: '3'
 services:
 
   nginx:
-    image: nginx
+    image: sitepilot/nginx
     labels:
         com.github.jrcs.letsencrypt_nginx_proxy_companion.nginx_proxy: "true"
     container_name: sp-nginx
@@ -17,6 +17,10 @@ services:
       - ./data/certs:/etc/nginx/certs:ro
       - ./data/logs/nginx:/var/log/nginx:cached
       - ./nginx.conf:/etc/nginx/nginx.conf
+      - ./fastcgi.conf:/etc/nginx/fastcgi.conf
+      - ./no-cache.conf:/etc/nginx/no-cache.conf
+      - ./cache.conf:/etc/nginx/cache.conf
+      - ../apps:/apps
 
   nginx-gen:
     image: jwilder/docker-gen

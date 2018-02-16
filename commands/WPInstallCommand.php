@@ -69,12 +69,7 @@ class WPInstallCommand extends ServerpilotCommand
 
                 if ($containerID) {
                     $command1 = "docker exec --user serverpilot $container wp core download --path=/var/www/html";
-
-                    if (!sp_is_windows()) {
-                        $command2 = 'docker exec --user serverpilot ' . $container . ' wp config create --path=/var/www/html --skip-check --dbname=' . $dbName . ' --dbhost=' . $dbHost . ' --dbuser=' . $dbUser . ' --dbpass=' . $dbPass . ' --dbprefix=sp_ --extra-php="\$_SERVER[\'HTTPS\'] = (! empty(\$_SERVER[\'HTTP_X_FORWARDED_PROTO\']) && \$_SERVER[\'HTTP_X_FORWARDED_PROTO\'] === \"https\" ? \"on\" : \"off\");"';
-                    } else {
-                        $command2 = 'docker exec --user serverpilot ' . $container . ' wp config create --path=/var/www/html --skip-check --dbname=' . $dbName . ' --dbhost=' . $dbHost . ' --dbuser=' . $dbUser . ' --dbpass=' . $dbPass . ' --dbprefix=sp_ --extra-php="$_SERVER[\'HTTPS\'] = (! empty($_SERVER[\'HTTP_X_FORWARDED_PROTO\']) && $_SERVER[\'HTTP_X_FORWARDED_PROTO\'] === \"https\" ? \"on\" : \"off\");"';
-                    }
+                    $command2 = 'docker exec --user serverpilot ' . $container . ' wp config create --path=/var/www/html --skip-check --dbname=' . $dbName . ' --dbhost=' . $dbHost . ' --dbuser=' . $dbUser . ' --dbpass=' . $dbPass . ' --dbprefix=sp_';
 
                     $process1 = new Process($command1);
                     $process2 = new Process($command2);

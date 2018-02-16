@@ -1,0 +1,9 @@
+FROM nginx
+MAINTAINER Sitepilot <support@sitepilot.io>
+
+# Add permissions
+RUN groupadd serverpilot \
+    && useradd -g serverpilot serverpilot
+
+# Create cache dir
+RUN mkdir -p /data/nginx/cache
