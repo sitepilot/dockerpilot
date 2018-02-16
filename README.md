@@ -17,7 +17,7 @@ Serverpilot is a Docker based development/production server for web applications
 
 ## Server Setup (Ubuntu 16.04)
 
-### Initial production server setup
+### Initial Setup
 1. Add Serverpilot user `adduser serverpilot`.
 2. Give user admin privileges `usermod -aG sudo serverpilot`.
 3. Login as user `su - serverpilot`.
@@ -44,6 +44,12 @@ Serverpilot is a Docker based development/production server for web applications
 
 ### Install Composer
 [Tutorial on DigitalOcean](https://www.digitalocean.com/community/tutorials/how-to-install-and-use-composer-on-ubuntu-16-04)
+
+### Install Serverpilot
+1. `cd ~ && git clone git@github.com:sitepilot/serverpilot.git`
+2. `cd serverpilot`
+3. `composer install`
+4. Run `php sp` to see a list of commands.
 
 ## Commands
 
