@@ -13,8 +13,9 @@ services:
       {{ (! isset($env['APP_VARNISH']) || $env['APP_VARNISH'] == 'off') && ! empty($env['APP_SSL_DOMAINS']) ? "LETSENCRYPT_HOST: " . $env['APP_SSL_DOMAINS'] : "" }}
       {{ (! isset($env['APP_VARNISH']) || $env['APP_VARNISH'] == 'off') && ! empty($env['APP_SSL_EMAIL']) ? "LETSENCRYPT_EMAIL: ".$env['APP_SSL_EMAIL'] : "" }}
     volumes:
+      - ./ssmtp.conf:/etc/ssmtp/ssmtp.conf
       - ./app:{{$env['APP_MOUNT_POINT']}}:cached
-      - ./php.ini:/etc/php/7.1/php.ini
+      - ./php.ini:/usr/local/etc/php/php.ini
       {{ ! empty($env['APP_VOLUME_1']) ? "- " . $env['APP_VOLUME_1'] : "" }}
     cpus: {{ ! empty($env['APP_CPUS']) ? $env['APP_CPUS'] : "1" }}
     mem_limit: {{ ! empty($env['APP_MEMORY']) ? $env['APP_MEMORY'] * 1000000 : 512 * 1000000 }}
