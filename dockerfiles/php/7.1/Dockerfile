@@ -9,7 +9,7 @@ RUN groupadd dockerpilot \
 
 # Install packages
 RUN apt-get update \
-    && apt-get install nano zlib1g-dev git -y
+    && apt-get install nano zlib1g-dev git ssmtp mailutils -y
 
 # Install PHP extensions
 RUN apt-get update && apt-get install -y \
