@@ -1,5 +1,5 @@
 <?php
-namespace Serverpilot\Command;
+namespace Dockerpilot\Command;
 
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputInterface;
@@ -13,7 +13,7 @@ use Symfony\Component\Process\Exception\ProcessFailedException;
 
 use Philo\Blade\Blade;
 
-class AppDeleteCommand extends ServerpilotCommand
+class AppDeleteCommand extends DockerpilotCommand
 {
     /**
      * Command configuration.
@@ -59,7 +59,7 @@ class AppDeleteCommand extends ServerpilotCommand
      */
     protected function deleteApp($output)
     {
-      $dbContainer = sp_get_container_id('sp-db');
+      $dbContainer = sp_get_container_id('dp-mysql');
 
       if($dbContainer) {
         // Read environment file
@@ -74,7 +74,7 @@ class AppDeleteCommand extends ServerpilotCommand
           $dbName = $env['APP_DB_DATABASE'];
           $dbUser = $env['APP_DB_USER'];
 
-          $command = "docker exec sp-db bash -c \"MYSQL_PWD=".MYSQL_ROOT_PASSWORD." mysql -u root -e ".'\"'."DROP DATABASE IF EXISTS $dbName; GRANT USAGE ON *.* TO '$dbUser'@'%' IDENTIFIED BY 'dummypass'; DROP USER '$dbUser'@'%';".'\"'."\"";
+          $command = "docker exec dp-mysql bash -c \"MYSQL_PWD=".MYSQL_ROOT_PASSWORD." mysql -u root -e ".'\"'."DROP DATABASE IF EXISTS $dbName; GRANT USAGE ON *.* TO '$dbUser'@'%' IDENTIFIED BY 'dummypass'; DROP USER '$dbUser'@'%';".'\"'."\"";
           $process = new Process($command);
           try {
             $process->mustRun();
@@ -85,7 +85,7 @@ class AppDeleteCommand extends ServerpilotCommand
 
         return sp_rmdir($this->appDir);
       } else {
-        $output->writeln("<error>Can't connect to database. Please start the server with `sp server:start`.</error>");
+        $output->writeln("<error>Can't connect to database. Please start the server with `dp server:start`.</error>");
       }
 
       return false;

@@ -1,10 +1,10 @@
 <?php
 if(! defined('SERVER_NAME')) {
-    define( 'SERVER_NAME', "Serverpilot" );
+    define( 'SERVER_NAME', "Dockerpilot" );
 }
 
 if(! defined('SERVER_CONSOLE_NAME')) {
-    define( 'SERVER_CONSOLE_NAME', "Serverpilot" );
+    define( 'SERVER_CONSOLE_NAME', "Dockerpilot" );
 }
 
 if(! defined('SERVER_APP_DIR')) {

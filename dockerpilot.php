@@ -21,7 +21,7 @@ if(file_exists(__DIR__.'/config.php')) {
 require __DIR__.'/defaults.php';
 
 // Include commands
-require_once 'commands/ServerpilotCommand.php';
+require_once 'commands/DockerpilotCommand.php';
 require_once 'commands/ServerStartCommand.php';
 require_once 'commands/ServerStopCommand.php';
 require_once 'commands/ServerUpdateCommand.php';
@@ -41,34 +41,34 @@ require_once 'commands/WPInstallCommand.php';
 require_once 'commands/WPUpdateCommand.php';
 
 // Create application instance
-global $serverpilot;
-$serverpilot = new Application( SERVER_CONSOLE_NAME, 'v1.0.0' );
+global $dockerpilot;
+$dockerpilot = new Application( SERVER_CONSOLE_NAME, 'v1.0.0' );
 
 // Register commands
-$serverpilot->add( new Serverpilot\Command\ServerStartCommand() );
-$serverpilot->add( new Serverpilot\Command\ServerStopCommand() );
-$serverpilot->add( new Serverpilot\Command\ServerUpdateCommand() );
-$serverpilot->add( new Serverpilot\Command\ServerRestartCommand() );
-$serverpilot->add( new Serverpilot\Command\ServerCronCommand() );
-$serverpilot->add( new Serverpilot\Command\MailcatcherStartCommand() );
-$serverpilot->add( new Serverpilot\Command\MailcatcherStopCommand() );
-$serverpilot->add( new Serverpilot\Command\AppStartCommand() );
-$serverpilot->add( new Serverpilot\Command\AppStopCommand() );
-$serverpilot->add( new Serverpilot\Command\AppRestartCommand() );
-$serverpilot->add( new Serverpilot\Command\AppDeleteCommand() );
-$serverpilot->add( new Serverpilot\Command\AppCreateCommand() );
-$serverpilot->add( new Serverpilot\Command\AppBackupCommand() );
-$serverpilot->add( new Serverpilot\Command\SFTPStartCommand() );
-$serverpilot->add( new Serverpilot\Command\SFTPStopCommand() );
-$serverpilot->add( new Serverpilot\Command\WPInstallCommand() );
-$serverpilot->add( new Serverpilot\Command\WPUpdateCommand() );
+$dockerpilot->add( new Dockerpilot\Command\ServerStartCommand() );
+$dockerpilot->add( new Dockerpilot\Command\ServerStopCommand() );
+$dockerpilot->add( new Dockerpilot\Command\ServerUpdateCommand() );
+$dockerpilot->add( new Dockerpilot\Command\ServerRestartCommand() );
+$dockerpilot->add( new Dockerpilot\Command\ServerCronCommand() );
+$dockerpilot->add( new Dockerpilot\Command\MailcatcherStartCommand() );
+$dockerpilot->add( new Dockerpilot\Command\MailcatcherStopCommand() );
+$dockerpilot->add( new Dockerpilot\Command\AppStartCommand() );
+$dockerpilot->add( new Dockerpilot\Command\AppStopCommand() );
+$dockerpilot->add( new Dockerpilot\Command\AppRestartCommand() );
+$dockerpilot->add( new Dockerpilot\Command\AppDeleteCommand() );
+$dockerpilot->add( new Dockerpilot\Command\AppCreateCommand() );
+$dockerpilot->add( new Dockerpilot\Command\AppBackupCommand() );
+$dockerpilot->add( new Dockerpilot\Command\SFTPStartCommand() );
+$dockerpilot->add( new Dockerpilot\Command\SFTPStopCommand() );
+$dockerpilot->add( new Dockerpilot\Command\WPInstallCommand() );
+$dockerpilot->add( new Dockerpilot\Command\WPUpdateCommand() );
 
 // Include application command interface
 $apps = sp_get_apps();
 if(is_array($apps)) {
   foreach($apps as $dir=>$app) {
       $interface = $dir . '/interface.php';
-      $appId = sp_get_container_id('sp-app-'.$app);
+      $appId = sp_get_container_id('dp-app-'.$app);
       if($appId) {
           if(file_exists($interface)) {
               require_once $interface;
@@ -78,4 +78,4 @@ if(is_array($apps)) {
 }
 
 // Run application
-$serverpilot->run();
+$dockerpilot->run();

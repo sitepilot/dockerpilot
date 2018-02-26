@@ -65,8 +65,6 @@ log_format vhost '$host $remote_addr - $remote_user [$time_local] '
 
 access_log off;
 
-fastcgi_cache_path /data/nginx/cache levels=1:2 keys_zone=serverpilot:10m max_size=1024m inactive=1h;
-
 {{ if $.Env.RESOLVERS }}
 resolver {{ $.Env.RESOLVERS }};
 {{ end }}
@@ -89,8 +87,6 @@ proxy_set_header X-Forwarded-Port $proxy_x_forwarded_port;
 # Mitigate httpoxy attack (see README for details)
 proxy_set_header Proxy "";
 {{ end }}
-
-
 
 {{ $enable_ipv6 := eq (or ($.Env.ENABLE_IPV6) "") "true" }}
 server {
@@ -173,8 +169,6 @@ upstream {{ $upstream_name }} {
 {{/* Get the VIRTUAL_ROOT By containers w/ use fastcgi root */}}
 {{ $vhost_root := or (first (groupByKeys $containers "Env.VIRTUAL_ROOT")) "/var/www/public" }}
 
-{{/* Get the VIRTUAL_NAME By containers */}}
-{{ $vhost_public := or (first (groupByKeys $containers "Env.VIRTUAL_PUBLIC")) "undefined" }}
 
 {{/* Get the first cert name defined by containers w/ the same vhost */}}
 {{ $certName := (first (groupByKeys $containers "Env.CERT_NAME")) }}
@@ -188,9 +182,6 @@ upstream {{ $upstream_name }} {
 
 {{/* Use the cert specified on the container or fallback to the best vhost match */}}
 {{ $cert := (coalesce $certName $vhostCert) }}
-
-{{/* Get the VIRTUAL_CACHE By containers */}}
-{{ $vhost_cache := or (first (groupByKeys $containers "Env.VIRTUAL_CACHE")) "false" }}
 
 {{ $is_https := (and (ne $https_method "nohttps") (ne $cert "") (exists (printf "/etc/nginx/certs/%s.crt" $cert)) (exists (printf "/etc/nginx/certs/%s.key" $cert))) }}
 
@@ -215,15 +206,6 @@ server {
 	listen [::]:443 ssl http2 {{ $default_server }};
 	{{ end }}
 	access_log /var/log/nginx/access.log vhost;
-	
-	root {{ $vhost_public }};
-
-    add_header X-Powered-By "Sitepilot (https://sitepilot.io)";
-
-	{{ if eq $vhost_cache "true" }}
-	add_header X-Cache $upstream_cache_status;
-    include /etc/nginx/no-cache.conf;
-    {{ end }}
 
 	{{ if eq $network_tag "internal" }}
 	# Only allow traffic from internal clients
@@ -287,30 +269,13 @@ server {
 	include /etc/nginx/vhost.d/default;
 	{{ end }}
 
-    location / { 
-		index index.php index.html index.htm; 
-
-		if (-f $request_filename) { 
-		  expires 30d; 
-		  break; 
-		} 
-
-		if (!-e $request_filename) { 
-		  rewrite ^(.+)$ /index.php?q=$1 last; 
-		} 
-	}
-
-	location ~ \.php$ {
+	location / {
 		{{ if eq $proto "uwsgi" }}
 		include uwsgi_params;
 		uwsgi_pass {{ trim $proto }}://{{ trim $upstream_name }};
 		{{ else if eq $proto "fastcgi" }}
 		root   {{ trim $vhost_root }};
 		include fastcgi.conf;
-		fastcgi_param HTTPS on;
-		{{ if eq $vhost_cache "true" }}
-        include /etc/nginx/cache.conf;
-        {{ end }}
 		fastcgi_pass {{ trim $upstream_name }};
 		{{ else }}
 		proxy_pass {{ trim $proto }}://{{ trim $upstream_name }};
@@ -351,38 +316,13 @@ server {
 	include /etc/nginx/vhost.d/default;
 	{{ end }}
 
-	root {{ $vhost_public }};
-
-	add_header X-Powered-By "Sitepilot (https://sitepilot.io)";
-
-    {{ if eq $vhost_cache "true" }}
-    add_header X-Cache $upstream_cache_status;
-	include /etc/nginx/no-cache.conf;
-	{{ end }}
-
-	location / { 
-		index index.php index.html index.htm; 
-
-		if (-f $request_filename) { 
-		  expires 30d; 
-		  break; 
-		} 
-
-		if (!-e $request_filename) { 
-		  rewrite ^(.+)$ /index.php?q=$1 last; 
-		} 
-	}
-
-	location ~ \.php$ {
+	location / {
 		{{ if eq $proto "uwsgi" }}
 		include uwsgi_params;
 		uwsgi_pass {{ trim $proto }}://{{ trim $upstream_name }};
 		{{ else if eq $proto "fastcgi" }}
 		root   {{ trim $vhost_root }};
 		include fastcgi.conf;
-		{{ if eq $vhost_cache "true" }}
-        include /etc/nginx/cache.conf;
-        {{ end }}
 		fastcgi_pass {{ trim $upstream_name }};
 		{{ else }}
 		proxy_pass {{ trim $proto }}://{{ trim $upstream_name }};

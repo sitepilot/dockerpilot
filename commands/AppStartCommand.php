@@ -1,5 +1,5 @@
 <?php
-namespace Serverpilot\Command;
+namespace Dockerpilot\Command;
 
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputInterface;
@@ -13,7 +13,7 @@ use Symfony\Component\Process\Exception\ProcessFailedException;
 
 use Philo\Blade\Blade;
 
-class AppStartCommand extends ServerpilotCommand
+class AppStartCommand extends DockerpilotCommand
 {
     /**
      * Command configuration.
@@ -105,7 +105,7 @@ class AppStartCommand extends ServerpilotCommand
             // Run start command (if exists)
             if(file_exists($this->appDir.'/interface.php')){
                 require_once $this->appDir.'/interface.php';
-                $appInterfaceClass = '\Serverpilot\App\\'.ucfirst($this->appName).'\AppInterface';
+                $appInterfaceClass = '\Dockerpilot\App\\'.ucfirst($this->appName).'\AppInterface';
                 if(method_exists($appInterfaceClass, 'start')){
                     $appInterfaceClass::start($output);
                 }

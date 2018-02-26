@@ -3,16 +3,16 @@ services:
 
   mailcatcher:
      image: schickling/mailcatcher
-     container_name: sp-mailcatcher
+     container_name: dp-mailcatcher
      restart: always
      ports:
        - "1025:1025"
-       - "1080:1080"
      environment:
        MAILCATCHER_PORT: 1025
-       VIRTUAL_HOST: mailcatcher.dev
+       VIRTUAL_HOST: mailcatcher.local
+       VIRTUAL_PORT: 1080
 
 networks:
   default:
     external:
-      name: serverpilot
+      name: dockerpilot

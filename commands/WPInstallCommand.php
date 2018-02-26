@@ -1,6 +1,6 @@
 <?php
 
-namespace Serverpilot\Command;
+namespace Dockerpilot\Command;
 
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
@@ -8,7 +8,7 @@ use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\Process\Exception\ProcessFailedException;
 use Symfony\Component\Process\Process;
 
-class WPInstallCommand extends ServerpilotCommand
+class WPInstallCommand extends DockerpilotCommand
 {
     /**
      * Command configuration.
@@ -64,12 +64,12 @@ class WPInstallCommand extends ServerpilotCommand
                 $dbHost = $env['APP_DB_HOST'];
                 $dbUser = $env['APP_DB_USER'];
                 $dbPass = $env['APP_DB_USER_PASSWORD'];
-                $container = 'sp-app-' . $env['APP_NAME'];
+                $container = 'dp-app-' . $env['APP_NAME'];
                 $containerID = sp_get_container_id($container);
 
                 if ($containerID) {
-                    $command1 = "docker exec --user serverpilot $container wp core download --path=/var/www/html";
-                    $command2 = 'docker exec --user serverpilot ' . $container . ' wp config create --path=/var/www/html --skip-check --dbname=' . $dbName . ' --dbhost=' . $dbHost . ' --dbuser=' . $dbUser . ' --dbpass=' . $dbPass . ' --dbprefix=sp_';
+                    $command1 = "docker exec --user dockerpilot $container wp core download --path=/var/www/html";
+                    $command2 = 'docker exec --user dockerpilot ' . $container . ' wp config create --path=/var/www/html --skip-check --dbname=' . $dbName . ' --dbhost=' . $dbHost . ' --dbuser=' . $dbUser . ' --dbpass=' . $dbPass . ' --dbprefix=sp_';
 
                     $process1 = new Process($command1);
                     $process2 = new Process($command2);

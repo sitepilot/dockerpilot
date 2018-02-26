@@ -1,5 +1,5 @@
 <?php
-namespace Serverpilot\Command;
+namespace Dockerpilot\Command;
 
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputInterface;
@@ -47,8 +47,8 @@ class ServerStartCommand extends Command
      */
     protected function createNetwork($output)
     {
-        $output->writeln("Creating network (serverpilot)...");
-        $process = new Process('docker network create serverpilot');
+        $output->writeln("Creating network (dockerpilot)...");
+        $process = new Process('docker network create dockerpilot');
 
         $process->run();
 

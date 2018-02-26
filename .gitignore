@@ -1,10 +1,11 @@
 composer.lock
 
+cache/*
+!cache/.gitkeep
+
 apps/*
 !apps/.gitkeep
 
-cache/*
-!cache/.gitkeep
 *.log
 
 vendor

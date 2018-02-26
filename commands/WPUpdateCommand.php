@@ -1,5 +1,5 @@
 <?php
-namespace Serverpilot\Command;
+namespace Dockerpilot\Command;
 
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputInterface;
@@ -11,7 +11,7 @@ use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Process\Process;
 use Symfony\Component\Process\Exception\ProcessFailedException;
 
-class WPUpdateCommand extends ServerpilotCommand
+class WPUpdateCommand extends DockerpilotCommand
 {
     /**
      * Command configuration.
@@ -61,14 +61,14 @@ class WPUpdateCommand extends ServerpilotCommand
       $wpConfigFile = $this->appDir.'/app/wp-config.php';
 
       if(file_exists($wpConfigFile) && $env['APP_TEMPLATE'] == 'wordpress') {
-        $container = 'sp-app-'.$env['APP_NAME'];
+        $container = 'dp-app-'.$env['APP_NAME'];
         $containerID = sp_get_container_id($container);
 
         if($containerID) {
-          $command1 = "docker exec --user serverpilot $container wp core update --path=/var/www/html";
+          $command1 = "docker exec --user dockerpilot $container wp core update --path=/var/www/html";
           $process1 = new Process($command1);
 
-          $command2 = "docker exec --user serverpilot $container wp plugin list --format=json --path=/var/www/html";
+          $command2 = "docker exec --user dockerpilot $container wp plugin list --format=json --path=/var/www/html";
           $process2 = new Process($command2);
 
           try {
@@ -93,7 +93,7 @@ class WPUpdateCommand extends ServerpilotCommand
                   }
                   if(! empty($updateList)){
                     $output->writeln('Updating plugins:'.$updateList);
-                    $command3 = "docker exec --user serverpilot $container wp plugin update $updateList --path=/var/www/html";
+                    $command3 = "docker exec --user dockerpilot $container wp plugin update $updateList --path=/var/www/html";
                     $process3 = new Process($command3);
                     $process3->mustRun();
                     $output->writeln(trim($process3->getOutput()));
