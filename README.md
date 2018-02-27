@@ -16,6 +16,27 @@ You need to install the follwing tools on your machine/server to use Dockerpilot
 3. `composer install`
 4. Run `php dp` to see a list of commands.
 
+### Update Hosts File
+You have to update your hosts file for each application you create.
+
+Example:
+```
+127.0.0.1 myapp.local
+```
+
+In order to use the build in tools (MailCatcher and Adminer) you need to add the following lines to your hosts file:
+```
+127.0.0.1 adminer.local
+127.0.0.1 mailcatcher.local
+```
+
+Hosts file location:
+```
+Linux: /etc/hosts
+MacOS: /etc/hosts
+Windows: C:\Windows\System32\drivers\etc\hosts
+```
+
 ## Server Installation (Ubuntu 16.04)
 
 ### Initial Setup
@@ -54,6 +75,8 @@ You need to install the follwing tools on your machine/server to use Dockerpilot
 
 ## Commands
 
+To get a list of all Dockerpilot commands run `php dp`.
+
 ### Start server (nginx-proxy with letsencrypt)
 
 1. Run `php dp server:start`.
@@ -77,5 +100,4 @@ This will start a nginx proxy server with Letsencrypt support. The proxy will re
 
 1. Run `php dp mailcatcher:start`.
 
-This command will start Mailcatcher which is listening at address dp-mailcatcher:1025 for smtp connections. Navigate to <docker-ip>:1080 for the webinterface.
-
+This command will start Mailcatcher which is listening at address dp-mailcatcher:1025 for smtp connections. Navigate to mailcatcher.local for the webinterface.
