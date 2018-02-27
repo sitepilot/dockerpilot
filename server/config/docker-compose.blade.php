@@ -17,6 +17,7 @@ services:
       - ./data/certs:/etc/nginx/certs:ro
       - ./data/logs/nginx:/var/log/nginx:cached
       - ./nginx.conf:/etc/nginx/nginx.conf
+      - ./proxy.conf:/etc/nginx/conf.d/proxy.conf
       - ../apps:/apps
 
   nginx-gen:
