@@ -1,21 +1,22 @@
-# Dockerpilot Docker Server
+# Dockerpilot Server
 
 Dockerpilot is a Docker based development/production server for web applications.
 
 ## Requirements
+You need to install the follwing tools on your machine/server to use Dockerpilot.
 * [Docker](https://www.docker.com/)
-* [docker-compose](https://docs.docker.com/compose/)
+* [Docker Compose](https://docs.docker.com/compose/)
 * [PHP >= 7.0](http://php.net)
 * [Git](https://git-scm.com)
 * [Composer](https://getcomposer.org)
 
-### Local Setup
+## Local Installation
 1. `cd ~ && git clone git@github.com:sitepilot/dockerpilot.git`
 2. `cd dockerpilot`
 3. `composer install`
-4. Run `php sp` to see a list of commands.
+4. Run `php dp` to see a list of commands.
 
-## Server Setup (Ubuntu 16.04)
+## Server Installation (Ubuntu 16.04)
 
 ### Initial Setup
 1. Add Dockerpilot user `adduser dockerpilot`.
@@ -49,7 +50,7 @@ Dockerpilot is a Docker based development/production server for web applications
 1. `cd ~ && git clone git@github.com:sitepilot/dockerpilot.git`
 2. `cd dockerpilot`
 3. `composer install`
-4. Run `php sp` to see a list of commands.
+4. Run `php dp` to see a list of commands.
 
 ## Commands
 
