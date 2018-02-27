@@ -16,7 +16,17 @@ You need to install the follwing tools on your machine/server to use Dockerpilot
 3. `composer install`
 4. Run `php dp` to see a list of commands.
 
-### Update Hosts File
+## Run from everywhere 
+Run Dockerpilot from anywhere on the system:
+
+###MacOS/Linux:
+1. Open Terminal.
+1. Edit ~/.bash_profile, example: `nano ~/.bash_profile`.
+2. Add the following line `export PATH=$PATH:/path/to/dockerpilot`, example: `export PATH=$PATH:~/Code/dockerpilot`.
+3. Give `dp` run permission, run `chmod +x /path/to/dockerpilot/dp`.
+4. Open a new terminal and type `dp` to use Dockerpilot.
+
+### Update hosts file
 You have to update your hosts file for each application you create.
 
 Example:
@@ -39,7 +49,7 @@ Windows: C:\Windows\System32\drivers\etc\hosts
 
 ## Server Installation (Ubuntu 16.04)
 
-### Initial Setup
+### Initial setup
 1. Add Dockerpilot user `adduser dockerpilot`.
 2. Give user admin privileges `usermod -aG sudo dockerpilot`.
 3. Login as user `su - dockerpilot`.
