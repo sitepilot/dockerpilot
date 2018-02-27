@@ -1,9 +1,9 @@
 FROM mysql:5.7
-MAINTAINER Sitepilot <support@sitepilot.io>
+MAINTAINER Dockerpilot <support@sitepilot.io>
 
 # Set permissions
-RUN groupadd serverpilot \
-    && useradd -g serverpilot serverpilot
+RUN groupadd dockerpilot \
+    && useradd -g dockerpilot dockerpilot
 
-# Copy Serverpilot config
-COPY serverpilot.cnf etc/mysql/conf.d/
+# Copy Dockerpilot config
+COPY dockerpilot.cnf etc/mysql/conf.d/

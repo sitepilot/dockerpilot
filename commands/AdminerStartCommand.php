@@ -8,7 +8,7 @@ use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\Process\Process;
 use Symfony\Component\Process\Exception\ProcessFailedException;
 
-class SFTPStopCommand extends Command
+class AdminerStartCommand extends Command
 {
     /**
      * Command configuration.
@@ -17,9 +17,9 @@ class SFTPStopCommand extends Command
      */
     protected function configure()
     {
-        $this->setName('sftp:stop')
-             ->setDescription('Stops the SFTP server.')
-             ->setHelp('This command stops the SFTP server.');
+        $this->setName('adminer:start')
+            ->setDescription('Starts adminer.')
+            ->setHelp('This command starts adminer.');
     }
 
     /**
@@ -29,20 +29,20 @@ class SFTPStopCommand extends Command
      */
     protected function execute(InputInterface $input, OutputInterface $output)
     {
-        if($this->stopServer($output)) {
-          $output->writeln("<info>SFTP server stopped!</info>");
+        if($this->startAdminer($output)) {
+            $output->writeln("<info>Adminer started!</info>");
         }
     }
 
     /**
-     * Stops the SFTP server.
+     * Starts adminer.
      *
      * @return bool
      */
-    protected function stopServer($output)
+    protected function startAdminer($output)
     {
-        $output->writeln("Stopping SFTP server, please wait...");
-        $process = new Process('cd server/sftp && docker-compose down && docker-compose rm');
+        $output->writeln("Starting adminer, please wait...");
+        $process = new Process('cd tools/adminer && docker-compose up -d');
 
         try {
             $process->mustRun();

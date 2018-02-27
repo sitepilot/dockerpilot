@@ -1,5 +1,5 @@
 <?php
-namespace Serverpilot\Command;
+namespace Dockerpilot\Command;
 
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputInterface;
@@ -51,7 +51,7 @@ class SFTPStartCommand extends Command
         $config = '';
         $sftpAppVolumes = '';
 
-        // Get user and group id of current user (serverpilot)
+        // Get user and group id of current user (dockerpilot)
         $process = new Process('id -u');
         $uID  = trim($process->mustRun()->getOutput());
         $process = new Process('id -g');
@@ -102,7 +102,7 @@ class SFTPStartCommand extends Command
      */
     protected function startServer($output)
     {
-        $sftpID = sp_get_container_id('sp-sftp');
+        $sftpID = sp_get_container_id('dp-sftp');
 
         // Stop container if running
         if($sftpID) {
@@ -118,7 +118,7 @@ class SFTPStartCommand extends Command
             $process->mustRun();
 
             $output->writeln("Starting Fail2Ban, please wait...");
-            $process = new Process("docker exec sp-sftp service fail2ban start");
+            $process = new Process("docker exec dp-sftp service fail2ban start");
 
             try {
               $process->mustRun();

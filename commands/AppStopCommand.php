@@ -1,5 +1,5 @@
 <?php
-namespace Serverpilot\Command;
+namespace Dockerpilot\Command;
 
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputInterface;
@@ -11,7 +11,7 @@ use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Process\Process;
 use Symfony\Component\Process\Exception\ProcessFailedException;
 
-class AppStopCommand extends ServerpilotCommand
+class AppStopCommand extends DockerpilotCommand
 {
     /**
      * Command configuration.
@@ -61,7 +61,7 @@ class AppStopCommand extends ServerpilotCommand
         // Run stop command (if exists)
         if(file_exists($this->appDir.'/interface.php')){
             require_once $this->appDir.'/interface.php';
-            $appInterfaceClass = '\Serverpilot\App\\'.ucfirst($this->appName).'\AppInterface';
+            $appInterfaceClass = '\Dockerpilot\App\\'.ucfirst($this->appName).'\AppInterface';
             if(method_exists($appInterfaceClass, 'stop')){
                 $appInterfaceClass::stop($output);
             }

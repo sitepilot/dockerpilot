@@ -1,10 +1,11 @@
 composer.lock
 
+cache/*
+!cache/.gitkeep
+
 apps/*
 !apps/.gitkeep
 
-cache/*
-!cache/.gitkeep
 *.log
 
 vendor
@@ -14,3 +15,4 @@ storage/backup/*
 !storage/backup/.gitkeep
 
 .idea
+.DS_Store

@@ -1,10 +1,10 @@
 <?php
-namespace Serverpilot\Command;
+namespace Dockerpilot\Command;
 
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Question\ChoiceQuestion;
 
-class ServerpilotCommand extends Command
+class DockerpilotCommand extends Command
 {
   /**
    * The app name.
@@ -38,7 +38,7 @@ class ServerpilotCommand extends Command
       foreach($apps as $dir=>$app) {
           $env = sp_get_env($dir);
           if($appName = $env['APP_NAME']) {
-              $id = sp_get_container_id("sp-app-".$appName);
+              $id = sp_get_container_id("dp-app-".$appName);
               switch ($state) {
                 case 'running':
                   if($id) { $questionApps[] = $appName; }

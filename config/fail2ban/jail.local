@@ -783,6 +783,6 @@ findtime     = 1
 
 [docker-sftp]
 enabled = true
-logpath = /var/log/serverpilot_syslog
+logpath = /var/log/dockerpilot_syslog
 maxretry = 4
 filter = docker-sftp

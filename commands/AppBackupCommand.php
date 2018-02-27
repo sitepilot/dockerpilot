@@ -1,5 +1,5 @@
 <?php
-namespace Serverpilot\Command;
+namespace Dockerpilot\Command;
 
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
@@ -8,7 +8,7 @@ use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Process\Process;
 use Symfony\Component\Process\Exception\ProcessFailedException;
 
-class AppBackupCommand extends ServerpilotCommand
+class AppBackupCommand extends DockerpilotCommand
 {
     /**
      * Save current date and time before backup.
@@ -106,7 +106,7 @@ class AppBackupCommand extends ServerpilotCommand
         }
 
         $dbName = $env['APP_DB_DATABASE'];
-        $command = "docker exec sp-db bash -c \"MYSQL_PWD=".MYSQL_ROOT_PASSWORD." mysqldump $dbName > /serverpilot/backup/".$backupFileName ." && chown serverpilot:serverpilot /serverpilot/backup/".$backupFileName ."\"";
+        $command = "docker exec dp-mysql bash -c \"MYSQL_PWD=".MYSQL_ROOT_PASSWORD." mysqldump $dbName > /dockerpilot/backup/".$backupFileName ." && chown dockerpilot:dockerpilot /dockerpilot/backup/".$backupFileName ."\"";
         $process = new Process($command);
 
         try {

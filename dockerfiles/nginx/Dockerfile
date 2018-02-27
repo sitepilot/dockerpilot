@@ -1,9 +1,9 @@
 FROM nginx
-MAINTAINER Sitepilot <support@sitepilot.io>
+MAINTAINER Dockerpilot <support@sitepilot.io>
 
 # Add permissions
-RUN groupadd serverpilot \
-    && useradd -g serverpilot serverpilot
+RUN groupadd dockerpilot \
+    && useradd -g dockerpilot dockerpilot
 
 # Create cache dir
 RUN mkdir -p /data/nginx/cache

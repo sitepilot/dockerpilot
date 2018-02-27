@@ -1,5 +1,5 @@
 <?php
-namespace Serverpilot\Command;
+namespace Dockerpilot\Command;
 
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputInterface;
@@ -9,7 +9,7 @@ use Symfony\Component\Console\Input\ArrayInput;
 use Symfony\Component\Process\Process;
 use Symfony\Component\Process\Exception\ProcessFailedException;
 
-class ServerRestartCommand extends ServerpilotCommand
+class ServerRestartCommand extends DockerpilotCommand
 {
     /**
      * Command configuration.

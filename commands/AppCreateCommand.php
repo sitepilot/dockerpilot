@@ -1,5 +1,5 @@
 <?php
-namespace Serverpilot\Command;
+namespace Dockerpilot\Command;
 
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputInterface;
@@ -86,7 +86,7 @@ class AppCreateCommand extends Command
      */
     protected function createAppDir($output)
     {
-        $dbContainer = sp_get_container_id('sp-db');
+        $dbContainer = sp_get_container_id('dp-mysql');
 
         if($dbContainer) {
             $output->writeln("Creating application directory...");
@@ -101,7 +101,7 @@ class AppCreateCommand extends Command
                 $dbUser = $appSlug;
                 $dbName = $appSlug.'_'.sp_random_password(6);
 
-                $command = "docker exec sp-db bash -c \"MYSQL_PWD=".MYSQL_ROOT_PASSWORD." mysql -u root -e ".'\"'."CREATE DATABASE IF NOT EXISTS $dbName; CREATE USER '$dbUser'@'%' IDENTIFIED BY '$dbPassword'; GRANT ALL ON $dbName.* TO '$dbUser'@'%';".'\"'."\"";
+                $command = "docker exec dp-mysql bash -c \"MYSQL_PWD=".MYSQL_ROOT_PASSWORD." mysql -u root -e ".'\"'."CREATE DATABASE IF NOT EXISTS $dbName; CREATE USER '$dbUser'@'%' IDENTIFIED BY '$dbPassword'; GRANT ALL ON $dbName.* TO '$dbUser'@'%';".'\"'."\"";
                 $process = new Process($command);
 
                 if(! file_exists($appDir)) {
@@ -118,8 +118,8 @@ class AppCreateCommand extends Command
                     }
 
                     sp_change_env_var($appDir, 'APP_NAME', $appSlug);
-                    sp_change_env_var($appDir, 'APP_DOMAINS', $appSlug.'.dev');
-                    sp_change_env_var($appDir, 'APP_SFTP_PASS', crypt(md5(uniqid()), 'serverpilot'));
+                    sp_change_env_var($appDir, 'APP_DOMAINS', $appSlug.'.local');
+                    sp_change_env_var($appDir, 'APP_SFTP_PASS', crypt(md5(uniqid()), 'dockerpilot'));
 
                     return true;
                 } else {
@@ -127,7 +127,7 @@ class AppCreateCommand extends Command
                 }
             }
         } else {
-            $output->writeln("<error>Can't create application database. Please start the server with `sp server:start`.</error>");
+            $output->writeln("<error>Can't create application database. Please start the server with `dp server:start`.</error>");
         }
         return false;
     }
