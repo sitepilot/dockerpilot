@@ -1,0 +1,19 @@
+version: '2.2'
+
+services:
+
+  app:
+    build: ../../dockerfiles/php/7.1
+    container_name: dp-adminer
+    expose:
+      - 80
+    restart: always
+    environment:
+      VIRTUAL_HOST: adminer.local
+    volumes:
+      - ./app:/var/www/html:cached
+
+networks:
+  default:
+    external:
+      name: dockerpilot
