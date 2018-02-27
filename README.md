@@ -61,7 +61,7 @@ This will start a nginx proxy server with Letsencrypt support. The proxy will re
 
 ### Create a new application
 
-1. `php sp app:create`
+1. `php dp app:create`
 2. Choose an application name and a stack.
 3. Modify the generated .env file (in apps/your-app) to your needs.
 
