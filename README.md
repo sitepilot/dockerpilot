@@ -12,7 +12,7 @@ You need to install the follwing tools on your machine/server to use Dockerpilot
 
 ## Local Installation
 1. `cd ~ && git clone git@github.com:sitepilot/dockerpilot.git`
-2. `cd dockerpilot`
+2. `cd dp`
 3. `composer install`
 4. Run `php dp` to see a list of commands.
 
@@ -21,10 +21,8 @@ Run Dockerpilot from anywhere on the system:
 
 ###MacOS/Linux:
 1. Open Terminal.
-1. Edit ~/.bash_profile, example: `nano ~/.bash_profile`.
-2. Add the following line `export PATH=$PATH:/path/to/dockerpilot`, example: `export PATH=$PATH:~/Code/dockerpilot`.
-3. Give `dp` run permission, run `chmod +x /path/to/dockerpilot/dp`.
-4. Open a new terminal and type `dp` to use Dockerpilot.
+2. Navigate to `/path/to/dockerpilot`.
+3. Run `chmod +x setup.sh && ./setup.sh`.
 
 ### Update hosts file
 You have to update your hosts file for each application you create.
@@ -50,9 +48,9 @@ Windows: C:\Windows\System32\drivers\etc\hosts
 ## Server Installation (Ubuntu 16.04)
 
 ### Initial setup
-1. Add Dockerpilot user `adduser dockerpilot`.
-2. Give user admin privileges `usermod -aG sudo dockerpilot`.
-3. Login as user `su - dockerpilot`.
+1. Add Dockerpilot user `adduser dp`.
+2. Give user admin privileges `usermod -aG sudo dp`.
+3. Login as user `su - dp`.
 4. Create ssh key `ssh-keygen`.
 5. Add your public key to `.ssh/authorized_keys` to enable SSH login without password.
 6. Change permissions `chmod 600 ~/.ssh/authorized_keys`.
@@ -79,7 +77,7 @@ Windows: C:\Windows\System32\drivers\etc\hosts
 
 ### Install Dockerpilot
 1. `cd ~ && git clone git@github.com:sitepilot/dockerpilot.git`
-2. `cd dockerpilot`
+2. `cd dp`
 3. `composer install`
 4. Run `php dp` to see a list of commands.
 

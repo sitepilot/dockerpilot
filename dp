@@ -1,5 +1,2 @@
-#!/bin/bash
-SCRIPTPATH="$( cd "$(dirname "$0")" ; pwd -P )"
-cd $SCRIPTPATH
-
-php dockerpilot $1
+<?php
+require_once('dockerpilot.php');
