@@ -4,6 +4,7 @@ namespace Dockerpilot\Command;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
+use Symfony\Component\Console\Input\InputOption;
 
 use Symfony\Component\Process\Process;
 use Symfony\Component\Process\Exception\ProcessFailedException;
@@ -21,7 +22,8 @@ class ServerStartCommand extends Command
     {
         $this->setName('server:start')
              ->setDescription('Starts the server.')
-             ->setHelp('This command starts the server.');
+             ->setHelp('This command starts the server.')
+             ->addOption('build', null, InputOption::VALUE_NONE);
     }
 
     /**
@@ -33,7 +35,7 @@ class ServerStartCommand extends Command
     {
         if($this->createNetwork($output)) {
             if($this->createConfig($output)) {
-                if($this->startServer($output)) {
+                if($this->startServer($input, $output)) {
                     $output->writeln("<info>Server started!</info>");
                 }
             }
@@ -87,10 +89,10 @@ class ServerStartCommand extends Command
      *
      * @return bool
      */
-    protected function startServer($output)
+    protected function startServer($input, $output)
     {
         $output->writeln("Starting server, please wait...");
-        $process = new Process('cd server && docker-compose up -d');
+        $process = new Process('cd server && docker-compose up ' . ($input->getOption('build') ? '--build' : '') . ' -d');
         $process->setTimeout(3600);
 
         try {
