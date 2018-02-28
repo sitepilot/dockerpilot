@@ -27,7 +27,7 @@ class AppCmdCommand extends DockerpilotCommand
         $this->setName('app:cmd')
             ->setDescription('Run a command inside an application container.')
             ->setHelp('Run a command inside an application container.')
-            ->addOption('appName', null, InputOption::VALUE_OPTIONAL)
+            ->addOption('app', null, InputOption::VALUE_OPTIONAL)
             ->addOption('command', null, InputOption::VALUE_OPTIONAL);
     }
 
@@ -87,7 +87,7 @@ class AppCmdCommand extends DockerpilotCommand
      */
     protected function runCommand($input, $output)
     {
-        $container = 'dp-app-' . $this->appName;
+        $container = 'dp-app-' . $this->app;
         $command = "docker exec --user dockerpilot -it $container bash -c \"" . $this->command . "\"";
 
         if (!sp_is_windows()) {

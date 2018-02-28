@@ -53,7 +53,7 @@ class ServerCronCommand extends Command
         foreach($apps as $dir=>$app) {
           $output->writeln("[CRON] Backup $app...");
           $arguments = array(
-              '--appName'  => $app
+              '--app'  => $app
           );
           $input = new ArrayInput($arguments);
 
@@ -81,7 +81,7 @@ class ServerCronCommand extends Command
           {
             $output->writeln("[CRON] Updating $app...");
             $arguments = array(
-                '--appName'  => $app
+                '--app'  => $app
             );
             $input = new ArrayInput($arguments);
 

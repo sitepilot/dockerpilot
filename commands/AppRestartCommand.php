@@ -22,7 +22,7 @@ class AppRestartCommand extends DockerpilotCommand
         $this->setName('app:restart')
              ->setDescription('Restart an application.')
              ->setHelp('This command restarts an application.')
-             ->addOption('appName', null, InputOption::VALUE_OPTIONAL);
+             ->addOption('app', null, InputOption::VALUE_OPTIONAL);
     }
 
     /**
@@ -56,7 +56,7 @@ class AppRestartCommand extends DockerpilotCommand
      */
     protected function restartApp($output) {
       $arguments = array(
-          '--appName'  => $this->appName
+          '--app'  => $this->app
       );
       $input = new ArrayInput($arguments);
 

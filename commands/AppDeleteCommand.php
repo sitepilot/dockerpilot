@@ -25,7 +25,7 @@ class AppDeleteCommand extends DockerpilotCommand
         $this->setName('app:delete')
              ->setDescription('Delete an application.')
              ->setHelp('This command deletes an application.')
-             ->addOption('appName', null, InputOption::VALUE_OPTIONAL);
+             ->addOption('app', null, InputOption::VALUE_OPTIONAL);
     }
 
     /**

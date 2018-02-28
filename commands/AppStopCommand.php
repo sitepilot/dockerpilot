@@ -23,7 +23,7 @@ class AppStopCommand extends DockerpilotCommand
         $this->setName('app:stop')
              ->setDescription('Stop an app.')
              ->setHelp('This command stops an app.')
-             ->addOption('appName', null, InputOption::VALUE_OPTIONAL);
+             ->addOption('app', null, InputOption::VALUE_OPTIONAL);
     }
 
     /**
@@ -56,12 +56,12 @@ class AppStopCommand extends DockerpilotCommand
      * @return bool
      */
     protected function stopApp($output) {
-        $output->writeln("Stopping app ".$this->appName.", please wait...");
+        $output->writeln("Stopping app ".$this->app.", please wait...");
 
         // Run stop command (if exists)
         if(file_exists($this->appDir.'/interface.php')){
             require_once $this->appDir.'/interface.php';
-            $appInterfaceClass = '\Dockerpilot\App\\'.ucfirst($this->appName).'\AppInterface';
+            $appInterfaceClass = '\Dockerpilot\App\\'.ucfirst($this->app).'\AppInterface';
             if(method_exists($appInterfaceClass, 'stop')){
                 $appInterfaceClass::stop($output);
             }

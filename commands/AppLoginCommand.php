@@ -20,7 +20,7 @@ class AppLoginCommand extends DockerpilotCommand
         $this->setName('app:login')
             ->setDescription('Login to application container.')
             ->setHelp('Login to application container.')
-            ->addOption('appName', null, InputOption::VALUE_OPTIONAL);
+            ->addOption('app', null, InputOption::VALUE_OPTIONAL);
     }
 
     /**
@@ -60,7 +60,7 @@ class AppLoginCommand extends DockerpilotCommand
      */
     protected function login($output)
     {
-        $container = 'dp-app-' . $this->appName;
+        $container = 'dp-app-' . $this->app;
         $command = "docker exec --user dockerpilot -it $container /bin/bash";
 
         if (!sp_is_windows()) {

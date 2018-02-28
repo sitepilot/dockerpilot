@@ -21,7 +21,7 @@ class AppStartCommand extends DockerpilotCommand
         $this->setName('app:start')
             ->setDescription('Start an application.')
             ->setHelp('This command starts an application.')
-            ->addOption('appName', null, InputOption::VALUE_OPTIONAL)
+            ->addOption('app', null, InputOption::VALUE_OPTIONAL)
             ->addOption('build', null, InputOption::VALUE_NONE);
     }
 
@@ -94,7 +94,7 @@ class AppStartCommand extends DockerpilotCommand
      */
     protected function startApp($input, $output)
     {
-        $output->writeln("Starting app " . $this->appName . ", please wait...");
+        $output->writeln("Starting app " . $this->app . ", please wait...");
         $process = new Process('cd ' . $this->appDir . ' && docker-compose up ' . ($input->getOption('build') ? '--build' : '') . ' -d');
         $process->setTimeout(3600);
 
@@ -104,7 +104,7 @@ class AppStartCommand extends DockerpilotCommand
             // Run start command (if exists)
             if (file_exists($this->appDir . '/interface.php')) {
                 require_once $this->appDir . '/interface.php';
-                $appInterfaceClass = '\Dockerpilot\App\\' . ucfirst($this->appName) . '\AppInterface';
+                $appInterfaceClass = '\Dockerpilot\App\\' . ucfirst($this->app) . '\AppInterface';
                 if (method_exists($appInterfaceClass, 'start')) {
                     $appInterfaceClass::start($output);
                 }

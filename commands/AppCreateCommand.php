@@ -18,7 +18,7 @@ class AppCreateCommand extends Command
      *
      * @var string
      */
-    protected $appName = '';
+    protected $app = '';
 
     /**
      * The application template.
@@ -89,9 +89,9 @@ class AppCreateCommand extends Command
                 }
                 return $answer;
             });
-            $this->appName = trim($questionHelper->ask($input, $output, $question));
+            $this->app = trim($questionHelper->ask($input, $output, $question));
         } else {
-            $this->appName = trim($input->getOption('app'));
+            $this->app = trim($input->getOption('app'));
         }
 
         if (!$input->getOption('domains')) {
@@ -138,8 +138,8 @@ class AppCreateCommand extends Command
         if ($dbContainer) {
             $output->writeln("Creating application directory...");
 
-            if ($this->appName && $this->appTemplate) {
-                $appSlug = sp_create_slug($this->appName);
+            if ($this->app && $this->appTemplate) {
+                $appSlug = sp_create_slug($this->app);
                 $appDir = SERVER_APP_DIR . '/' . $appSlug;
                 $stackDir = SERVER_STACK_DIR . '/' . $this->appTemplate . '/1.0';
 

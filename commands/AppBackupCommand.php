@@ -27,7 +27,7 @@ class AppBackupCommand extends DockerpilotCommand
         $this->setName('app:backup')
              ->setDescription('Backup an application.')
              ->setHelp('This command backups an application.')
-             ->addOption('appName', null, InputOption::VALUE_OPTIONAL);
+             ->addOption('app', null, InputOption::VALUE_OPTIONAL);
     }
 
     /**
@@ -65,7 +65,7 @@ class AppBackupCommand extends DockerpilotCommand
     protected function backupFiles($output)
     {
       $output->writeln('Backing up application files...');
-      $backupFileName = (SERVER_BACKUP_TIMESTAMP ? $this->appName.'_'.$this->fileDate.'.zip' : $this->appName.'.zip');
+      $backupFileName = (SERVER_BACKUP_TIMESTAMP ? $this->app.'_'.$this->fileDate.'.zip' : $this->app.'.zip');
       $backupFile = SERVER_BACKUP_DIR."/".$backupFileName;
       $command = "cd ".$this->appDir."; zip -r ".$backupFile." .";
       $process = new Process($command);
@@ -94,7 +94,7 @@ class AppBackupCommand extends DockerpilotCommand
     protected function backupDatabase($output)
     {
       $output->writeln('Backing up application database...');
-      $backupFileName = (SERVER_BACKUP_TIMESTAMP ? $this->appName.'_'.$this->fileDate.'.sql' : $this->appName.'.sql');
+      $backupFileName = (SERVER_BACKUP_TIMESTAMP ? $this->app.'_'.$this->fileDate.'.sql' : $this->app.'.sql');
       $backupFile = SERVER_BACKUP_DIR."/".$backupFileName;
       $env = sp_get_env($this->appDir);
 

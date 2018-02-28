@@ -23,7 +23,7 @@ class WPUpdateCommand extends DockerpilotCommand
         $this->setName('wp:update')
              ->setDescription('Update WordPress in an app.')
              ->setHelp('This command updates WordPress in an app.')
-             ->addOption('appName', null, InputOption::VALUE_OPTIONAL);
+             ->addOption('app', null, InputOption::VALUE_OPTIONAL);
     }
 
     /**
@@ -72,7 +72,7 @@ class WPUpdateCommand extends DockerpilotCommand
           $process2 = new Process($command2);
 
           try {
-              $output->writeln('Updating WordPress core in app: '.$this->appName.'...');
+              $output->writeln('Updating WordPress core in app: '.$this->app.'...');
               $process1->mustRun();
 
               $output->writeln(trim($process1->getOutput()));
@@ -111,7 +111,7 @@ class WPUpdateCommand extends DockerpilotCommand
           $output->writeln("<error>Can't find application container ID.</error>");
         }
       } else {
-        $output->writeln("<error>WordPress isn't installed in app: $this->appName.</error>");
+        $output->writeln("<error>WordPress isn't installed in app: $this->app.</error>");
       }
       return false;
     }

@@ -20,7 +20,7 @@ class WPInstallCommand extends DockerpilotCommand
         $this->setName('wp:install')
             ->setDescription('Install WordPress in an app.')
             ->setHelp('This command installs WordPress in an app.')
-            ->addOption('appName', null, InputOption::VALUE_OPTIONAL);
+            ->addOption('app', null, InputOption::VALUE_OPTIONAL);
     }
 
     /**
@@ -92,7 +92,7 @@ class WPInstallCommand extends DockerpilotCommand
                 }
             }
         } else {
-            $output->writeln("<error>WordPress is already installed in app: $this->appName.</error>");
+            $output->writeln("<error>WordPress is already installed in app: $this->app.</error>");
         }
         return false;
     }

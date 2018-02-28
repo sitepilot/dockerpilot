@@ -11,7 +11,7 @@ class DockerpilotCommand extends Command
    *
    * @var string
    */
-  protected $appName = '';
+  protected $app = '';
 
   /**
    * The app dir.
@@ -37,36 +37,36 @@ class DockerpilotCommand extends Command
       // Check app state
       foreach($apps as $dir=>$app) {
           $env = sp_get_env($dir);
-          if($appName = $env['APP_NAME']) {
-              $id = sp_get_container_id("dp-app-".$appName);
+          if($app = $env['APP_NAME']) {
+              $id = sp_get_container_id("dp-app-".$app);
               switch ($state) {
                 case 'running':
-                  if($id) { $questionApps[] = $appName; }
+                  if($id) { $questionApps[] = $app; }
                   break;
                 case 'stopped':
-                  if(!$id) { $questionApps[] = $appName; }
+                  if(!$id) { $questionApps[] = $app; }
                   break;
                 default:
-                  $questionApps[] = $appName;
+                  $questionApps[] = $app;
                   break;
               }
           }
       }
 
       if(count($questionApps) > 0) {
-          if( ! $input->getOption('appName') ) {
+          if( ! $input->getOption('app') ) {
               // Ask for appication
               $question = new ChoiceQuestion(
                   $questionName,
                   $questionApps, 0
               );
               $question->setErrorMessage('App %s is invalid.');
-              $this->appName = $questionHelper->ask($input, $output, $question);
+              $this->app = $questionHelper->ask($input, $output, $question);
           } else {
-              $this->appName = $input->getOption('appName');
+              $this->app = $input->getOption('app');
           }
 
-          $this->appDir  = sp_path(SERVER_APP_DIR . '/' . $this->appName);
+          $this->appDir  = sp_path(SERVER_APP_DIR . '/' . $this->app);
           return true;
       } else {
           switch ($state) {
