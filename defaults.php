@@ -24,5 +24,5 @@ if(! defined('SERVER_BACKUP_DIR')) {
 }
 
 if(! defined('SERVER_BACKUP_TIMESTAMP')) {
-    define( 'SERVER_BACKUP_TIMESTAMP', false );  
+    define( 'SERVER_BACKUP_TIMESTAMP', true );
 }
