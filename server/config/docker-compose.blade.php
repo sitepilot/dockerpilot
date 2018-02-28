@@ -54,7 +54,8 @@ services:
       - "3306:3306"
     volumes:
       - ./data/mysql:/var/lib/mysql:cached
-      - {{ SERVER_BACKUP_DIR }}:/dockerpilot/backup
+      - {{ SERVER_BACKUP_DIR }}:/dockerpilot/backups
+      - ../apps:/dockerpilot/apps
     restart: always
     environment:
       MYSQL_ROOT_PASSWORD: {{ MYSQL_ROOT_PASSWORD }}
