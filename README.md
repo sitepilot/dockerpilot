@@ -17,12 +17,17 @@ You need to install the follwing tools on your machine/server to use Dockerpilot
 4. Run `php dp` to see a list of commands.
 
 ## Run from everywhere 
-Run Dockerpilot from anywhere on the system:
+To run Dockerpilot (with `dp`) from anywhere on the system you have to update your environment. 
 
-###MacOS/Linux:
+###MacOS / Linux:
 1. Open Terminal.
 2. Navigate to `/path/to/dockerpilot`.
 3. Run `chmod +x setup.sh && ./setup.sh`.
+4. Open a new terminal and type `dp` to verify that it works.
+
+###Windows
+1. Run `setup.bat`.
+2. Open a new command prompt and type `dp` to verify that it works.
 
 ### Update hosts file
 You have to update your hosts file for each application you create.
