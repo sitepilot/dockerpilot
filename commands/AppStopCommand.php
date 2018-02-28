@@ -21,7 +21,7 @@ class AppStopCommand extends DockerpilotCommand
     protected function configure()
     {
         $this->setName('app:stop')
-             ->setDescription('Stop an app.')
+             ->setDescription('Stop an application.')
              ->setHelp('This command stops an app.')
              ->addOption('app', null, InputOption::VALUE_OPTIONAL);
     }
