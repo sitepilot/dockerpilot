@@ -27,10 +27,6 @@ RUN cd ~/ && curl -O https://raw.githubusercontent.com/wp-cli/builds/gh-pages/ph
     && cd ~/ && chmod +x wp-cli.phar \
     && cd ~/ && mv wp-cli.phar /usr/local/bin/wp
 
-# Install WP Snapshots
-RUN composer global config repositories.wpsnapshots git https://github.com/10up/wpsnapshots.git \
-    && composer global require 10up/wpsnapshots:dev-master -n
-
 # Run apache as dockerpilot user
 RUN echo export APACHE_RUN_USER=dockerpilot >> /etc/apache2/envvars
 RUN echo export APACHE_RUN_GROUP=dockerpilot >> /etc/apache2/envvars
