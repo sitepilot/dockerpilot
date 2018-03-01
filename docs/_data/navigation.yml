@@ -1,0 +1,19 @@
+# main links
+main:
+  - title: "Docs"
+    url: /docs/installation-guide/
+  - title: "Website"
+    url: https://sitepilot.io
+
+# documentation links
+docs:
+  - title: Installation
+    children:
+      - title: "Installation guide"
+        url: /docs/installation-guide/
+      - title: "Local installation"
+        url: /docs/local-installation/
+      - title: "Server installation"
+        url: /docs/server-installation/
+      - title: "Run from everywhere"
+        url: /docs/run-from-everywhere/
