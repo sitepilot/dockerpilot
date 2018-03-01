@@ -1,13 +1,11 @@
 <?php
+
 namespace Dockerpilot\Command;
 
-use Symfony\Component\Console\Command\Command;
+use Exception;
+use Symfony\Component\Console\Input\ArrayInput;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
-use Symfony\Component\Console\Input\ArrayInput;
-
-use Symfony\Component\Process\Process;
-use Symfony\Component\Process\Exception\ProcessFailedException;
 
 class ServerRestartCommand extends DockerpilotCommand
 {
@@ -19,37 +17,43 @@ class ServerRestartCommand extends DockerpilotCommand
     protected function configure()
     {
         $this->setName('server:restart')
-             ->setDescription('Restart the server.')
-             ->setHelp('This command restarts the server.');
+            ->setDescription('Restart the server.')
+            ->setHelp('This command restarts the server.');
     }
 
     /**
      * Execute command.
      *
+     * @param InputInterface $input
+     * @param OutputInterface $output
      * @return void
      */
     protected function execute(InputInterface $input, OutputInterface $output)
     {
-        if($this->restartServer($output)){
+        try {
+            $this->restartServer($output);
             $output->writeln('<info>Server restarted!</info>');
+        } catch (Exception  $e) {
+            $output->writeln("<error>Failed restart server: \n" . $e->getMessage() . "</error>");
         }
     }
 
     /**
      * Restart the server.
      *
-     * @return bool
+     * @param $output
+     * @return void
+     * @throws Exception
      */
-    protected function restartServer($output) {
-      $arguments = array();
-      $input = new ArrayInput($arguments);
+    protected function restartServer(OutputInterface $output)
+    {
+        $arguments = array();
+        $input = new ArrayInput($arguments);
 
-      $command = $this->getApplication()->find('server:stop');
-      $command->run($input, $output);
+        $command = $this->getApplication()->find('server:stop');
+        $command->run($input, $output);
 
-      $command = $this->getApplication()->find('server:start');
-      $command->run($input, $output);
-
-      return true;
+        $command = $this->getApplication()->find('server:start');
+        $command->run($input, $output);
     }
 }

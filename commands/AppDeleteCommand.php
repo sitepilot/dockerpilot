@@ -1,17 +1,13 @@
 <?php
+
 namespace Dockerpilot\Command;
 
-use Symfony\Component\Console\Command\Command;
+use Exception;
 use Symfony\Component\Console\Input\InputInterface;
-use Symfony\Component\Console\Output\OutputInterface;
-use Symfony\Component\Console\Question\ChoiceQuestion;
-use Symfony\Component\Console\Question\Question;
 use Symfony\Component\Console\Input\InputOption;
-
-use Symfony\Component\Process\Process;
+use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\Process\Exception\ProcessFailedException;
-
-use Philo\Blade\Blade;
+use Symfony\Component\Process\Process;
 
 class AppDeleteCommand extends DockerpilotCommand
 {
@@ -23,72 +19,76 @@ class AppDeleteCommand extends DockerpilotCommand
     protected function configure()
     {
         $this->setName('app:delete')
-             ->setDescription('Delete an application.')
-             ->setHelp('This command deletes an application.')
-             ->addOption('app', null, InputOption::VALUE_OPTIONAL);
+            ->setDescription('Delete an application.')
+            ->setHelp('This command deletes an application.')
+            ->addOption('app', null, InputOption::VALUE_OPTIONAL);
     }
 
     /**
      * Execute command.
      *
+     * @param InputInterface $input
+     * @param OutputInterface $output
      * @return void
      */
     protected function execute(InputInterface $input, OutputInterface $output)
     {
-        if($this->userInput($input, $output)) {
-            if($this->deleteApp($output)) {
-                $output->writeln('<info>App deleted!</info>');
-            }
+        try {
+            $this->userInput($input, $output);
+            $this->deleteApp($output);
+            $output->writeln('<info>App deleted!</info>');
+        } catch (Exception $e) {
+            $output->writeln("<error>Failed to delete application: \n" . $e->getMessage() . "</error>");
         }
     }
 
     /**
      * Ask user which app needs to be deleted.
      *
-     * @return bool
+     * @param InputInterface $input
+     * @param OutputInterface $output
+     * @return void
+     * @throws Exception
      */
-    protected function userInput($input, $output)
+    protected function userInput(InputInterface $input, OutputInterface $output)
     {
-       return $this->askForApp($input, $output, 'Which app would you like to delete?', 'stopped');
+        $this->askForApp($input, $output, 'Which app would you like to delete?', 'stopped');
     }
 
     /**
      * Delete the application.
      *
-     * @return bool
+     * @param OutputInterface $output
+     * @throws Exception
+     * @return void
      */
-    protected function deleteApp($output)
+    protected function deleteApp(OutputInterface $output)
     {
-      $dbContainer = sp_get_container_id('dp-mysql');
+        $dbContainer = dp_get_container_id('dp-mysql');
 
-      if($dbContainer) {
-        // Read environment file
-        $env = sp_get_env($this->appDir);
+        if ($dbContainer) {
+            // Read environment file
+            $env = dp_get_env($this->appDir);
 
-        // Check if we need to delete a database table and user
-        if(! empty($env['APP_DB_USER']) && ! empty($env['APP_DB_DATABASE']))
-        {
-          // Remove database table and user (if exists)
-          $output->writeln('Removing database table and user...');
+            // Check if we need to delete a database table and user
+            if (!empty($env['APP_DB_USER']) && !empty($env['APP_DB_DATABASE'])) {
+                // Remove database table and user (if exists)
+                $output->writeln('Removing database table and user...');
 
-          $dbName = $env['APP_DB_DATABASE'];
-          $dbUser = $env['APP_DB_USER'];
+                $dbName = $env['APP_DB_DATABASE'];
+                $dbUser = $env['APP_DB_USER'];
 
-          $command = "docker exec dp-mysql bash -c \"MYSQL_PWD=".MYSQL_ROOT_PASSWORD." mysql -u root -e ".'\"'."DROP DATABASE IF EXISTS $dbName; GRANT USAGE ON *.* TO '$dbUser'@'%' IDENTIFIED BY 'dummypass'; DROP USER '$dbUser'@'%';".'\"'."\"";
-          $process = new Process($command);
-          try {
-            $process->mustRun();
-          } catch (ProcessFailedException $e) {
-            $output->writeln("<error>".$e->getMessage()."</error>");
-          }
+                $command = "docker exec dp-mysql bash -c \"MYSQL_PWD=" . MYSQL_ROOT_PASSWORD . " mysql -u root -e " . '\"' . "DROP DATABASE IF EXISTS $dbName; GRANT USAGE ON *.* TO '$dbUser'@'%' IDENTIFIED BY 'dummypass'; DROP USER '$dbUser'@'%';" . '\"' . "\"";
+                $process = new Process($command);
+                try {
+                    $process->mustRun();
+                    dp_rmdir($this->appDir);
+                } catch (ProcessFailedException $e) {
+                    throw new Exception($e->getMessage());
+                }
+            }
+        } else {
+            throw new Exception("Can't connect to database. Please start the server with `dp server:start`.");
         }
-
-        return sp_rmdir($this->appDir);
-      } else {
-        $output->writeln("<error>Can't connect to database. Please start the server with `dp server:start`.</error>");
-      }
-
-      return false;
     }
-
 }

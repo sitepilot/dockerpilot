@@ -2,6 +2,7 @@
 
 namespace Dockerpilot\Command;
 
+use Exception;
 use League\Flysystem\Adapter\Local;
 use League\Flysystem\Filesystem;
 use Symfony\Component\Console\Input\InputInterface;
@@ -62,11 +63,12 @@ class AppBackupCommand extends DockerpilotCommand
     }
 
     /**
-     * Ask which app Dockerpilot needs to backup.
+     * Ask which application we need to backup.
      *
      * @param $input
      * @param $output
      * @return void
+     * @throws Exception
      */
     protected function userInput(InputInterface $input, OutputInterface $output)
     {
@@ -77,8 +79,9 @@ class AppBackupCommand extends DockerpilotCommand
     /**
      * Backup application files.
      *
-     * @param $output
-     * @return bool
+     * @param OutputInterface $output
+     * @throws Exception
+     * @return void
      */
     protected function backupFiles(OutputInterface $output)
     {
@@ -93,28 +96,26 @@ class AppBackupCommand extends DockerpilotCommand
         try {
             $process->setTimeout(3600);
             $process->mustRun();
-            return true;
         } catch (ProcessFailedException $e) {
-            $output->writeln("<error>" . $e->getMessage() . "</error>");
+            throw new Exception($e->getMessage());
         }
-        return false;
     }
 
     /**
      * Backup application database.
      *
-     * @param $output
-     * @return bool
+     * @param OutputInterface $output
+     * @throws Exception
+     * @return void
      */
     protected function backupDatabase(OutputInterface $output)
     {
         $output->writeln('Backup application database...');
 
         $backupFile = (SERVER_BACKUP_TIMESTAMP ? $this->app . '_' . $this->fileDate . '.sql' : $this->app . '.sql');
-        $env = sp_get_env($this->appDir);
+        $env = dp_get_env($this->appDir);
 
         if (isset($env['APP_DB_DATABASE'])) {
-
             $dbName = $env['APP_DB_DATABASE'];
             $command = "docker exec dp-mysql bash -c \"MYSQL_PWD=" . MYSQL_ROOT_PASSWORD . " mysqldump $dbName > " . $this->backupDir . "/" . $backupFile . " && chown -R dockerpilot:dockerpilot " . $this->backupDir . "/* \"";
             $process = new Process($command);
@@ -122,18 +123,17 @@ class AppBackupCommand extends DockerpilotCommand
             try {
                 $process->setTimeout(3600);
                 $process->mustRun();
-                return true;
             } catch (ProcessFailedException $e) {
-                $output->writeln("<error>" . $e->getMessage() . "</error>");
+                throw new Exception($e->getMessage());
             }
         }
-        return false;
     }
 
     /**
-     * Cleanup old backup files.]
+     * Cleanup old backup files.
      *
      * @param OutputInterface $output
+     * @throws Exception
      * @return void
      */
     protected function cleanupFiles(OutputInterface $output)
@@ -147,7 +147,11 @@ class AppBackupCommand extends DockerpilotCommand
 
         foreach ($content as $file) {
             if ($file['timestamp'] < (time() - SERVER_BACKUP_KEEP_DAYS * 86400)) {
-                $filesystem->delete($file['path']);
+                try {
+                    $filesystem->delete($file['path']);
+                } catch (Exception $e) {
+                    throw new Exception($e->getMessage());
+                }
             }
         }
     }

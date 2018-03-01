@@ -28,5 +28,5 @@ if (!defined('SERVER_BACKUP_TIMESTAMP')) {
 }
 
 if (!defined('SERVER_BACKUP_KEEP_DAYS')) {
-    define('SERVER_BACKUP_KEEP_DAYS', 14);
+    define('SERVER_BACKUP_KEEP_DAYS', 0);
 }

@@ -1,15 +1,13 @@
 <?php
+
 namespace Dockerpilot\Command;
 
-use Symfony\Component\Console\Command\Command;
+use Exception;
 use Symfony\Component\Console\Input\InputInterface;
-use Symfony\Component\Console\Output\OutputInterface;
-use Symfony\Component\Console\Question\ChoiceQuestion;
-use Symfony\Component\Console\Question\Question;
 use Symfony\Component\Console\Input\InputOption;
-
-use Symfony\Component\Process\Process;
+use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\Process\Exception\ProcessFailedException;
+use Symfony\Component\Process\Process;
 
 class AppStopCommand extends DockerpilotCommand
 {
@@ -21,70 +19,71 @@ class AppStopCommand extends DockerpilotCommand
     protected function configure()
     {
         $this->setName('app:stop')
-             ->setDescription('Stop an application.')
-             ->setHelp('This command stops an app.')
-             ->addOption('app', null, InputOption::VALUE_OPTIONAL);
+            ->setDescription('Stop an application.')
+            ->setHelp('This command stops an app.')
+            ->addOption('app', null, InputOption::VALUE_OPTIONAL);
     }
 
     /**
      * Execute command.
      *
+     * @param InputInterface $input
+     * @param OutputInterface $output
      * @return void
      */
     protected function execute(InputInterface $input, OutputInterface $output)
     {
-        if($this->userInput($input, $output)) {
-            if($this->stopApp($output)) {
-                $output->writeln('<info>App stopped!</info>');
-            }
+        try {
+            $this->userInput($input, $output);
+            $this->stopApp($output);
+            $output->writeln('<info>App stopped!</info>');
+        } catch (Exception $e) {
+            $output->writeln("<error>Failed to stop application: \n" . $e->getMessage() . "</error>");
         }
     }
 
     /**
-     * Ask user for name and app.
+     * Ask user for the application.
      *
-     * @return bool
+     * @param InputInterface $input
+     * @param OutputInterface $output
+     * @return void
+     * @throws Exception
      */
-    protected function userInput($input, $output)
+    protected function userInput(InputInterface $input, OutputInterface $output)
     {
-        return $this->askForApp($input, $output, 'Which app would you like to stop?', 'running');
+        $this->askForApp($input, $output, 'Which app would you like to stop?', 'running');
     }
 
     /**
      * Stops the app.
      *
-     * @return bool
+     * @param OutputInterface $output
+     * @return void
+     * @throws Exception
      */
-    protected function stopApp($output) {
-        $output->writeln("Stopping app ".$this->app.", please wait...");
-
-        // Run stop command (if exists)
-        if(file_exists($this->appDir.'/interface.php')){
-            require_once $this->appDir.'/interface.php';
-            $appInterfaceClass = '\Dockerpilot\App\\'.ucfirst($this->app).'\AppInterface';
-            if(method_exists($appInterfaceClass, 'stop')){
+    protected function stopApp(OutputInterface $output)
+    {
+        $output->writeln("Stopping app " . $this->app . ", please wait...");
+        if (file_exists($this->appDir . '/interface.php')) {
+            require_once $this->appDir . '/interface.php';
+            $appInterfaceClass = '\Dockerpilot\App\\' . ucfirst($this->app) . '\AppInterface';
+            if (method_exists($appInterfaceClass, 'stop')) {
                 $appInterfaceClass::stop($output);
             }
         }
 
-        $process = new Process('cd '.$this->appDir.' && docker-compose down');
-
+        $process = new Process('cd ' . $this->appDir . ' && docker-compose down');
         try {
             $process->mustRun();
-
-            $process = new Process('cd '.$this->appDir.' && docker-compose rm');
-
+            $process = new Process('cd ' . $this->appDir . ' && docker-compose rm');
             try {
                 $process->mustRun();
-                return true;
             } catch (ProcessFailedException $e) {
-                $output->writeln("<error>".$e->getMessage()."</error>");
+                throw new Exception($e->getMessage());
             }
         } catch (ProcessFailedException $e) {
-            $output->writeln("<error>".$e->getMessage()."</error>");
+            throw new Exception($e->getMessage());
         }
-
-        return false;
     }
-
 }

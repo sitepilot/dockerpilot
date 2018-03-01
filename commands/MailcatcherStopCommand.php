@@ -1,13 +1,13 @@
 <?php
+
 namespace Dockerpilot\Command;
 
+use Exception;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
-use Symfony\Component\Console\Helper\ProgressBar;
-
-use Symfony\Component\Process\Process;
 use Symfony\Component\Process\Exception\ProcessFailedException;
+use Symfony\Component\Process\Process;
 
 class MailcatcherStopCommand extends Command
 {
@@ -19,47 +19,45 @@ class MailcatcherStopCommand extends Command
     protected function configure()
     {
         $this->setName('mailcatcher:stop')
-             ->setDescription('Stops mailcatcher.')
-             ->setHelp('This command stops mailcatcher.');
+            ->setDescription('Stops Mailcatcher.')
+            ->setHelp('This command stops Mailcatcher.');
     }
 
     /**
      * Execute command.
      *
+     * @param InputInterface $input
+     * @param OutputInterface $output
      * @return void
      */
-    protected function execute( InputInterface $input, OutputInterface $output )
+    protected function execute(InputInterface $input, OutputInterface $output)
     {
-        if($this->stopMailcatcher($output)) {
+        try {
+            $this->stopMailcatcher($output);
             $output->writeln("<info>Mailcatcher stopped!</info>");
+        } catch (Exception $e) {
+            $output->writeln("<error>Failed to stop Mailcatcher: \n" . $e->getMessage() . "</error>");
         }
     }
 
     /**
      * Stop server.
      *
-     * @return bool
+     * @param $output
+     * @return void
+     * @throws Exception
      */
-    protected function stopMailcatcher($output)
+    protected function stopMailcatcher(OutputInterface $output)
     {
         $output->writeln("Stopping mailcatcher, please wait...");
-        $process = new Process('cd tools/mailcatcher && docker-compose down');
+        $process1 = new Process('cd tools/mailcatcher && docker-compose down');
+        $process2 = new Process('cd tools/mailcatcher && docker-compose rm');
 
         try {
-            $process->mustRun();
-
-            // Cleanup
-            $process = new Process('cd tools/mailcatcher && docker-compose rm');
-            try {
-                $process->mustRun();
-                return true;
-            } catch (ProcessFailedException $e) {
-                $output->writeln("<error>".$e->getMessage()."</error>");
-            }
+            $process1->mustRun();
+            $process2->mustRun();
         } catch (ProcessFailedException $e) {
-            $output->writeln("<error>".$e->getMessage()."</error>");
+            throw new Exception($e->getMessage());
         }
-
-        return false;
     }
 }

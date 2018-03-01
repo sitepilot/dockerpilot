@@ -2,6 +2,7 @@
 
 namespace Dockerpilot\Command;
 
+use Exception;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
@@ -25,7 +26,7 @@ class AppCreateCommand extends Command
      *
      * @var string
      */
-    protected $appTemplate = '';
+    protected $appStack = '';
 
     /**
      * The application domains.
@@ -56,26 +57,26 @@ class AppCreateCommand extends Command
      *
      * @param InputInterface $input
      * @param OutputInterface $output
-     * @return bool
+     * @return void
      */
     protected function execute(InputInterface $input, OutputInterface $output)
     {
-        if ($this->userInput($input, $output)) {
-            if ($this->createAppDir($input, $output)) {
-                return true;
-            }
+        try {
+            $this->userInput($input, $output);
+            $this->createAppDir($input, $output);
+        } catch (Exception $e) {
+            $output->writeln("<error>Failed to create the application: \n" . $e->getMessage() . "</error>");
         }
-        return false;
     }
 
     /**
      * Ask user for name and stack.
      *
-     * @param $input
-     * @param $output
-     * @return bool
+     * @param InputInterface $input
+     * @param OutputInterface $output
+     * @return void
      */
-    protected function userInput($input, $output)
+    protected function userInput(InputInterface $input, OutputInterface $output)
     {
         $questionHelper = $this->getHelper('question');
 
@@ -109,43 +110,44 @@ class AppCreateCommand extends Command
             $this->appDomains = trim($input->getOption('domains'));
         }
 
-        $templates = array_values(sp_get_stacks());
+        $templates = array_values(dp_get_stacks());
         if (!$input->getOption('stack')) {
             $question = new ChoiceQuestion(
                 'Please select a stack:',
                 $templates, 0
             );
             $question->setErrorMessage('Stack %s is invalid.');
-            $this->appTemplate = $questionHelper->ask($input, $output, $question);
+            $this->appStack = $questionHelper->ask($input, $output, $question);
         } else {
             if (in_array($input->getOption('stack'), $templates)) {
-                $this->appTemplate = trim($input->getOption('stack'));
+                $this->appStack = trim($input->getOption('stack'));
             }
         }
-
-        return true;
     }
 
     /**
      * Create the application directory from a template.
      *
-     * @return bool
+     * @param InputInterface $input
+     * @param OutputInterface $output
+     * @return void
+     * @throws Exception
      */
-    protected function createAppDir($input, $output)
+    protected function createAppDir(InputInterface $input, OutputInterface $output)
     {
-        $dbContainer = sp_get_container_id('dp-mysql');
+        $dbContainer = dp_get_container_id('dp-mysql');
 
         if ($dbContainer) {
             $output->writeln("Creating application directory...");
 
-            if ($this->app && $this->appTemplate) {
-                $appSlug = sp_create_slug($this->app);
+            if ($this->app && $this->appStack) {
+                $appSlug = dp_create_slug($this->app);
                 $appDir = SERVER_APP_DIR . '/' . $appSlug;
-                $stackDir = SERVER_STACK_DIR . '/' . $this->appTemplate . '/1.0';
+                $stackDir = SERVER_STACK_DIR . '/' . $this->appStack . '/1.0';
 
-                $dbPassword = sp_random_password(16);
+                $dbPassword = dp_random_password(16);
                 $dbUser = $appSlug;
-                $dbName = $appSlug . '_' . sp_random_password(6);
+                $dbName = $appSlug . '_' . dp_random_password(6);
 
                 $command = "docker exec dp-mysql bash -c \"MYSQL_PWD=" . MYSQL_ROOT_PASSWORD . " mysql -u root -e " . '\"' . "CREATE DATABASE IF NOT EXISTS $dbName; CREATE USER '$dbUser'@'%' IDENTIFIED BY '$dbPassword'; GRANT ALL ON $dbName.* TO '$dbUser'@'%';" . '\"' . "\"";
                 $process = new Process($command);
@@ -157,20 +159,20 @@ class AppCreateCommand extends Command
                         $process->mustRun();
 
                         // Copy application directory
-                        sp_copy_directory($stackDir, $appDir);
+                        dp_copy_directory($stackDir, $appDir);
 
                         // Update application environment file
                         $sftpPass = crypt(md5(uniqid()), 'dockerpilot');
-                        sp_change_env_var($appDir, 'APP_NAME', $appSlug);
-                        sp_change_env_var($appDir, 'APP_DOMAINS', $this->appDomains);
-                        sp_change_env_var($appDir, 'APP_SFTP_PASS', $sftpPass);
-                        sp_change_env_var($appDir, 'APP_DB_USER', $dbUser);
-                        sp_change_env_var($appDir, 'APP_DB_DATABASE', $dbName);
-                        sp_change_env_var($appDir, 'APP_DB_USER_PASSWORD', $dbPassword);
+                        dp_change_env_var($appDir, 'APP_NAME', $appSlug);
+                        dp_change_env_var($appDir, 'APP_DOMAINS', $this->appDomains);
+                        dp_change_env_var($appDir, 'APP_SFTP_PASS', $sftpPass);
+                        dp_change_env_var($appDir, 'APP_DB_USER', $dbUser);
+                        dp_change_env_var($appDir, 'APP_DB_DATABASE', $dbName);
+                        dp_change_env_var($appDir, 'APP_DB_USER_PASSWORD', $dbPassword);
 
                         if ($input->getOption('config') == 'laravel') {
-                            sp_change_env_var($appDir, 'APP_MOUNT_POINT', '/var/www');
-                            sp_change_env_var($appDir, 'APP_VOLUME_1', './app/public:/var/www/html');
+                            dp_change_env_var($appDir, 'APP_MOUNT_POINT', '/var/www');
+                            dp_change_env_var($appDir, 'APP_VOLUME_1', './app/public:/var/www/html');
                         }
 
                         // Inform the user about created application
@@ -185,19 +187,15 @@ class AppCreateCommand extends Command
                         $output->writeln('Database Password: ' . $dbPassword);
                         $output->writeln('SFTP Password: ' . $sftpPass);
                         $output->writeln('--------------');
-
-                        return true;
                     } catch (ProcessFailedException $e) {
-                        $output->writeln("<error>" . $e->getMessage() . "</error>");
+                        throw new Exception($e->getMessage());
                     }
-                    return false;
                 } else {
-                    $output->writeln("<error>Application directory already exists.</error>");
+                    throw new Exception("Application already exists.");
                 }
             }
         } else {
-            $output->writeln("<error>Can't create application database. Please start the server with `dp server:start`.</error>");
+            throw new Exception("Can't create application database. Please start the server with `dp server:start`.");
         }
-        return false;
     }
 }

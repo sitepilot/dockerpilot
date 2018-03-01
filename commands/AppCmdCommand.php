@@ -2,10 +2,12 @@
 
 namespace Dockerpilot\Command;
 
+use Exception;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\Console\Question\Question;
+use Symfony\Component\Process\Exception\ProcessFailedException;
 use Symfony\Component\Process\Process;
 
 class AppCmdCommand extends DockerpilotCommand
@@ -36,26 +38,27 @@ class AppCmdCommand extends DockerpilotCommand
      *
      * @param InputInterface $input
      * @param OutputInterface $output
-     * @return bool
+     * @return void
      */
     protected function execute(InputInterface $input, OutputInterface $output)
     {
-        if ($this->userInput($input, $output)) {
-            if ($this->runCommand($input, $output)) {
-                return true;
-            }
+        try {
+            $this->userInput($input, $output);
+            $this->runCommand($output);
+        } catch (Exception $e) {
+            $output->writeln("<error>Failed to run command: \n" . $e->getMessage() . "</error>");
         }
-        return false;
     }
 
     /**
      * Ask user for application.
      *
-     * @param $input
-     * @param $output
-     * @return bool
+     * @param InputInterface $input
+     * @param OutputInterface $output
+     * @return void
+     * @throws Exception
      */
-    protected function userInput($input, $output)
+    protected function userInput(InputInterface $input, OutputInterface $output)
     {
         $questionHelper = $this->getHelper('question');
         $this->askForApp($input, $output, 'In which app would you like to run your command?', 'started');
@@ -74,37 +77,33 @@ class AppCmdCommand extends DockerpilotCommand
         } else {
             $this->command = trim($input->getOption('command'));
         }
-
-        return true;
     }
 
     /**
      * Execute command in the application container.
      *
-     * @param $input
-     * @param $output
-     * @return bool
+     * @param OutputInterface $output
+     * @return void
+     * @throws Exception
      */
-    protected function runCommand($input, $output)
+    protected function runCommand(OutputInterface $output)
     {
         $container = 'dp-app-' . $this->app;
         $command = "docker exec --user dockerpilot -it $container bash -c \"" . $this->command . "\"";
 
-        if (!sp_is_windows()) {
+        if (!dp_is_windows()) {
             $process = new Process($command);
             try {
                 $process->setTty(true);
                 $process->mustRun();
                 echo $process->getOutput();
             } catch (ProcessFailedException $e) {
-                $output->writeln("<error>" . $e->getMessage() . "</error>");
+                throw new Exception($e->getMessage());
             }
         } else {
             $output->writeln("<info>Dockerpilot can't run custom commands inside application containers for you on Windows.</info>");
             $output->writeln("<info>Copy and paste the following command to execute your command:</info>\n");
             $output->writeln($command);
         }
-
-        return true;
     }
 }
