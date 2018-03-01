@@ -24,7 +24,7 @@ require __DIR__.'/defaults.php';
 require_once 'commands/DockerpilotCommand.php';
 require_once 'commands/ServerStartCommand.php';
 require_once 'commands/ServerStopCommand.php';
-require_once 'commands/ServerUpdateCommand.php';
+require_once 'commands/DockerpilotUpdateCommand.php';
 require_once 'commands/ServerRestartCommand.php';
 require_once 'commands/ServerCronCommand.php';
 require_once 'commands/MailcatcherStartCommand.php';
@@ -51,7 +51,7 @@ $dockerpilot = new Application( SERVER_CONSOLE_NAME, 'v1.0.0' );
 // Register commands
 $dockerpilot->add( new Dockerpilot\Command\ServerStartCommand() );
 $dockerpilot->add( new Dockerpilot\Command\ServerStopCommand() );
-$dockerpilot->add( new Dockerpilot\Command\ServerUpdateCommand() );
+$dockerpilot->add( new Dockerpilot\Command\DockerpilotUpdateCommand() );
 $dockerpilot->add( new Dockerpilot\Command\ServerRestartCommand() );
 $dockerpilot->add( new Dockerpilot\Command\ServerCronCommand() );
 $dockerpilot->add( new Dockerpilot\Command\MailcatcherStartCommand() );
@@ -72,11 +72,11 @@ $dockerpilot->add( new Dockerpilot\Command\WPInstallCommand() );
 $dockerpilot->add( new Dockerpilot\Command\WPUpdateCommand() );
 
 // Include application command interface
-$apps = sp_get_apps();
+$apps = dp_get_apps();
 if(is_array($apps)) {
   foreach($apps as $dir=>$app) {
       $interface = $dir . '/interface.php';
-      $appId = sp_get_container_id('dp-app-'.$app);
+      $appId = dp_get_container_id('dp-app-'.$app);
       if($appId) {
           if(file_exists($interface)) {
               require_once $interface;

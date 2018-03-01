@@ -2,6 +2,7 @@
 
 namespace Dockerpilot\Command;
 
+use Exception;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
@@ -28,16 +29,16 @@ class AppLoginCommand extends DockerpilotCommand
      *
      * @param InputInterface $input
      * @param OutputInterface $output
-     * @return bool
+     * @return void
      */
     protected function execute(InputInterface $input, OutputInterface $output)
     {
-        if ($this->userInput($input, $output)) {
-            if ($this->login($output)) {
-                return true;
-            }
+        try {
+            $this->userInput($input, $output);
+            $this->login($output);
+        } catch (Exception $e) {
+            $output->writeln("<error>Failed to login: \n" . $e->getMessage() . "</error>");
         }
-        return false;
     }
 
     /**
@@ -45,39 +46,39 @@ class AppLoginCommand extends DockerpilotCommand
      *
      * @param $input
      * @param $output
-     * @return array
+     * @return void
+     * @throws Exception
      */
     protected function userInput($input, $output)
     {
-        return $this->askForApp($input, $output, 'In which app would you like to login?', 'started');
+        $this->askForApp($input, $output, 'In which app would you like to login?', 'started');
     }
 
     /**
      * Login to application container.
      *
-     * @param $output
-     * @return bool
+     * @param OutputInterface $output
+     * @return void
+     * @throws Exception
      */
-    protected function login($output)
+    protected function login(OutputInterface $output)
     {
         $container = 'dp-app-' . $this->app;
         $command = "docker exec --user dockerpilot -it $container /bin/bash";
 
-        if (!sp_is_windows()) {
+        if (!dp_is_windows()) {
             $process = new Process($command);
             try {
                 $process->setTty(true);
                 $process->mustRun();
                 echo $process->getOutput();
             } catch (ProcessFailedException $e) {
-                $output->writeln("<error>" . $e->getMessage() . "</error>");
+                throw new Exception($e->getMessage());
             }
         } else {
             $output->writeln("<info>Dockerpilot can't login to application containers on Windows.</info>");
             $output->writeln("<info>Copy and paste the following command to login:</info>\n");
             $output->writeln($command);
         }
-
-        return true;
     }
 }

@@ -9,7 +9,7 @@ use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\Process\Exception\ProcessFailedException;
 use Symfony\Component\Process\Process;
 
-class AdminerStopCommand extends Command
+class DockerpilotUpdateCommand extends Command
 {
     /**
      * Command configuration.
@@ -18,9 +18,9 @@ class AdminerStopCommand extends Command
      */
     protected function configure()
     {
-        $this->setName('adminer:stop')
-            ->setDescription('Stops adminer.')
-            ->setHelp('This command stops adminer.');
+        $this->setName('update')
+            ->setDescription('Update Dockerpilot to the latest version.')
+            ->setHelp('This command updates Dockerpilot to the latest version.');
     }
 
     /**
@@ -33,25 +33,25 @@ class AdminerStopCommand extends Command
     protected function execute(InputInterface $input, OutputInterface $output)
     {
         try {
-            $this->stopAdminer($output);
-            $output->writeln("<info>Adminer stopped!</info>");
+            $this->updateServer($output);
+            $output->writeln("<info>Server updated!</info>");
         } catch (Exception $e) {
-            $output->writeln("<error>Failed to stop adminer: \n" . $e->getMessage() . "</error>");
+            $output->writeln("<error>Failed to update the server: \n" . $e->getMessage() . "</error>");
         }
     }
 
     /**
-     * Try to stop Adminer.
+     * Update the server.
      *
-     * @throws Exception
      * @param OutputInterface $output
      * @return void
+     * @throws Exception
      */
-    protected function stopAdminer(OutputInterface $output)
+    protected function updateServer(OutputInterface $output)
     {
-        $output->writeln("Stopping Adminer, please wait...");
-        $process1 = new Process('cd tools/adminer && docker-compose down');
-        $process2 = new Process('cd tools/adminer && docker-compose rm');
+        $output->writeln("Asking git for updates...");
+        $process1 = new Process('cd ' . SERVER_WORKDIR . ' && git pull origin master');
+        $process2 = new Process('cd ' . SERVER_WORKDIR . ' && composer install --no-dev');
 
         try {
             $process1->mustRun();

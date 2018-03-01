@@ -2,6 +2,7 @@
 
 namespace Dockerpilot\Command;
 
+use Exception;
 use Philo\Blade\Blade;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
@@ -28,46 +29,52 @@ class AppStartCommand extends DockerpilotCommand
     /**
      * Execute command.
      *
+     * @param InputInterface $input
+     * @param OutputInterface $output
      * @return void
      */
     protected function execute(InputInterface $input, OutputInterface $output)
     {
-        if ($this->userInput($input, $output)) {
-            if ($this->generateFiles($output)) {
-                if ($this->startApp($input, $output)) {
-                    $output->writeln('<info>App started!</info>');
-                }
-            }
+        try {
+            $this->userInput($input, $output);
+            $this->generateFiles($output);
+            $this->startApp($input, $output);
+            $output->writeln('<info>App started!</info>');
+        } catch (Exception $e) {
+            $output->writeln("<error>Failed to start application: \n" . $e->getMessage() . "</error>");
         }
     }
 
     /**
-     * Ask user for name and app.
+     * Ask user for the application.
      *
-     * @return bool
+     * @param InputInterface $input
+     * @param OutputInterface $output
+     * @return void
+     * @throws \Exception
      */
-    protected function userInput($input, $output)
+    protected function userInput(InputInterface $input, OutputInterface $output)
     {
-        return $this->askForApp($input, $output, 'Which app would you like to start?', 'stopped');
+        $this->askForApp($input, $output, 'Which app would you like to start?', 'stopped');
     }
 
     /**
      * Generate application files based on template.
      *
-     * @since 1.0.0
-     * @return bool
+     * @param $output
+     * @return void
      */
-    protected function generateFiles($output)
+    protected function generateFiles(OutputInterface $output)
     {
         // Get app environment
-        $env = sp_get_env($this->appDir);
+        $env = dp_get_env($this->appDir);
 
         if (isset($env['APP_STACK'])) {
             $output->writeln("Generating app configuration...");
 
             $bladeFolder = SERVER_STACK_DIR . '/' . $env['APP_STACK'] . '/config';
             $cache = SERVER_WORKDIR . '/cache';
-            $views = sp_path($bladeFolder);
+            $views = dp_path($bladeFolder);
 
             $generate = ['docker-compose' => 'yml', 'php' => 'ini', 'ssmtp' => 'conf'];
 
@@ -76,23 +83,24 @@ class AppStartCommand extends DockerpilotCommand
                 if (file_exists($filePath)) {
                     $blade = new Blade($views, $cache);
                     $content = $blade->view()->make($file, ['env' => $env])->render();
-                    $destFile = sp_path($this->appDir . '/' . $file . ($ext ? '.' . $ext : ''));
+                    $destFile = dp_path($this->appDir . '/' . $file . ($ext ? '.' . $ext : ''));
                     $writeFile = fopen($destFile, "w") or die("Unable to open file!");
                     fwrite($writeFile, $content);
                     fclose($writeFile);
                 }
             }
         }
-
-        return true;
     }
 
     /**
      * Starts the app.
      *
-     * @return bool
+     * @param InputInterface $input
+     * @param OutputInterface $output
+     * @return void
+     * @throws Exception
      */
-    protected function startApp($input, $output)
+    protected function startApp(InputInterface $input, OutputInterface $output)
     {
         $output->writeln("Starting app " . $this->app . ", please wait...");
         $process = new Process('cd ' . $this->appDir . ' && docker-compose up ' . ($input->getOption('build') ? '--build' : '') . ' -d');
@@ -100,8 +108,6 @@ class AppStartCommand extends DockerpilotCommand
 
         try {
             $process->mustRun();
-
-            // Run start command (if exists)
             if (file_exists($this->appDir . '/interface.php')) {
                 require_once $this->appDir . '/interface.php';
                 $appInterfaceClass = '\Dockerpilot\App\\' . ucfirst($this->app) . '\AppInterface';
@@ -109,13 +115,8 @@ class AppStartCommand extends DockerpilotCommand
                     $appInterfaceClass::start($output);
                 }
             }
-
-            return true;
         } catch (ProcessFailedException $e) {
-            $output->writeln("<error>" . $e->getMessage() . "</error>");
+            throw new Exception($e->getMessage());
         }
-
-        return false;
     }
-
 }

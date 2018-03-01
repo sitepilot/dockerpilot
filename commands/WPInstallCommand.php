@@ -2,6 +2,7 @@
 
 namespace Dockerpilot\Command;
 
+use Exception;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
@@ -26,35 +27,44 @@ class WPInstallCommand extends DockerpilotCommand
     /**
      * Execute command.
      *
+     * @param InputInterface $input
+     * @param OutputInterface $output
      * @return void
      */
     protected function execute(InputInterface $input, OutputInterface $output)
     {
-        if ($this->userInput($input, $output)) {
-            if ($this->installWP($output)) {
-                $output->writeln('<info>WordPress installed!</info>');
-            }
+        try {
+            $this->userInput($input, $output);
+            $this->installWP($output);
+            $output->writeln('<info>WordPress installed!</info>');
+        } catch (Exception $e) {
+            $output->writeln("<error>Failed to install WordPress: \n" . $e->getMessage() . "</error>");
         }
     }
 
     /**
-     * Ask user for name and app.
+     * Ask user for the application.
      *
-     * @return bool
+     * @param InputInterface $input
+     * @param OutputInterface $output
+     * @return void
+     * @throws Exception
      */
-    protected function userInput($input, $output)
+    protected function userInput(InputInterface $input, OutputInterface $output)
     {
-        return $this->askForApp($input, $output, 'In which app would you like to install WordPress?', 'running');
+        $this->askForApp($input, $output, 'In which app would you like to install WordPress?', 'running');
     }
 
     /**
      * Install WordPress in app directory.
      *
-     * @return bool
+     * @param OutputInterface $output
+     * @return void
+     * @throws Exception
      */
-    protected function installWP($output)
+    protected function installWP(OutputInterface $output)
     {
-        $env = sp_get_env($this->appDir);
+        $env = dp_get_env($this->appDir);
         $wpConfigFile = $this->appDir . '/app/wp-config.php';
 
         if (!file_exists($wpConfigFile)) {
@@ -65,7 +75,7 @@ class WPInstallCommand extends DockerpilotCommand
                 $dbUser = $env['APP_DB_USER'];
                 $dbPass = $env['APP_DB_USER_PASSWORD'];
                 $container = 'dp-app-' . $env['APP_NAME'];
-                $containerID = sp_get_container_id($container);
+                $containerID = dp_get_container_id($container);
 
                 if ($containerID) {
                     $command1 = "docker exec --user dockerpilot $container wp core download --path=/var/www/html";
@@ -81,19 +91,16 @@ class WPInstallCommand extends DockerpilotCommand
                         $output->writeln('Creating configuration...');
                         $process2->mustRun();
 
-                        sp_change_env_var($this->appDir, 'APP_TEMPLATE', 'wordpress');
-
-                        return true;
+                        dp_change_env_var($this->appDir, 'APP_TEMPLATE', 'wordpress');
                     } catch (ProcessFailedException $e) {
-                        $output->writeln("<error>" . $e->getMessage() . "</error>");
+                        throw new Exception($e->getMessage());
                     }
                 } else {
-                    $output->writeln("<error>Can't find application container ID.</error>");
+                    throw new Exception("Can't find application container ID.");
                 }
             }
         } else {
-            $output->writeln("<error>WordPress is already installed in app: $this->app.</error>");
+            throw new Exception("WordPress is already installed in app: $this->app.");
         }
-        return false;
     }
 }
