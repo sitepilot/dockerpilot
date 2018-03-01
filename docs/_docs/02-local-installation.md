@@ -2,6 +2,7 @@
 title: "Local Installation"
 permalink: /docs/local-installation/
 excerpt: "How to install Dockerpilot on your local machine."
+toc_label: "Content"
 toc: true
 ---
 

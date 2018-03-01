@@ -1,7 +1,8 @@
 ---
-title: "Local Installation"
+title: "Server Installation"
 permalink: /docs/server-installation/
 excerpt: "How to install Dockerpilot on a server."
+toc_label: "Content"
 toc: true
 ---
 Server installation is only tested on Ubuntu 16.04.

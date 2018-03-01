@@ -1,7 +1,8 @@
 ---
-title: "Quick-Start Guide"
+title: "Installation Guide"
 permalink: /docs/installation-guide/
 excerpt: "How to install and setup Dockerpilot."
+toc_label: "Content"
 toc: true
 ---
 Dockerpilot is a Docker based development and production server for web applications. 
