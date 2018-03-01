@@ -91,6 +91,7 @@ class AppBackupCommand extends DockerpilotCommand
         $process = new Process($command);
 
         try {
+            $process->setTimeout(3600);
             $process->mustRun();
             return true;
         } catch (ProcessFailedException $e) {
@@ -119,6 +120,7 @@ class AppBackupCommand extends DockerpilotCommand
             $process = new Process($command);
 
             try {
+                $process->setTimeout(3600);
                 $process->mustRun();
                 return true;
             } catch (ProcessFailedException $e) {
