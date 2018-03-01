@@ -1,6 +1,4 @@
-# Dockerpilot
-Test
-
-```
-test 123
-```
+---
+layout: home
+author_profile: true
+---

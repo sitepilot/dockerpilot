@@ -1,5 +1,8 @@
 remote_theme: "mmistakes/minimal-mistakes"
 repository: sitepilot/dockerpilot
+url: http://localhost:4000
+
+include: ["_pages"]
 
 plugins:
 - jekyll-github-metadata
