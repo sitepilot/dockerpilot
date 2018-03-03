@@ -102,12 +102,20 @@ class AppStartCommand extends DockerpilotCommand
      */
     protected function startApp(InputInterface $input, OutputInterface $output)
     {
-        $output->writeln("Starting app " . $this->app . ", please wait...");
-        $process = new Process('cd ' . $this->appDir . ' && docker-compose up ' . ($input->getOption('build') ? '--build' : '') . ' -d');
+        $process = new Process('cd ' . $this->appDir . ' && docker-compose up -d');
         $process->setTimeout(3600);
 
         try {
+            if ($input->getOption('build')) {
+                $output->writeln("Building app " . $this->app . ", please wait...");
+                $buildProcess = new Process('cd ' . $this->appDir . ' && docker-compose build --no-cache app');
+                $buildProcess->setTimeout(3600);
+                $buildProcess->mustRun();
+            }
+
+            $output->writeln("Starting app " . $this->app . ", please wait...");
             $process->mustRun();
+
             if (file_exists($this->appDir . '/interface.php')) {
                 require_once $this->appDir . '/interface.php';
                 $appInterfaceClass = '\Dockerpilot\App\\' . ucfirst($this->app) . '\AppInterface';
