@@ -2,4 +2,4 @@
 SCRIPTPATH="$( cd "$(dirname "$0")" ; pwd -P )"
 cd $SCRIPTPATH/../
 
-php dp $1
+php dp $@
