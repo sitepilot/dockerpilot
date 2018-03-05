@@ -1,21 +1,13 @@
-composer.lock
-
-cache/*
-!cache/.gitkeep
-
-apps/*
-!apps/.gitkeep
-
 *.log
 
 vendor
 config.php
-
-storage/backup/*
-!storage/backup/.gitkeep
 
 .idea
 .DS_Store
 
 docs/_site
 docs/.sass-cache
+
+apps/*
+!apps/.gitkeep
