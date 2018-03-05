@@ -8,7 +8,7 @@ toc: true
 Dockerpilot is a Docker based development and production server for web applications. 
 
 ## Requirements
-You need to install the following tools on your machine/server to use Dockerpilot.
+You need to install the following software on your machine/server to use Dockerpilot.
 * [Docker](https://www.docker.com/)
 * [Docker Compose](https://docs.docker.com/compose/)
 * [PHP >= 7.0](http://php.net)

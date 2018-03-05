@@ -2,7 +2,7 @@
 main:
   - title: "Docs"
     url: /docs/installation-guide/
-  - title: "Website"
+  - title: "Sitepilot"
     url: https://sitepilot.io
 
 # documentation links
@@ -15,5 +15,12 @@ docs:
         url: /docs/local-installation/
       - title: "Server installation"
         url: /docs/server-installation/
-      - title: "Run from everywhere"
-        url: /docs/run-from-everywhere/
+
+  - title: Commands
+    children:
+      - title: "Start server"
+        url: /docs/commands/start-server/
+      - title: "Stop server"
+        url: /docs/commands/stop-server/
+      - title: "Restart server"
+        url: /docs/commands/restart-server/
