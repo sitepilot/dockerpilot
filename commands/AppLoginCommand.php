@@ -64,7 +64,7 @@ class AppLoginCommand extends DockerpilotCommand
     protected function login(OutputInterface $output)
     {
         $container = 'dp-app-' . $this->app;
-        $command = "docker exec --user dockerpilot -it $container /bin/bash";
+        $command = "docker exec --user " . SERVER_USER . " -it $container /bin/bash";
 
         if (!dp_is_windows()) {
             $process = new Process($command);

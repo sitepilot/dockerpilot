@@ -89,7 +89,7 @@ class AppCmdCommand extends DockerpilotCommand
     protected function runCommand(OutputInterface $output)
     {
         $container = 'dp-app-' . $this->app;
-        $command = "docker exec --user dockerpilot -it $container bash -c \"" . $this->command . "\"";
+        $command = "docker exec --user " . SERVER_USER . " -it $container bash -c \"" . $this->command . "\"";
 
         if (!dp_is_windows()) {
             $process = new Process($command);

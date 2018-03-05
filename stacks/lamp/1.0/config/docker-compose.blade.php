@@ -3,7 +3,10 @@ version: '2.2'
 services:
 
   app:
-    build: ../../dockerfiles/php/7.1
+    build:
+      context: ../../dockerfiles/php/7.1/
+      args:
+        - USER={{ SERVER_USER }}
     container_name: dp-app-{{$env['APP_NAME']}}
     expose:
       - 80

@@ -7,6 +7,10 @@ if (!defined('SERVER_CONSOLE_NAME')) {
     define('SERVER_CONSOLE_NAME', "Dockerpilot");
 }
 
+if (!defined('SERVER_USER')) {
+    define('SERVER_USER', "dockerpilot");
+}
+
 if (!defined('SERVER_APP_DIR')) {
     define('SERVER_APP_DIR', SERVER_WORKDIR . '/apps');
 }

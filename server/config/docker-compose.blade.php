@@ -2,7 +2,10 @@ version: '3'
 services:
 
   nginx:
-    build: ../dockerfiles/nginx/
+    build:
+      context: ../dockerfiles/nginx/
+      args:
+      - USER={{ SERVER_USER }}
     labels:
         com.github.jrcs.letsencrypt_nginx_proxy_companion.nginx_proxy: "true"
     container_name: dp-nginx
@@ -48,7 +51,10 @@ services:
       NGINX_PROXY_CONTAINER: "dp-nginx"
 
   mysql:
-    build: ../dockerfiles/mysql/5.7
+    build:
+      context: ../dockerfiles/mysql/5.7/
+      args:
+        - USER={{ SERVER_USER }}
     container_name: dp-mysql
     ports:
       - "3306:3306"

@@ -1,9 +1,10 @@
 FROM atmoz/sftp:latest
 MAINTAINER Dockerpilot <support@sitepilot.io>
+ARG USER
 
 # Add Dockerpilot user and group
-RUN groupadd dockerpilot \
-    && useradd -g dockerpilot dockerpilot
+RUN groupadd $USER \
+    && useradd -g $USER $USER
 
 # Add iptables
 RUN apt-get update \

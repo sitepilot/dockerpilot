@@ -50,8 +50,8 @@ class ServerStopCommand extends Command
     protected function stopServer(OutputInterface $output)
     {
         $output->writeln("Stopping server, please wait...");
-        $process1 = new Process('cd server && docker-compose down');
-        $process2 = new Process('cd server && docker-compose rm');
+        $process1 = new Process('cd ' . SERVER_WORKDIR . '/server && docker-compose down');
+        $process2 = new Process('cd ' . SERVER_WORKDIR . '/server && docker-compose rm');
 
         try {
             $process1->mustRun();
