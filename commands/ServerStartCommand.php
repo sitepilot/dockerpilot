@@ -95,10 +95,17 @@ class ServerStartCommand extends Command
     protected function startServer(InputInterface $input, OutputInterface $output)
     {
         $output->writeln("Starting server, please wait...");
-        $process = new Process('cd server && docker-compose up ' . ($input->getOption('build') ? '--build' : '') . ' -d');
+        $process = new Process('cd ' . SERVER_WORKDIR . '/server && docker-compose up -d');
         $process->setTimeout(3600);
 
         try {
+            if ($input->getOption('build')) {
+                $output->writeln("Building server, please wait...");
+                $buildProcess = new Process('cd ' . SERVER_WORKDIR . '/server && docker-compose build --no-cache');
+                $buildProcess->setTimeout(3600);
+                $buildProcess->mustRun();
+            }
+
             $process->mustRun();
         } catch (ProcessFailedException $e) {
             throw new Exception($e->getMessage());
