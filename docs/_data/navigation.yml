@@ -15,13 +15,12 @@ docs:
         url: /docs/local-installation/
       - title: "Server installation"
         url: /docs/server-installation/
-      - title: "Run from everywhere"
-        url: /docs/run-from-everywhere/
+
   - title: Commands
     children:
       - title: "Start server"
-        url: /docs/commands/start-server
+        url: /docs/commands/start-server/
       - title: "Stop server"
-        url: /docs/commands/stop-server
+        url: /docs/commands/stop-server/
       - title: "Restart server"
-        url: /docs/commands/restart-server
+        url: /docs/commands/restart-server/
