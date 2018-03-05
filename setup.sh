@@ -39,3 +39,8 @@ else
     echo $LINE
 fi
 
+echo "Copying configuration..."
+cp defaults.php config.php
+
+echo "Installing packages..."
+composer install --no-dev
