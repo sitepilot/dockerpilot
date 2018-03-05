@@ -10,11 +10,11 @@ RUN groupadd $USER \
 
 # Install packages
 RUN apt-get update \
-    && apt-get install nano zlib1g-dev git ssmtp mailutils mysql-client -y
+    && apt-get install nano zlib1g-dev git ssmtp mailutils mysql-client libpng-dev -y
 
 # Install PHP extensions
 RUN apt-get update && apt-get install -y \
-    && docker-php-ext-install -j$(nproc) mysqli opcache zip pdo pdo_mysql
+    && docker-php-ext-install -j$(nproc) mysqli opcache zip pdo pdo_mysql gd
 
 # Install Composer
 RUN php -r "copy('https://getcomposer.org/installer', 'composer-setup.php');" \
