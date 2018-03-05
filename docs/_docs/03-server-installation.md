@@ -29,7 +29,7 @@ You have to run Dockerpilot as a non-root user to prevent file permission errors
 ### Install Dockerpilot
 1. Clone the latest version of Dockerpilot to the server:
 ```
-cd ~/ && git clone -b master https://github.com/sitepilot/dockerpilot.git dockerpilot && chmod +x dockerpilot/setup.sh && dockerpilot/setup.sh
+cd ~/ && git clone -b master https://github.com/sitepilot/dockerpilot.git dockerpilot && chmod +x dockerpilot/source/setup.sh && dockerpilot/source/setup.sh
 ```
 1. Navigate into the Dockerpilot folder: `cd ~/dockerpilot`.
 1. Edit `config.php`, example: `nano config.php`.
