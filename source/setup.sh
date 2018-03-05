@@ -2,6 +2,8 @@
 SCRIPTPATH="$( cd "$(dirname "$0")" ; pwd -P )"
 cd $SCRIPTPATH
 
+chmod +x $SCRIPTPATH/bin/dp
+
 echo "Adding Dockerpilot to your bash profile..."
 
 LINE="export PATH=$SCRIPTPATH/bin:\$PATH"
