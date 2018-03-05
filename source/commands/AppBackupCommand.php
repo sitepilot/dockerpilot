@@ -95,7 +95,7 @@ class AppBackupCommand extends DockerpilotCommand
 
         try {
             $process->setTimeout(3600);
-            $process->mustRun();
+            $process->run();
         } catch (ProcessFailedException $e) {
             throw new Exception($e->getMessage());
         }
