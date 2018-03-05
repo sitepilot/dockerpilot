@@ -72,10 +72,10 @@ class WPUpdateCommand extends DockerpilotCommand
             $containerID = dp_get_container_id($container);
 
             if ($containerID) {
-                $command1 = "docker exec --user dockerpilot $container wp core update --path=/var/www/html";
+                $command1 = "docker exec --user " . SERVER_USER . " $container wp core update --path=/var/www/html";
                 $process1 = new Process($command1);
 
-                $command2 = "docker exec --user dockerpilot $container wp plugin list --format=json --path=/var/www/html";
+                $command2 = "docker exec --user " . SERVER_USER . " $container wp plugin list --format=json --path=/var/www/html";
                 $process2 = new Process($command2);
 
                 try {
@@ -99,7 +99,7 @@ class WPUpdateCommand extends DockerpilotCommand
                             }
                             if (!empty($updateList)) {
                                 $output->writeln('Updating plugins:' . $updateList);
-                                $command3 = "docker exec --user dockerpilot $container wp plugin update $updateList --path=/var/www/html";
+                                $command3 = "docker exec --user " . SERVER_USER . " $container wp plugin update $updateList --path=/var/www/html";
                                 $process3 = new Process($command3);
                                 $process3->mustRun();
                                 $output->writeln(trim($process3->getOutput()));

@@ -1,9 +1,12 @@
 FROM mysql:5.7
 MAINTAINER Dockerpilot <support@sitepilot.io>
+ARG USER
 
 # Set permissions
-RUN groupadd dockerpilot \
-    && useradd -g dockerpilot dockerpilot
+RUN groupadd $USER \
+    && useradd -g $USER $USER
 
-# Copy Dockerpilot config
-COPY dockerpilot.cnf etc/mysql/conf.d/
+# Run mysql as dockerpilot user
+RUN touch /etc/mysql/conf.d/dockerpilot.cnf
+RUN echo "[mysqld]" >> /etc/mysql/conf.d/dockerpilot.cnf
+RUN echo "user=$USER" >> /etc/mysql/conf.d/dockerpilot.cnf

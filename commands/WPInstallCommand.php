@@ -78,8 +78,8 @@ class WPInstallCommand extends DockerpilotCommand
                 $containerID = dp_get_container_id($container);
 
                 if ($containerID) {
-                    $command1 = "docker exec --user dockerpilot $container wp core download --path=/var/www/html";
-                    $command2 = 'docker exec --user dockerpilot ' . $container . ' wp config create --path=/var/www/html --skip-check --dbname=' . $dbName . ' --dbhost=' . $dbHost . ' --dbuser=' . $dbUser . ' --dbpass=' . $dbPass . ' --dbprefix=sp_';
+                    $command1 = "docker exec --user " . SERVER_USER . " $container wp core download --path=/var/www/html";
+                    $command2 = 'docker exec --user ' . SERVER_USER . ' ' . $container . ' wp config create --path=/var/www/html --skip-check --dbname=' . $dbName . ' --dbhost=' . $dbHost . ' --dbuser=' . $dbUser . ' --dbpass=' . $dbPass . ' --dbprefix=sp_';
 
                     $process1 = new Process($command1);
                     $process2 = new Process($command2);

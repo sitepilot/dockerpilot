@@ -1,11 +1,12 @@
 FROM php:7.1-apache
 MAINTAINER Dockerpilot <support@sitepilot.io>
+ARG USER
 
 COPY php.ini /usr/local/etc/php/
 
 # Set permissions
-RUN groupadd dockerpilot \
-    && useradd -g dockerpilot dockerpilot
+RUN groupadd $USER \
+    && useradd -g $USER $USER
 
 # Install packages
 RUN apt-get update \
@@ -28,8 +29,8 @@ RUN cd ~/ && curl -O https://raw.githubusercontent.com/wp-cli/builds/gh-pages/ph
     && cd ~/ && mv wp-cli.phar /usr/local/bin/wp
 
 # Run apache as dockerpilot user
-RUN echo export APACHE_RUN_USER=dockerpilot >> /etc/apache2/envvars
-RUN echo export APACHE_RUN_GROUP=dockerpilot >> /etc/apache2/envvars
+RUN echo export APACHE_RUN_USER=$USER >> /etc/apache2/envvars
+RUN echo export APACHE_RUN_GROUP=$USER >> /etc/apache2/envvars
 
 # Enable Apache rewrite module
 RUN a2enmod rewrite
