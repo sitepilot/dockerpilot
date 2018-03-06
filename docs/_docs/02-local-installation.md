@@ -7,11 +7,12 @@ toc: true
 ---
 
 Clone the repository to your computer to run Dockerpilot on your local machine:
-1. Install [required software](/docs/installation-guide/) on your local machine.
-1. Clone the repository: `git clone -b master git@github.com:sitepilot/dockerpilot.git dockerpilot`
-1. Navigate into the Dockerpilot folder: `cd dockerpilot`
-1. Run `source/setup.sh` on Linux or `source/setup.bat` on Windows.
-1. Open a new Terminal or Command Prompt and type `dp` to see a list of commands.
+1. Install [required software](/docs/installation-guide/) on your machine.
+1. Open a terminal or Git Bash on Windows.
+1. Clone the repository: `git clone -b master https://github.com/sitepilot/dockerpilot.git dockerpilot && chmod +x source/setup.sh`
+1. Navigate into the Dockerpilot folder: `cd dockerpilot`.
+1. Run `source/setup.sh`.
+1. Open a new Terminal or Git Bash and type `dp` to see a list of commands.
 
 ### Update hosts file
 You have to update your hosts file for each application you create.

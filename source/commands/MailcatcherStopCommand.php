@@ -50,8 +50,8 @@ class MailcatcherStopCommand extends Command
     protected function stopMailcatcher(OutputInterface $output)
     {
         $output->writeln("Stopping mailcatcher, please wait...");
-        $process1 = new Process('cd ' . SERVER_WORKDIR . '/tools/mailcatcher && docker-compose down');
-        $process2 = new Process('cd ' . SERVER_WORKDIR . '/tools/mailcatcher && docker-compose rm');
+        $process1 = new Process('cd ' . SERVER_WORKDIR . '/server/mailcatcher && docker-compose down');
+        $process2 = new Process('cd ' . SERVER_WORKDIR . '/server/mailcatcher && docker-compose rm');
 
         try {
             $process1->mustRun();

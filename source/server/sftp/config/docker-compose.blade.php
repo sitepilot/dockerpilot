@@ -7,10 +7,10 @@ services:
     restart: always
     volumes:
 {{ $sftpAppVolumes }}
-        - ./users.conf:/etc/sftp/users.conf:ro
-        - {{ SERVER_WORKDIR }}/config/fail2ban/jail.local:/etc/fail2ban/jail.local
-        - {{ SERVER_WORKDIR }}/config/fail2ban/fail2ban.local:/etc/fail2ban/fail2ban.local
-        - {{ SERVER_WORKDIR }}/config/fail2ban/docker-sftp.conf:/etc/fail2ban/filter.d/docker-sftp.conf
+        - {{SERVER_PATH}}/source/server/sftp/users.conf:/etc/sftp/users.conf:ro
+        - {{SERVER_PATH}}/source/config/fail2ban/jail.local:/etc/fail2ban/jail.local
+        - {{SERVER_PATH}}/source/config/fail2ban/fail2ban.local:/etc/fail2ban/fail2ban.local
+        - {{SERVER_PATH}}/source/config/fail2ban/docker-sftp.conf:/etc/fail2ban/filter.d/docker-sftp.conf
         {{ ! dp_is_windows() ? "- /var/log/syslog:/var/log/dockerpilot_syslog" : "" }}
     ports:
         - "2222:22"

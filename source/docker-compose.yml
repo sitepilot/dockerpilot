@@ -8,6 +8,7 @@ services:
         - USER=dockerpilot
     container_name: dp-dockerpilot
     restart: always
+    privileged: true
     volumes:
       - ../:/dockerpilot
       - /var/run/docker.sock:/var/run/docker.sock

@@ -50,8 +50,8 @@ class AdminerStopCommand extends Command
     protected function stopAdminer(OutputInterface $output)
     {
         $output->writeln("Stopping Adminer, please wait...");
-        $process1 = new Process('cd ' . SERVER_WORKDIR . '/tools/adminer && docker-compose down');
-        $process2 = new Process('cd ' . SERVER_WORKDIR . '/tools/adminer && docker-compose rm');
+        $process1 = new Process('cd ' . SERVER_WORKDIR . '/server/adminer && docker-compose down');
+        $process2 = new Process('cd ' . SERVER_WORKDIR . '/server/adminer && docker-compose rm');
 
         try {
             $process1->mustRun();

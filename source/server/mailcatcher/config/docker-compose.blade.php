@@ -1,13 +1,15 @@
 version: '3'
 services:
 
-  mailcatcher:
-     image: schickling/mailcatcher
-     container_name: dp-mailcatcher
-     restart: always
-     ports:
+  app:
+    image: schickling/mailcatcher
+    container_name: dp-mailcatcher
+    expose:
+      - 80
+    restart: always
+    ports:
        - "1025:1025"
-     environment:
+    environment:
        MAILCATCHER_PORT: 1025
        VIRTUAL_HOST: mailcatcher.local
        VIRTUAL_PORT: 1080

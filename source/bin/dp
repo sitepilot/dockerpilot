@@ -2,4 +2,9 @@
 SCRIPTPATH="$( cd "$(dirname "$0")" ; pwd -P )"
 cd $SCRIPTPATH/../
 
-php dockerpilot.php $@
+if [ ! "$(docker ps -q -f name=dp-dockerpilot)" ]; then
+    echo "Starting Dockerpilot..."
+    docker run --name dp-dockerpilot --restart always -d -v /var/run/docker.sock:/var/run/docker.sock -v $PWD/../:/dockerpilot dockerpilot
+fi
+
+docker exec -it dp-dockerpilot dp $@

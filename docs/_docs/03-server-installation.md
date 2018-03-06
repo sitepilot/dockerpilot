@@ -13,19 +13,32 @@ You have to run Dockerpilot as a non-root user to prevent file permission errors
 1. Give user admin privileges `usermod -aG sudo [username]`.
 1. Login as the new user `su - [username]`.
 
-### Install PHP 7.1
-1. `sudo apt-get install -y python-software-properties`
-1. `sudo add-apt-repository -y ppa:ondrej/php`
-1. `sudo apt-get update -y`
-1. `apt-cache pkgnames | grep php7.1`
-1. Install the packages you need (e.g. `sudo apt-get install php7.1 php7.1-cli php7.1-curl php7.1-xml php7.1-mbstring php7.1-zip`)
-1. Remove preinstalled Apache (otherwise Dockerpilot can't start): `sudo apt-get autoremove && sudo apt-get remove apache2*`.
-
-### Install required packages
-1. [Install Docker on Ubuntu 16.04](https://www.digitalocean.com/community/tutorials/how-to-install-and-use-docker-on-ubuntu-16-04)
-1. [Install Docker Compose on Ubuntu 16.04](https://www.digitalocean.com/community/tutorials/how-to-install-docker-compose-on-ubuntu-16-04)
-1. [Install Composer on Ubuntu 16.04](https://www.digitalocean.com/community/tutorials/how-to-install-and-use-composer-on-ubuntu-16-04)
-
+### Install Docker
+1. First, install required software packages: 
+   ```
+   sudo apt-get install -y software-properties-common apt-transport-https curl git
+   ```
+1. Add the GPG key for the official Docker repository to the system:
+   ```
+   curl -fsSL https://download.docker.com/linux/ubuntu/gpg | sudo apt-key add -`.
+   ```
+1. Add the Docker repository to APT sources: 
+   ```
+   sudo add-apt-repository "deb [arch=amd64] https://download.docker.com/linux/ubuntu $(lsb_release -cs) stable"
+   ```
+1. Next, update the package database with the Docker packages from the newly added repo: 
+   ```
+   sudo apt-get update
+   ```
+1. Install Docker: 
+   ```
+   sudo apt-get install -y docker-ce`
+   ```
+1. Finally, avoid typing sudo whenever you have to run the docker command: 
+   ```
+   sudo usermod -aG docker ${USER}`.
+   ```
+   
 ### Install Dockerpilot
 1. Clone the latest version of Dockerpilot to the server:
 ```

@@ -15,13 +15,13 @@ services:
       - "443:443"
     volumes:
       - dockerpilot-data:/etc/nginx/conf.d
-      - ../../data/vhost.d:/etc/nginx/vhost.d
-      - ../../data/html:/usr/share/nginx/html
-      - ../../data/certs:/etc/nginx/certs:ro
-      - ../../data/logs/nginx:/var/log/nginx:cached
-      - ./nginx.conf:/etc/nginx/nginx.conf
-      - ./proxy.conf:/etc/nginx/conf.d/proxy.conf
-      - ../../apps:/apps
+      - {{SERVER_PATH}}/data/vhost.d:/etc/nginx/vhost.d
+      - {{SERVER_PATH}}/data/html:/usr/share/nginx/html
+      - {{SERVER_PATH}}/data/certs:/etc/nginx/certs:ro
+      - {{SERVER_PATH}}/data/logs/nginx:/var/log/nginx:cached
+      - {{SERVER_PATH}}/source/server/nginx.conf:/etc/nginx/nginx.conf
+      - {{SERVER_PATH}}/source/server//proxy.conf:/etc/nginx/conf.d/proxy.conf
+      - {{SERVER_PATH}}/apps:/apps
 
   nginx-gen:
     image: jwilder/docker-gen
@@ -30,11 +30,11 @@ services:
     restart: always
     volumes:
       - dockerpilot-data:/etc/nginx/conf.d
-      - ../../data/vhost.d:/etc/nginx/vhost.d
-      - ../../data/html:/usr/share/nginx/html
-      - ../../data/certs:/etc/nginx/certs:ro
+      - {{SERVER_PATH}}/data/vhost.d:/etc/nginx/vhost.d
+      - {{SERVER_PATH}}/data/html:/usr/share/nginx/html
+      - {{SERVER_PATH}}/data/certs:/etc/nginx/certs:ro
       - /var/run/docker.sock:/tmp/docker.sock:ro
-      - ./nginx.tmpl:/etc/docker-gen/templates/nginx.tmpl:ro
+      - {{SERVER_PATH}}/source/server/nginx.tmpl:/etc/docker-gen/templates/nginx.tmpl:ro
 
   nginx-letsencrypt:
     image: jrcs/letsencrypt-nginx-proxy-companion
@@ -42,9 +42,9 @@ services:
     restart: always
     volumes:
       - dockerpilot-data:/etc/nginx/conf.d
-      - ../../data/vhost.d:/etc/nginx/vhost.d
-      - ../../data/html:/usr/share/nginx/html
-      - ../../data/certs:/etc/nginx/certs:rw
+      - {{SERVER_PATH}}/data/vhost.d:/etc/nginx/vhost.d
+      - {{SERVER_PATH}}/data/html:/usr/share/nginx/html
+      - {{SERVER_PATH}}/data/certs:/etc/nginx/certs:rw
       - /var/run/docker.sock:/var/run/docker.sock:ro
     environment:
       NGINX_DOCKER_GEN_CONTAINER: "dp-nginx-gen"
@@ -59,9 +59,9 @@ services:
     ports:
       - "3306:3306"
     volumes:
-      - ../../data/mysql:/var/lib/mysql:cached
-      - {{ SERVER_BACKUP_DIR }}:/dockerpilot/backups
-      - ../../apps:/dockerpilot/apps
+      - {{SERVER_PATH}}/data/mysql:/var/lib/mysql:cached
+      - {{SERVER_PATH}}/data/backups:/dockerpilot/backups
+      - {{SERVER_PATH}}/apps:/dockerpilot/apps
     restart: always
     environment:
       MYSQL_ROOT_PASSWORD: {{ MYSQL_ROOT_PASSWORD }}

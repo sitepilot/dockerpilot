@@ -1,0 +1,3 @@
+#!/bin/bash
+cd /dockerpilot/source
+php dockerpilot.php $@

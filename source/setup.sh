@@ -16,7 +16,6 @@ then
     else
       echo $LINE >> ~/.bash_profile
     fi
-    echo "Done!"
 elif test -e ~/.bash_login
 then
     if grep -Fxq "$LINE" ~/.bash_login
@@ -25,7 +24,6 @@ then
     else
         echo $LINE >> ~/.bash_profile
     fi
-    echo "Done!"
 elif test -e ~/.profile
 then
     if grep -Fxq "$LINE" ~/.profile
@@ -34,21 +32,35 @@ then
     else
       echo $LINE >> ~/.bash_profile
     fi
-    echo "Done!"
 else
     echo 'No Bash profile files have been found.'
     echo 'Please create one and add the following line to that file:'
     echo $LINE
 fi
 
+if [ "$(docker ps -q -f name=dp-dockerpilot)" ]; then
+    echo "Stopping and removing Dockerpilot container..."
+    docker stop dp-dockerpilot
+    docker rm dp-dockerpilot
+fi
+
 echo "Building dockerpilot container..."
-docker-compose build
+docker build dockerfiles/dockerpilot -t dockerpilot --build-arg USER=dockerpilot -t dockerpilot --force-rm
 
 echo "Starting dockerpilot..."
-docker-compose up -d
+docker run --name dp-dockerpilot --restart always -d -v /var/run/docker.sock:/var/run/docker.sock -v $PWD/../:/dockerpilot dockerpilot
 
-echo "Copying configuration..."
-docker exec -it dp-dockerpilot -c "cp /dockerpilot/source/config-example.php /dockerpilot/config.php";
+if [ ! -f ../config.php ]; then
+    echo "Copying configuration..."
+    docker exec -i dp-dockerpilot bash -c "cd source && cp -n config-example.php ../config.php"
+
+    cd ../
+    echo "Saving server path..."
+    echo "// Dockerpilot server path (for mounting volumes)" >> config.php
+    echo "define('SERVER_PATH', '$PWD');" >> config.php
+fi
 
 echo "Installing packages..."
-docker exec -it dp-dockerpilot -c "composer install --no-dev";
+docker exec -it dp-dockerpilot composer install --no-dev
+
+echo "Dockerpilot is installed, open a new terminal and type 'dp' to see a list of commands."
