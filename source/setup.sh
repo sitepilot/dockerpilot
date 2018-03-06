@@ -41,10 +41,14 @@ else
     echo $LINE
 fi
 
-cd ../
+echo "Building dockerpilot container..."
+docker-compose build
+
+echo "Starting dockerpilot..."
+docker-compose up -d
 
 echo "Copying configuration..."
-cp source/config-example.php config.php
+docker exec -it dp-dockerpilot -c "cp /dockerpilot/source/config-example.php /dockerpilot/config.php";
 
 echo "Installing packages..."
-composer install --no-dev
+docker exec -it dp-dockerpilot -c "composer install --no-dev";

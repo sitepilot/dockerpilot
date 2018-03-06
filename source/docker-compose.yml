@@ -1,0 +1,18 @@
+version: '3'
+services:
+
+  dockerpilot:
+    build:
+      context: dockerfiles/dockerpilot/
+      args:
+        - USER=dockerpilot
+    container_name: dp-dockerpilot
+    restart: always
+    volumes:
+      - ../:/dockerpilot
+      - /var/run/docker.sock:/var/run/docker.sock
+
+networks:
+  default:
+    external:
+      name: dockerpilot
