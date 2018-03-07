@@ -8,7 +8,8 @@ toc: true
 
 Clone the repository to your computer to run Dockerpilot on your local machine:
 1. Install [required software](/docs/installation-guide/) on your local machine.
-1. Clone the repository: `git clone -b master git@github.com:sitepilot/dockerpilot.git dockerpilot`
+1. Open a terminal or command promt on Windows.
+1. Clone the repository: `git clone -b master https://github.com/sitepilot/dockerpilot.git dockerpilot`
 1. Navigate into the Dockerpilot folder: `cd dockerpilot`
 1. Run `source/setup.sh` on Linux or `source/setup.bat` on Windows.
 1. Open a new Terminal or Command Prompt and type `dp` to see a list of commands.
