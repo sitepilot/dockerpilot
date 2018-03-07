@@ -78,6 +78,10 @@ class AppStartCommand extends DockerpilotCommand
 
             $generate = ['docker-compose' => 'yml', 'php' => 'ini', 'ssmtp' => 'conf'];
 
+            if(SERVER_DOCKER_SYNC) {
+                $generate['docker-sync'] = 'yml';
+            }
+
             foreach ($generate as $file => $ext) {
                 $filePath = $bladeFolder . '/' . $file . '.blade.php';
                 if (file_exists($filePath)) {
@@ -106,11 +110,19 @@ class AppStartCommand extends DockerpilotCommand
         $process->setTimeout(3600);
 
         try {
+
             if ($input->getOption('build')) {
                 $output->writeln("Building app " . $this->app . ", please wait...");
                 $buildProcess = new Process('cd ' . $this->appDir . ' && docker-compose build --no-cache app');
                 $buildProcess->setTimeout(3600);
                 $buildProcess->mustRun();
+            }
+
+            if(SERVER_DOCKER_SYNC) {
+                $output->writeln("Starting docker-sync...");
+                $syncProcess = new Process('cd ' . $this->appDir . ' && docker-sync start');
+                $syncProcess->setTimeout(3600);
+                $syncProcess->mustRun();
             }
 
             $output->writeln("Starting app " . $this->app . ", please wait...");

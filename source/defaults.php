@@ -34,3 +34,7 @@ if (!defined('SERVER_BACKUP_TIMESTAMP')) {
 if (!defined('SERVER_BACKUP_KEEP_DAYS')) {
     define('SERVER_BACKUP_KEEP_DAYS', 14);
 }
+
+if (!defined('SERVER_DOCKER_SYNC')) {
+    define('SERVER_DOCKER_SYNC', false);
+}

@@ -75,6 +75,14 @@ class AppStopCommand extends DockerpilotCommand
 
         $process = new Process('cd ' . $this->appDir . ' && docker-compose down');
         try {
+            if(SERVER_DOCKER_SYNC) {
+                $output->writeln("Stopping docker-sync...");
+                $syncProcess1 = new Process('cd ' . $this->appDir . ' && docker-sync stop');
+                $syncProcess2 = new Process('cd ' . $this->appDir . ' && docker rm dp-app-' . $this->app . '-sync');
+                $syncProcess1->mustRun();
+                $syncProcess2->mustRun();
+            }
+
             $process->mustRun();
             $process = new Process('cd ' . $this->appDir . ' && docker-compose rm');
             try {

@@ -13,3 +13,6 @@ define("MYSQL_ROOT_PASSWORD", "secret");
 
 // How many days should Dockerpilot keep backups
 define('SERVER_BACKUP_KEEP_DAYS', 14);
+
+// Use Docker Sync
+define('SERVER_DOCKER_SYNC', false);

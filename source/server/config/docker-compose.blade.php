@@ -5,7 +5,7 @@ services:
     build:
       context: ../dockerfiles/nginx/
       args:
-      - USER={{ SERVER_USER }}
+        - USER={{ SERVER_USER }}
     labels:
         com.github.jrcs.letsencrypt_nginx_proxy_companion.nginx_proxy: "true"
     container_name: dp-nginx
