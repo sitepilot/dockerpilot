@@ -11,8 +11,8 @@ if not exist config.php (
     copy %cd%\source\config-example.php config.php
 )
 
-echo Installing packages...
-composer install --no-dev
+echo "Installing packages..."
+docker run --rm --interactive --tty --volume %cd%:/app composer install --no-dev
 
 echo Done!
 pause

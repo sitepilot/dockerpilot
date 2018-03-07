@@ -5,7 +5,6 @@ cd $SCRIPTPATH
 chmod +x $SCRIPTPATH/bin/dp
 
 echo "Adding Dockerpilot to your bash profile..."
-
 LINE="export PATH=$SCRIPTPATH/bin:\$PATH"
 
 if test -e ~/.bash_profile
@@ -42,9 +41,9 @@ else
 fi
 
 cd ../
-
 echo "Copying configuration..."
-cp source/config-example.php config.php
+cp -n source/config-example.php config.php
 
 echo "Installing packages..."
-composer install --no-dev
+docker run --rm --interactive --tty --volume $PWD:/app composer install --no-dev
+
