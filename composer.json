@@ -1,4 +1,9 @@
 {
+    "config": {
+        "platform": {
+            "php": "7.0.0"
+        }
+    },
     "require": {
         "symfony/console": "3.3.*",
         "symfony/process": "3.3.*",
