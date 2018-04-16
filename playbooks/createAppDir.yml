@@ -1,0 +1,8 @@
+- hosts: '{{ host }}'
+  tasks:
+  - name: Make sure the application data and logs directories exist
+    file:
+      path: "{{ app_dir }}/{{ item }}"
+      recurse: yes
+      state: directory
+    with_items: ["data", "logs"]
