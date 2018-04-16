@@ -7,6 +7,7 @@ server:
   useAnsible: true
 
 apps:
+  configPath: "/data/config"
   storagePath: "/data/apps"
 
 mysql:
