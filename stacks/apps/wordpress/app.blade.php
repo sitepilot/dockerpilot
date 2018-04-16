@@ -12,7 +12,8 @@ services:
        APP_ADMIN_USER: {{ $app['admin']['user'] }}
        APP_ADMIN_EMAIL: {{ $app['admin']['email'] }}
      volumes:
-       - {{ $apps['storagePath'] }}:/var/www/html
+       - {{ $apps['storagePath'] }}/{{ $app['name'] }}/data:/var/www/html
+       - {{ $apps['storagePath'] }}/{{ $app['name'] }}/logs:/var/www/logs
      deploy:
        labels:
          - com.df.notify=true
