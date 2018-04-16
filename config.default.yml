@@ -26,8 +26,8 @@ mail:
   relayTLS: yes
 
 adminer:
-  httpsOnly: true
   domain: adminer.getsitepilot.local
+  httpsOnly: true
 
 portainer:
   domain: manage.getsitepilot.local
