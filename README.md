@@ -8,7 +8,7 @@ Dockerpilot will start and configure a HaProxy container which will redirect tra
 #### dp mysql:(start|stop)
 Dockerpilot will start a MySQL server on the master node.
 
-### dp mail:(start|stop)
+#### dp mail:(start|stop)
 Dockerpilot will start a mail relay server so that your apps can send e-mail through for example Mailgun.
 
 #### dp adminer:(start|stop)
