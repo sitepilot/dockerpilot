@@ -9,5 +9,6 @@ stacks/*/config/*
 !stacks/apps/*/config/.gitkeep
 !stacks/*/config/.gitkeep
 
+.DS_Store
 
 vendor
