@@ -9,6 +9,7 @@ services:
        APP_NAME: {{ $app['name'] }}
        APP_DB_PASS: {{ $app['database']['password'] }}
        APP_DB_HOST: {{ $app['database']['host'] }}
+       APP_DOMAIN: {{ $app['name'] }}.{{ $server['appDomain'] }}
        APP_ADMIN_USER: {{ $app['admin']['user'] }}
        APP_ADMIN_EMAIL: {{ $app['admin']['email'] }}
      volumes:
