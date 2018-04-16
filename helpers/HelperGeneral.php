@@ -53,6 +53,34 @@ function dp_get_config($key) {
 }
 
 /**
+ * Returns the server configuration.
+ */
+function dp_get_app_config($appDir, $key = 'all') {
+    $configFile = $appDir . '/config.yml';
+    if(file_exists($configFile)) {
+        $config = Symfony\Component\Yaml\Yaml::parseFile($configFile);
+    } else {
+        $config = array();
+    }
+
+    if(isset($config['stack'])) {
+        $defaultConfigFile = SERVER_WORKDIR . '/stacks/' . $config['stack'] . '/config.default.yml';
+        if(file_exists($defaultConfigFile)) {
+            $default = Symfony\Component\Yaml\Yaml::parseFile($defaultConfigFile);
+            $config = array_replace_recursive($default, $config);
+            if(! empty($key) && isset($config[$key])) {
+                return $config[$key];
+            } elseif ($key == 'all') {
+                return $config;
+            }
+        }
+    }
+
+    return [];
+}
+
+
+/**
  * Transform a path into a Windows compatible path.
  *
  * @param $path
@@ -104,14 +132,12 @@ function dp_random_password($length = 10)
  */
 function dp_get_apps()
 {
-    $appsDir = SERVER_WORKDIR . '/apps';
-    $dirs = array_filter(glob($appsDir . '/*'), 'is_dir');
+    $appsConfig = dp_get_config('apps');
+    $dirs = array_filter(glob( $appsConfig['configPath'] . '/*'), 'is_dir');
     $apps = array();
-
     foreach ($dirs as $dir) {
-        $apps[dp_path($dir)] = str_replace($appsDir . '/', '', $dir);
+        $apps[dp_path($dir)] = str_replace($appsConfig['configPath'] . '/', '', $dir);
     }
-
     if (count($apps) > 0) {
         return $apps;
     }
