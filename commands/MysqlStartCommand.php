@@ -44,32 +44,20 @@ class MysqlStartCommand extends DockerpilotCommand
         }
     }
 
+    /**
+     * @param OutputInterface $output
+     * @throws Exception
+     */
     protected function createPaths(OutputInterface $output) {
         $output->writeln("Creating MySQL storage path...");
-
-        $server = dp_get_config('server');
         $mysql = dp_get_config('mysql');
 
-        if($server['useAnsible'] == 'true') {
-            // Create mysql folder on every host
-            $process = new Process('ansible dockerpilot -m file -a "path=' . $mysql['storagePath'] . ' state=directory"');
-            $process->setTimeout(3600);
-
-            try {
-                $process->mustRun();
-                echo $process->getOutput();
-            } catch (ProcessFailedException $e) {
-                throw new Exception($e->getMessage());
+        try {
+            if (!file_exists(dp_path($mysql['storagePath']))) {
+                mkdir(dp_path($mysql['storagePath']), 0750, true);
             }
-        } else {
-            // Create mysql folder
-            try {
-                if (!file_exists(dp_path($mysql['storagePath']))) {
-                    mkdir(dp_path($mysql['storagePath']), 0750, true);
-                }
-            } catch (ProcessFailedException $e) {
-                throw new Exception($e->getMessage());
-            }
+        } catch (ProcessFailedException $e) {
+            throw new Exception($e->getMessage());
         }
     }
 
