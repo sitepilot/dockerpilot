@@ -69,6 +69,7 @@ class AppStartCommand extends DockerpilotCommand
         // Get app environment
         $appConfig = dp_get_app_config($this->appDir, 'all');
         $appsConfig = dp_get_config('apps');
+        $serverConfig = dp_get_config('server');
 
         if (isset($appConfig['name']) && isset($appConfig['stack'])) {
             $output->writeln("Generating app configuration...");
@@ -80,7 +81,7 @@ class AppStartCommand extends DockerpilotCommand
             $filePath = $bladeFolder . '/app.blade.php';
             if (file_exists($filePath)) {
                 $blade = new Blade($views, $cache);
-                $content = $blade->view()->make('app', ['app' => $appConfig, 'apps' => $appsConfig])->render();
+                $content = $blade->view()->make('app', ['app' => $appConfig, 'apps' => $appsConfig, 'server' => $serverConfig])->render();
                 $destFile = dp_path($this->appDir . '/app.yml');
                 $writeFile = fopen($destFile, "w") or die("Unable to open file!");
                 fwrite($writeFile, $content);
