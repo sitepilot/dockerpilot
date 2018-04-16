@@ -63,7 +63,7 @@ class DockerpilotCommand extends Command
 
         try {
             $process->mustRun();
-            $nodes = explode('\n', $process->getOutput() );
+            $nodes = explode(PHP_EOL, $process->getOutput() );
             $return = [];
             foreach($nodes as $node) {
                 $process = new Process("docker node inspect $node");
