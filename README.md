@@ -6,10 +6,10 @@ Dockerpilot is a Docker based development/production server for web applications
 Dockerpilot will start and configure a HaProxy container which will redirect traffic to the right application based on the application domain name.
 
 #### dp mysql:(start|stop)
-Dockerpilot will start a MySQL server on the master node.
+Dockerpilot will start a MySQL server on the manager node.
 
 #### dp mail:(start|stop)
-Dockerpilot will start a mail relay server so that your apps can send e-mail through for example Mailgun.
+Dockerpilot will start a mail relay server so that your apps can send email through, for example, Mailgun.
 
 #### dp adminer:(start|stop)
 Dockerpilot will start a simple database management app (Adminer).
