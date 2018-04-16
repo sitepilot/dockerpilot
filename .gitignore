@@ -1,13 +1,13 @@
-*.log
+config.yml
+.idea
+
+data/cache/*
+!data/cache/.gitkeep
+
+stacks/apps/*/config/*
+stacks/*/config/*
+!stacks/apps/*/config/.gitkeep
+!stacks/*/config/.gitkeep
+
 
 vendor
-config.php
-
-.idea
-.DS_Store
-
-docs/_site
-docs/.sass-cache
-
-apps/*
-!apps/.gitkeep

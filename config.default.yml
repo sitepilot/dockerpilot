@@ -1,0 +1,32 @@
+server:
+  name: "node1"
+  environment: "local"
+  proxyImage: "dockerflow/docker-flow-proxy:latest"
+  cliName: "Dockerpilot"
+  appDomain: getsitepilot.com
+  useAnsible: true
+
+apps:
+  storagePath: "/data/apps"
+
+mysql:
+  defaultDatabase: "server"
+  rootPassSecret: "db-root-pass"
+  userPassSecret: "db-user-pass"
+  userNameSecret: "db-user-name"
+  storagePath: "/data/mysql"
+
+mail:
+  hostName: node.sitepilot.io
+  relayHost: smtp.mailgun.org
+  relayPort: 587
+  relayLogin: postmaster@sitepilot.io
+  relayPass: secret
+  relayTLS: yes
+
+adminer:
+  domain: adminer.getsitepilot.local
+
+portainer:
+  domain: manage.getsitepilot.local
+  storagePath: "/data/portainer"

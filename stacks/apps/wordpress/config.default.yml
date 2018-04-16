@@ -1,0 +1,20 @@
+name: appXXXX
+stack: apps/wordpress
+host: node2
+
+network:
+  port: 6081
+  domains: appXXXX.getsitepilot.com
+
+database:
+  host: db
+  user: appXXXX
+  password: secret
+
+admin:
+  user: captain
+  email: support@sitepilot.io
+
+limits:
+  cpu: 1
+  memory: 512M
