@@ -17,6 +17,7 @@ services:
         - com.df.notify=true
         - com.df.serviceDomain={{ $portainer['domain'] }}
         - com.df.port=9000
+        - com.df.httpsOnly={{ $portainer['httpsOnly'] }}
 
 networks:
   dockerpilot:

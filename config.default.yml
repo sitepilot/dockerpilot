@@ -26,8 +26,10 @@ mail:
   relayTLS: yes
 
 adminer:
+  httpsOnly: true
   domain: adminer.getsitepilot.local
 
 portainer:
   domain: manage.getsitepilot.local
+  httpsOnly: true
   storagePath: "/data/portainer"

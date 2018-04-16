@@ -10,6 +10,7 @@ services:
         - com.df.notify=true
         - com.df.serviceDomain={{ $adminer['domain'] }}
         - com.df.port=8080
+        - com.df.httpsOnly={{ $adminer['httpsOnly'] }}
       placement:
         constraints: [node.role == manager]
 
