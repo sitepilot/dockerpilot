@@ -78,11 +78,8 @@ class BackupRunCommand extends DockerpilotCommand
      * @throws Exception
      */
     protected function apps(OutputInterface $output) {
-        $output->writeln('Backup applications, please wait...');
         $apps = dp_get_apps();
-
         foreach($apps as $app) {
-            $output->writeln('Backup ' . $app . '...');
             $command = $this->getApplication()->find('app:backup');
             $arguments = array(
                 '--app' => $app

@@ -36,9 +36,9 @@ class AppBackupCommand extends DockerpilotCommand
         try {
             $this->userInput($input, $output);
             $this->backupApp($output);
-            $output->writeln('<info>App backed up!</info>');
+            $output->writeln("<info>[" . $this->app . "] Backup done!</info>");
         } catch (Exception $e) {
-            $output->writeln("<error>Failed to backup application: \n" . $e->getMessage() . "</error>");
+            $output->writeln("<error>[" . $this->app . "] Backup failed: \n" . $e->getMessage() . "</error>");
         }
     }
 
@@ -69,7 +69,7 @@ class AppBackupCommand extends DockerpilotCommand
         $apps = dp_get_config('apps');
         $app = dp_get_app_config($this->appDir);
 
-        $output->writeln("Backup application, please wait...");
+        $output->writeln("[" . $app['name'] . "] Backup application files...");
         $appDataDir = $apps['storagePath'] . '/' . $this->app . '/data';
         if ($server['useAnsible'] == 'true') {
             $process = new Process('ansible-playbook ' . SERVER_WORKDIR . '/playbooks/backupApp.yml --extra-vars "becomeUser=' . $server['user'] . ' app=' . $app['name'] . ' host=' . $app['host'] . ' appDataDir=' . $appDataDir . '"');
@@ -82,7 +82,7 @@ class AppBackupCommand extends DockerpilotCommand
                 throw new Exception($e->getMessage());
             }
         } else {
-            throw new Exception('Please enable Ansible in config.yml to use the backup functionality.');
+            throw new Exception("[" . $app['name'] . "] Please enable Ansible in config.yml to use the backup functionality!");
         }
     }
 }
