@@ -72,7 +72,7 @@ class AppBackupCommand extends DockerpilotCommand
         $output->writeln("Backup application, please wait...");
         $appStorageDir = $apps['storagePath'] . '/' . $this->app;
         if ($server['useAnsible'] == 'true') {
-            $process = new Process('ansible-playbook ' . SERVER_WORKDIR . '/playbooks/backupApp.yml --extra-vars "user=' . $server['user'] . ' app=' . $app['name'] . ' host=' . $app['host'] . ' appDataDir=' . $appStorageDir . '"');
+            $process = new Process('ansible-playbook ' . SERVER_WORKDIR . '/playbooks/backupApp.yml --extra-vars "becomeUser=' . $server['user'] . ' app=' . $app['name'] . ' host=' . $app['host'] . ' appDataDir=' . $appStorageDir . '"');
             $process->setTimeout(3600);
 
             try {
