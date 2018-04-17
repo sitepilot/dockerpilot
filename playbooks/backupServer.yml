@@ -14,7 +14,7 @@
     shell: source /home/{{ serverUser }}/.restic-env && restic backup --tag portainer {{ portainerStoragePath }}
     args:
       executable: /bin/bash
-    register: portainerDetails.stat.exists
+    when: portainerDetails.stat.exists
 
   - name: Backup MySQL data dir.
     shell: source /home/{{ serverUser }}/.restic-env && restic backup --tag mysql {{ mysqlStoragePath }}
