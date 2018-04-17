@@ -10,6 +10,11 @@
       path: "{{ mysqlStoragePath }}"
     register: mysqlDetails
 
+  - name: Check if config data dir exists.
+    stat:
+      path: "{{ configStoragePath }}"
+    register: configDetails
+
   - name: Backup Portainer data dir.
     shell: source /home/{{ serverUser }}/.restic-env && restic backup --tag portainer {{ portainerStoragePath }}
     args:
@@ -21,3 +26,9 @@
     args:
       executable: /bin/bash
     when: mysqlDetails.stat.exists
+
+  - name: Backup config data dir.
+    shell: source /home/{{ serverUser }}/.restic-env && restic backup --tag config {{ configStoragePath }}
+    args:
+      executable: /bin/bash
+    when: configDetails.stat.exists
