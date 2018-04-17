@@ -84,7 +84,7 @@ class BackupRunCommand extends DockerpilotCommand
             $output->writeln('Backup ' . $app . '...');
             $command = $this->getApplication()->find('app:backup');
             $arguments = array(
-                'app' => $app
+                '--app' => $app
             );
 
             $commandInput = new ArrayInput($arguments);
