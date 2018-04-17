@@ -108,8 +108,11 @@ class AppStartCommand extends DockerpilotCommand
                 }
             } else {
                 try {
-                    mkdir($appStorageDir . '/logs', 0750, true);
-                    mkdir($appStorageDir . '/data', 0750, true);
+                    $logsDir = $appStorageDir . '/logs';
+                    $dataDir = $appStorageDir . '/data';
+
+                    if(! file_exists($logsDir)) mkdir($appStorageDir . '/logs', 0750, true);
+                    if(! file_exists($dataDir)) mkdir($appStorageDir . '/data', 0750, true);
                 } catch (Exception $e) {
                     throw new Exception($e->getMessage());
                 }
