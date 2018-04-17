@@ -3,6 +3,7 @@
 namespace Dockerpilot\Command;
 
 use Exception;
+use Symfony\Component\Console\Input\ArrayInput;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\Process\Exception\ProcessFailedException;
@@ -80,7 +81,7 @@ class BackupRunCommand extends DockerpilotCommand
         $apps = dp_get_apps();
 
         foreach($apps as $app) {
-            $output->writeln('Backup: ' . $app . '...');
+            $output->writeln('Backup ' . $app . '...');
             $command = $this->getApplication()->find('app:backup');
             $arguments = array(
                 'app' => $app
