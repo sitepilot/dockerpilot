@@ -35,6 +35,7 @@ require_once 'commands/AppStartCommand.php';
 require_once 'commands/AppStopCommand.php';
 require_once 'commands/AppDeleteCommand.php';
 require_once 'commands/AppBackupCommand.php';
+require_once 'commands/BackupCleanupCommand.php';
 
 // Create application instance
 global $dockerpilot;
@@ -56,6 +57,7 @@ $dockerpilot->add( new Dockerpilot\Command\AppStartCommand() );
 $dockerpilot->add( new Dockerpilot\Command\AppStopCommand() );
 $dockerpilot->add( new Dockerpilot\Command\AppDeleteCommand() );
 $dockerpilot->add( new Dockerpilot\Command\AppBackupCommand() );
+$dockerpilot->add( new Dockerpilot\Command\BackupCleanupCommand() );
 
 // Run application
 $dockerpilot->run();

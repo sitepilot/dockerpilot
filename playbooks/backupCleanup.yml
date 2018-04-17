@@ -2,8 +2,8 @@
   tasks:
   - name: Cleanup old backups
     become: yes
-    become_user: {{ user }}
+    become_user: "{{ becomeUser }}"
     become_method: su
-    shell: source /home/{{ user }}/.restic-env && restic forget --keep-daily 7 --keep-weekly 4 --keep-monthly 1
+    shell: source /home/{{ becomeUser }}/.restic-env && restic forget --keep-daily 7 --keep-weekly 4 --keep-monthly 1
     args:
       executable: /bin/bash
