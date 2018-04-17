@@ -1,5 +1,6 @@
 server:
   name: "node1"
+  user: "sitepilot"
   environment: "local"
   proxyImage: "dockerflow/docker-flow-proxy:latest"
   cliName: "Dockerpilot"

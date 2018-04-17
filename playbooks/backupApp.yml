@@ -1,0 +1,9 @@
+- hosts: '{{ host }}'
+  tasks:
+  - name: Backup application: {{ app }}
+    become: yes
+    become_user: {{ user }}
+    become_method: su
+    shell: source /home/{{ user }}/.restic-env && restic backup --tag {{ app }} {{ appDataDir }}
+    args:
+      executable: /bin/bash
