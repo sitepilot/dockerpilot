@@ -32,6 +32,7 @@ RUN echo 'http://dl-4.alpinelinux.org/alpine/edge/testing' >> /etc/apk/repositor
     php7-dom \
     php7-xmlreader \
     php7-simplexml \
+    php7-zip \
     mysql-client \
     openssh-client \
     git \
@@ -60,5 +61,6 @@ RUN curl -O https://raw.githubusercontent.com/wp-cli/builds/gh-pages/phar/wp-cli
 
 EXPOSE 80
 VOLUME ["/var/www/html"]
+WORKDIR "/var/www/html"
 
 CMD ["/run.sh"]
