@@ -1,6 +1,6 @@
 - hosts: '{{ host }}'
   tasks:
-  - name: Backup application: {{ app }}
+  - name: Backup application {{ app }}
     become: yes
     become_user: {{ user }}
     become_method: su
