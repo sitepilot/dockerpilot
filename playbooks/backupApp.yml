@@ -1,9 +1,15 @@
 - hosts: '{{ host }}'
   tasks:
-  - name: Backup application {{ app }}
+  - name: Check if application data dir exists.
+    stat:
+      path: {{ appDataDir }}
+    register: file_details
+
+  - name: Backup application data dir of {{ app }}.
     become: yes
     become_user: "{{ becomeUser }}"
     become_method: su
     shell: source /home/{{ becomeUser }}/.restic-env && restic backup --tag {{ app }} {{ appDataDir }}
     args:
       executable: /bin/bash
+    when: file_details.stat.exists
