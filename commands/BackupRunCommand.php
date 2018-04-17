@@ -33,6 +33,7 @@ class BackupRunCommand extends DockerpilotCommand
     {
         try {
             $this->backupServer($output);
+            $this->backupApps($output);
             $output->writeln('<info>Backup completed!</info>');
         } catch (Exception $e) {
             $output->writeln("<error>Backup failed: \n" . $e->getMessage() . "</error>");
@@ -65,6 +66,28 @@ class BackupRunCommand extends DockerpilotCommand
             }
         } else {
             throw new Exception('Please enable Ansible in config.yml to use the backup functionality.');
+        }
+    }
+
+    /**
+     * Backup applications.
+     *
+     * @param OutputInterface $output
+     * @throws Exception
+     */
+    protected function backupApps(OutputInterface $output) {
+        $output->writeln('Backup applications, please wait...');
+        $apps = dp_get_apps();
+
+        foreach($apps as $app) {
+            $output->writeln('Backup: ' . $app . '...');
+            $command = $this->getApplication()->find('app:backup');
+            $arguments = array(
+                'app' => $app
+            );
+
+            $commandInput = new ArrayInput($arguments);
+            $command->run($commandInput, $output);
         }
     }
 }
