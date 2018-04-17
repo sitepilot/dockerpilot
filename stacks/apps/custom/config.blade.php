@@ -10,3 +10,6 @@ volumes:
 network:
   domains: {{ $app['name'] }}.{{ $server['appDomain'] }}
   port: 8000
+
+monitor:
+  domain: http://{{ $app['name'] }}.{{ $server['appDomain'] }}

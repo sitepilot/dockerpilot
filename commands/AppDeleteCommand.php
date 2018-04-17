@@ -9,6 +9,7 @@ use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\Console\Question\ConfirmationQuestion;
 use Symfony\Component\Process\Exception\ProcessFailedException;
 use Symfony\Component\Process\Process;
+use UptimeRobot\API;
 
 class AppDeleteCommand extends DockerpilotCommand
 {
@@ -36,6 +37,7 @@ class AppDeleteCommand extends DockerpilotCommand
     {
         try {
             $this->userInput($input, $output);
+            $this->deleteMonitor($output);
             $this->deleteApp($input, $output);
             $output->writeln('<info>App deleted!</info>');
         } catch (Exception $e) {
@@ -54,6 +56,66 @@ class AppDeleteCommand extends DockerpilotCommand
     protected function userInput(InputInterface $input, OutputInterface $output)
     {
         $this->askForApp($input, $output, 'Which app would you like to delete?', 'stopped');
+
+        $helper = $this->getHelper('question');
+        $question = new ConfirmationQuestion(
+            'Are you sure you want to remove ' . $this->app . '? ',
+            false,
+            '/^(y|j)/i'
+        );
+
+        if (!$helper->ask($input, $output, $question)) {
+            throw new Exception('Application not deleted, confirmation failed.');
+        }
+    }
+
+    /**
+     * Delete app monitor in UptimeRobot.
+     *
+     * @param OutputInterface $output
+     * @throws Exception
+     */
+    protected function deleteMonitor(OutputInterface $output)
+    {
+        $uptimeRobot = dp_get_config('uptimeRobot');
+        $app = dp_get_app_config($this->appDir);
+
+        if(!empty($uptimeRobot['apiKey']) && !empty($app['monitor']['domain'])) {
+            $output->writeln('Deleting monitor...');
+            try {
+                // Check if monitor exists
+                $config = [
+                    'apiKey' => $uptimeRobot['apiKey'],
+                    'url' => 'https://api.uptimerobot.com'
+                ];
+                $api = new API($config);
+                $result = $api->request('/getMonitors');
+                if(!empty($result['stat']) && $result['stat'] == 'fail') {
+                    $output->writeln('<error>Deleting monitor failed: ' . $result['message'] . '.</error>');
+                } else {
+                    $found = false;
+                    foreach ($result['monitors']['monitor'] as $monitor) {
+                        if ($monitor['friendlyname'] == $app['name']) {
+                            $found = $monitor['id'];
+                        }
+                    }
+
+                    if($found) {
+                        $output->writeln('Monitor found, deleting monitor...');
+                        $args = [
+                            'monitorID' => $found,
+                        ];
+
+                        $result = $api->request('/deleteMonitor', $args);
+                        if (!empty($result['stat']) && $result['stat'] == 'fail') {
+                            $output->writeln('<error>Deleting monitor failed: ' . $result['message'] . '.</error>');
+                        }
+                    }
+                }
+            } catch (Exception $e) {
+                throw new Exception($e->getMessage());
+            }
+        }
     }
 
     /**
@@ -66,17 +128,6 @@ class AppDeleteCommand extends DockerpilotCommand
      */
     protected function deleteApp(InputInterface $input, OutputInterface $output)
     {
-        $helper = $this->getHelper('question');
-        $question = new ConfirmationQuestion(
-            'Are you sure you want to remove ' . $this->app . '? ',
-            false,
-            '/^(y|j)/i'
-        );
-
-        if (!$helper->ask($input, $output, $question)) {
-            throw new Exception('Application not deleted, confirmation failed.');
-        }
-
         $app = dp_get_app_config($this->appDir);
         $server = dp_get_config('server');
         $apps = dp_get_config('apps');

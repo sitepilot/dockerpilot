@@ -33,3 +33,7 @@ portainer:
   domain: manage.getsitepilot.local
   httpsOnly: true
   storagePath: "/data/portainer"
+
+uptimeRobot:
+  apiKey: false
+  contactID: false

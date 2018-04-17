@@ -4,8 +4,47 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#composer-lock-the-lock-file",
         "This file is @generated automatically"
     ],
-    "content-hash": "4ba864e7de0a04bf36358365bd1a564d",
+    "content-hash": "4067a89647520cadc29c883042d577a7",
     "packages": [
+        {
+            "name": "ckdarby/php-uptimerobot",
+            "version": "v0.2.0",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/ckdarby/PHP-UptimeRobot.git",
+                "reference": "d90129522bd5daa4227a5390ef5a12ab78d76880"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/ckdarby/PHP-UptimeRobot/zipball/d90129522bd5daa4227a5390ef5a12ab78d76880",
+                "reference": "d90129522bd5daa4227a5390ef5a12ab78d76880",
+                "shasum": ""
+            },
+            "require": {
+                "ext-curl": "*",
+                "php": ">=5.4.0"
+            },
+            "type": "library",
+            "autoload": {
+                "psr-0": {
+                    "UptimeRobot": "src/"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "Cory Kennedy-Darby",
+                    "email": "ckdarby+uptimerobotapi@gmail.com",
+                    "homepage": "https://github.com/ckdarby/"
+                }
+            ],
+            "description": "PHP Wrapper for UptimeRobot.com API",
+            "homepage": "https://github.com/ckdarby/PHP-UptimeRobot/",
+            "time": "2018-02-27T14:58:55+00:00"
+        },
         {
             "name": "doctrine/inflector",
             "version": "v1.2.0",

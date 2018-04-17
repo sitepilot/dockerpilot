@@ -13,3 +13,6 @@ database:
 admin:
   user: {{ $app['admin']['user'] }}
   email: {{ $app['admin']['email'] }}
+
+monitor:
+  domain: http://{{ $app['name'] }}.{{ $server['appDomain'] }}

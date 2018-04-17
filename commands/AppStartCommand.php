@@ -9,6 +9,7 @@ use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\Process\Exception\ProcessFailedException;
 use Symfony\Component\Process\Process;
+use UptimeRobot\API;
 
 class AppStartCommand extends DockerpilotCommand
 {
@@ -38,6 +39,7 @@ class AppStartCommand extends DockerpilotCommand
             $this->userInput($input, $output);
             $this->generateFiles($output);
             $this->startApp($input, $output);
+            $this->setupMonitor($output);
             $output->writeln('<info>App started!</info>');
         } catch (Exception $e) {
             $output->writeln("<error>Failed to start application: \n" . $e->getMessage() . "</error>");
@@ -140,6 +142,73 @@ class AppStartCommand extends DockerpilotCommand
             $process->mustRun();
         } catch (ProcessFailedException $e) {
             throw new Exception($e->getMessage());
+        }
+    }
+
+    /**
+     * Create app monitor in UptimeRobot.
+     *
+     * @param OutputInterface $output
+     * @throws Exception
+     */
+    protected function setupMonitor(OutputInterface $output)
+    {
+        $uptimeRobot = dp_get_config('uptimeRobot');
+        $app = dp_get_app_config($this->appDir);
+
+        if(!empty($uptimeRobot['apiKey']) && !empty($uptimeRobot['contactID']) && !empty($app['monitor']['domain'])) {
+            $output->writeln('Setting up monitor...');
+            try {
+                // Check if monitor already exists
+                $config = [
+                    'apiKey' => $uptimeRobot['apiKey'],
+                    'url' => 'https://api.uptimerobot.com'
+                ];
+                $api = new API($config);
+                $result = $api->request('/getMonitors');
+                if(!empty($result['stat']) && $result['stat'] == 'fail') {
+                    $output->writeln('<error> Setup monitor failed: ' . $result['message'] . '.</error>');
+                } else {
+                    $found = false;
+
+                    foreach ($result['monitors']['monitor'] as $monitor) {
+                        if ($monitor['friendlyname'] == $app['name']) {
+                            $found = $monitor['id'];
+                            $foundDomain = $monitor['url'];
+                        }
+                    }
+
+                    if (!$found) {
+                        $output->writeln('Monitor not found, creating a new monitor...');
+                        $args = [
+                            'monitorFriendlyName' => $app['name'],
+                            'monitorUrl' => $app['monitor']['domain'],
+                            'monitorType' => 1,
+                            'monitorAlertContacts' => $uptimeRobot['contactID']
+                        ];
+
+                        $result = $api->request('/newMonitor', $args);
+                        if(!empty($result['stat']) && $result['stat'] == 'fail') {
+                            $output->writeln('<error>Setup monitor failed: ' . $result['message'] . '.</error>');
+                        }
+                    } else {
+                        if($foundDomain != $app['monitor']['domain']) {
+                            $output->writeln('Monitor found, updating monitor...');
+                            $args = [
+                                'monitorID' => $found,
+                                'monitorUrl' => $app['monitor']['domain']
+                            ];
+
+                            $result = $api->request('/editMonitor', $args);
+                            if (!empty($result['stat']) && $result['stat'] == 'fail') {
+                                $output->writeln('<error>Updating monitor failed: ' . $result['message'] . '.</error>');
+                            }
+                        }
+                    }
+                }
+            } catch (Exception $e) {
+                throw new Exception($e->getMessage());
+            }
         }
     }
 }
