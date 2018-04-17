@@ -143,3 +143,29 @@ function dp_get_apps()
     }
     return false;
 }
+
+/**
+ * Delete a (not empty) directory.
+ *
+ * @param $dir
+ * @return bool
+ */
+function dp_delete_dir($dir) {
+    if (!file_exists($dir)) {
+        return true;
+    }
+
+    if (!is_dir($dir)) {
+        return unlink($dir);
+    }
+
+    foreach (scandir($dir) as $item) {
+        if ($item == '.' || $item == '..') {
+            continue;
+        }
+        if (!dp_delete_dir($dir . DIRECTORY_SEPARATOR . $item)) {
+            return false;
+        }
+    }
+    return rmdir($dir);
+}

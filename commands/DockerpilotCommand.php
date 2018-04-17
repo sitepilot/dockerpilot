@@ -142,11 +142,9 @@ class DockerpilotCommand extends Command
                     case 'stopped':
                         throw new Exception("All apps are running.");
                         break;
-                    default:
-                        throw new Exception("No apps found, create a new app with app:create.");
-                        break;
                 }
             }
         }
+        throw new Exception("No apps found, create a new app with app:create.");
     }
 }

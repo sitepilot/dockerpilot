@@ -33,6 +33,7 @@ require_once 'commands/PortainerStopCommand.php';
 require_once 'commands/AppCreateCommand.php';
 require_once 'commands/AppStartCommand.php';
 require_once 'commands/AppStopCommand.php';
+require_once 'commands/AppDeleteCommand.php';
 
 // Create application instance
 global $dockerpilot;
@@ -52,6 +53,7 @@ $dockerpilot->add( new Dockerpilot\Command\PortainerStopCommand() );
 $dockerpilot->add( new Dockerpilot\Command\AppCreateCommand() );
 $dockerpilot->add( new Dockerpilot\Command\AppStartCommand() );
 $dockerpilot->add( new Dockerpilot\Command\AppStopCommand() );
+$dockerpilot->add( new Dockerpilot\Command\AppDeleteCommand() );
 
 // Run application
 $dockerpilot->run();

@@ -1,0 +1,6 @@
+- hosts: '{{ host }}'
+  tasks:
+  - name: Remove the application directory
+    file:
+      path: "{{ app_dir }}"
+      state: absent
