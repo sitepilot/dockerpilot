@@ -67,7 +67,7 @@ class AppBackupCommand extends DockerpilotCommand
         // Create app storage folder
         $server = dp_get_config('server');
         $apps = dp_get_config('apps');
-        $app = dp_get_config($this->appDir);
+        $app = dp_get_app_config($this->appDir);
 
         $output->writeln("Backup application, please wait...");
         $appStorageDir = $apps['storagePath'] . '/' . $this->app;
