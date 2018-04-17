@@ -33,8 +33,9 @@ class BackupRunCommand extends DockerpilotCommand
     protected function execute(InputInterface $input, OutputInterface $output)
     {
         try {
-            $this->backupServer($output);
-            $this->backupApps($output);
+            $this->server($output);
+            $this->apps($output);
+            $this->cleanup($output);
             $output->writeln('<info>Backup completed!</info>');
         } catch (Exception $e) {
             $output->writeln("<error>Backup failed: \n" . $e->getMessage() . "</error>");
@@ -48,7 +49,7 @@ class BackupRunCommand extends DockerpilotCommand
      * @return void
      * @throws Exception
      */
-    protected function backupServer(OutputInterface $output)
+    protected function server(OutputInterface $output)
     {
         $server = dp_get_config('server');
         $mysql = dp_get_config('mysql');
@@ -76,7 +77,7 @@ class BackupRunCommand extends DockerpilotCommand
      * @param OutputInterface $output
      * @throws Exception
      */
-    protected function backupApps(OutputInterface $output) {
+    protected function apps(OutputInterface $output) {
         $output->writeln('Backup applications, please wait...');
         $apps = dp_get_apps();
 
@@ -90,5 +91,17 @@ class BackupRunCommand extends DockerpilotCommand
             $commandInput = new ArrayInput($arguments);
             $command->run($commandInput, $output);
         }
+    }
+
+    /**
+     * Backup applications.
+     *
+     * @param OutputInterface $output
+     * @throws Exception
+     */
+    protected function cleanup(OutputInterface $output) {
+        $command = $this->getApplication()->find('backup:cleanup');
+        $commandInput = new ArrayInput([]);
+        $command->run($commandInput, $output);
     }
 }
