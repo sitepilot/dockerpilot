@@ -11,18 +11,12 @@
     register: mysqlDetails
 
   - name: Backup Portainer data dir.
-    become: yes
-    become_user: "root"
-    become_method: su
     shell: source /home/{{ serverUser }}/.restic-env && restic backup --tag portainer {{ portainerStoragePath }}
     args:
       executable: /bin/bash
     register: portainerDetails.stat.exists
 
   - name: Backup MySQL data dir.
-    become: yes
-    become_user: "root"
-    become_method: su
     shell: source /home/{{ serverUser }}/.restic-env && restic backup --tag mysql {{ mysqlStoragePath }}
     args:
       executable: /bin/bash
