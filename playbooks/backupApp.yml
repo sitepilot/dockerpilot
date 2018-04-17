@@ -2,7 +2,7 @@
   tasks:
   - name: Check if application data dir exists.
     stat:
-      path: {{ appDataDir }}
+      path: "{{ appDataDir }}"
     register: file_details
 
   - name: Backup application data dir of {{ app }}.
