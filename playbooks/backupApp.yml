@@ -2,7 +2,7 @@
   tasks:
   - name: Backup application {{ app }}
     become: yes
-    become_user: {{ becomeUser }}
+    become_user: "{{ becomeUser }}"
     become_method: su
     shell: source /home/{{ becomeUser }}/.restic-env && restic backup --tag {{ app }} {{ appDataDir }}
     args:
