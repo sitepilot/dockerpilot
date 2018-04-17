@@ -1,0 +1,21 @@
+name: appXXXX
+stack: apps/custom
+image: jwilder/whoami:latest
+host: node2
+
+volumes:
+  data: '/var/www/html'
+  logs: '/var/logs'
+  # custom: # warning: custom volume mounts need to exist on the host (won't be created by dockerpilot)
+  #   - '{appDir}/custom:/var/custom'
+
+environment:
+  test: blabla
+
+network:
+  port: 80
+  domains: appXXXX.getsitepilot.com
+
+limits:
+  cpu: 1
+  memory: 512M

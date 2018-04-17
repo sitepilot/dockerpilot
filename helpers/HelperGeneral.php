@@ -169,3 +169,24 @@ function dp_delete_dir($dir) {
     }
     return rmdir($dir);
 }
+
+
+/**
+ * Returns a list available application stacks.
+ *
+ * @return mixed
+ */
+function dp_get_app_stacks()
+{
+    $stackDir = SERVER_WORKDIR . '/stacks/apps';
+    $dirs = array_filter(glob( $stackDir . '/*'), 'is_dir');
+    $stacks = array();
+    foreach ($dirs as $dir) {
+        $stackName = str_replace($stackDir . '/', '', $dir);
+        $stacks[] = $stackName;
+    }
+    if (count($stacks) > 0) {
+        return $stacks;
+    }
+    return false;
+}
