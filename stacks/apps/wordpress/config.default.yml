@@ -8,9 +8,9 @@ network:
 
 database:
   host: db
-  user: appXXXX
+  # user: appXXXX
   password: secret
-  name: appXXXX
+  # name: appXXXX
 
 admin:
   user: captain
