@@ -52,7 +52,13 @@ class CleanupRunCommand extends DockerpilotCommand
 
         try {
             $process->mustRun();
-            echo $process->getOutput();
+            foreach ($process as $type => $data) {
+                if ($process::OUT === $type) {
+                    echo "\n[OUT]: " . $data;
+                } else {
+                    echo "\n[ERR]: " . $data;
+                }
+            }
         } catch (ProcessFailedException $e) {
             throw new Exception($e->getMessage());
         }
