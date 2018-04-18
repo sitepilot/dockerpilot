@@ -15,7 +15,7 @@ services:
      volumes:
        - {{ $apps['storagePath'] }}/{{ $app['name'] }}/data:/var/www/html
        - {{ $apps['storagePath'] }}/{{ $app['name'] }}/logs:/var/www/logs
-       - {{ $apps['storagePath'] }}/{{ $app['name'] }}/backup:/var/www/backup
+       - {{ $apps['storagePath'] }}/{{ $app['name'] }}/restore:/var/www/restore
      deploy:
        labels:
          - com.df.notify=true
