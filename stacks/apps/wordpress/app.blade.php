@@ -23,6 +23,7 @@ services:
          - com.df.notify=true
          - com.df.serviceDomain={{ $app['network']['domains'] }}
          - com.df.port={{ $app['network']['port'] }}
+         - com.df.httpsOnly={{ $app['network']['httpsOnly'] }}
        placement:
          constraints:
            - node.hostname == {{ $app['host'] }}

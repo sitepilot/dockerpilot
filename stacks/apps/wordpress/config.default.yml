@@ -5,6 +5,7 @@ host: node2
 network:
   port: 6081
   domains: appXXXX.getsitepilot.com
+  httpsOnly: false
 
 database:
   host: db
