@@ -69,7 +69,7 @@ class AppBackupCommand extends DockerpilotCommand
         $apps = dp_get_config('apps');
         $app = dp_get_app_config($this->appDir);
 
-        $output->writeln("[" . $app['name'] . "] Backup application files...");
+        $output->writeln("[" . $app['name'] . "] Backup application...");
         $appDataDir = $apps['storagePath'] . '/' . $this->app . '/data';
         $appRestoreDir = $apps['storagePath'] . '/' . $this->app . '/restore';
         if ($server['useAnsible'] == 'true') {
