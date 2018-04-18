@@ -33,7 +33,7 @@
     when: mysqlDetails.stat.exists
 
   - name: Create MySQL dump if MySQL container exists.
-    shell: CONTAINER=$(docker ps -f "name=mysql_db" -q) && if [ ! -z $CONTAINER ]; then docker exec $CONTAINER backup; fi
+    shell: CONTAINER=$(docker ps -f "name=mysql_db" -q) && if [ ! -z $CONTAINER ]; then docker exec $CONTAINER dp-backup; fi
     args:
       executable: /bin/bash
     when: mysqlBackupDetails.stat.exists
