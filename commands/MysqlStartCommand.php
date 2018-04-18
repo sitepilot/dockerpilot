@@ -56,6 +56,9 @@ class MysqlStartCommand extends DockerpilotCommand
             if (!file_exists(dp_path($mysql['storagePath']))) {
                 mkdir(dp_path($mysql['storagePath']), 0750, true);
             }
+            if (!file_exists(dp_path($mysql['backupPath']))) {
+                mkdir(dp_path($mysql['backupPath']), 0750, true);
+            }
         } catch (ProcessFailedException $e) {
             throw new Exception($e->getMessage());
         }

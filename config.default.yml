@@ -17,6 +17,7 @@ mysql:
   userPassSecret: "db-user-pass"
   userNameSecret: "db-user-name"
   storagePath: "/data/mysql"
+  backupPath: "/data/backup/mysql"
 
 mail:
   hostName: node.sitepilot.io
