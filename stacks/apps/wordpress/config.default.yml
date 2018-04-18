@@ -8,9 +8,9 @@ network:
 
 database:
   host: db
-  # user: appXXXX
+  # user: appXXXX #undefined defaults to app name
   password: secret
-  # name: appXXXX
+  # name: appXXXX #undefined defaults to app name
 
 admin:
   user: captain
