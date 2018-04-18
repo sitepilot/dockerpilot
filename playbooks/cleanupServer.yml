@@ -1,0 +1,6 @@
+- hosts: all
+  tasks:
+  - name: Remove unused docker data.
+    shell: docker system prune --force
+    args:
+      executable: /bin/bash
