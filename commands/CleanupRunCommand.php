@@ -32,7 +32,7 @@ class CleanupRunCommand extends DockerpilotCommand
     protected function execute(InputInterface $input, OutputInterface $output)
     {
         try {
-            $this->cleanupServer();
+            $this->cleanupServer($output);
             $output->writeln("<info>Cleanup done!</info>");
         } catch (Exception $e) {
             $output->writeln("<error>Cleanup failed: \n" . $e->getMessage() . "</error>");
@@ -42,23 +42,19 @@ class CleanupRunCommand extends DockerpilotCommand
     /**
      * Cleanup unused data from servers.
      *
+     * @param OutputInterface $output
      * @return void
      * @throws Exception
      */
-    protected function cleanupServer()
+    protected function cleanupServer(OutputInterface $output)
     {
+        $output->writeln("Cleanup server data...");
         $process = new Process('ansible-playbook ' . SERVER_WORKDIR . '/playbooks/cleanupServer.yml');
         $process->setTimeout(3600);
 
         try {
             $process->mustRun();
-            foreach ($process as $type => $data) {
-                if ($process::OUT === $type) {
-                    echo "\n[OUT]: " . $data;
-                } else {
-                    echo "\n[ERR]: " . $data;
-                }
-            }
+            echo $process->getOutput();
         } catch (ProcessFailedException $e) {
             throw new Exception($e->getMessage());
         }
