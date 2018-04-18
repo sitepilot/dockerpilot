@@ -9,8 +9,14 @@ volumes:
   # custom: # warning: custom volume mounts need to exist on the host (won't be created by dockerpilot)
   #   - '{appDir}/custom:/var/custom'
 
-environment:
-  test: blabla
+# environment:
+  # TEST: test-value
+
+database:
+  host: db
+  user: appXXXX
+  password: secret
+  name: appXXXX
 
 network:
   port: 80

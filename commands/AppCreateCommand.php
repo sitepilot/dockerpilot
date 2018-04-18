@@ -132,9 +132,12 @@ class AppCreateCommand extends DockerpilotCommand
             } else {
                 $this->app['admin']['email'] = trim($input->getOption('adminEmail'));
             }
-
-            $this->app['database']['password'] = dp_random_password();
         }
+
+        $this->app['database']['host'] = 'db';
+        $this->app['database']['name'] = $this->app['name'];
+        $this->app['database']['password'] = dp_random_password();
+        $this->app['database']['user'] = $this->app['name'];
 
         $this->app['name'] = dp_create_slug($this->app['name']);
     }
@@ -184,12 +187,10 @@ class AppCreateCommand extends DockerpilotCommand
                 $output->writeln('App Name: ' . $this->app['name']);
                 $output->writeln('App Host: ' . $this->app['host']);
 
-                if(! empty($this->app['database'])):
                 $output->writeln('Database Host: ' . $this->app['database']['host']);
-                $output->writeln('Database Name: ' . $this->app['name']);
-                $output->writeln('Database User: ' . $this->app['name']);
+                $output->writeln('Database Name: ' . $this->app['database']['name']);
+                $output->writeln('Database User: ' . $this->app['database']['user']);
                 $output->writeln('Database Password: ' . $this->app['database']['password']);
-                endif;
 
                 if(! empty($this->app['admin'])):
                 $output->writeln('Admin User: ' . $this->app['admin']['user']);
@@ -198,9 +199,7 @@ class AppCreateCommand extends DockerpilotCommand
 
                 $output->writeln('--------------');
 
-                if(! empty($this->app['database'])):
-                    $output->write("\n<info>Don't forget to create the database before starting the application.</info>");
-                endif;
+                $output->write("\n<info>Don't forget to create the database before starting the application.</info>");
             }
         } else {
             throw new Exception("Can't create application database. Please start the database server with `dp mysql:start`.");

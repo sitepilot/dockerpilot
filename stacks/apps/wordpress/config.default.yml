@@ -10,6 +10,7 @@ database:
   host: db
   user: appXXXX
   password: secret
+  name: appXXXX
 
 admin:
   user: captain

@@ -7,8 +7,10 @@ services:
        - dockerpilot
      environment:
        APP_NAME: {{ $app['name'] }}
-       APP_DB_PASS: {{ $app['database']['password'] }}
-       APP_DB_HOST: {{ $app['database']['host'] }}
+       APP_DB_HOST: {{ ! empty($app['database']['host']) ? $app['database']['host'] : 'db' }}
+       APP_DB_PASS: {{ ! empty($app['database']['password']) ? $app['database']['password'] : 'secret' }}
+       APP_DB_USER: {{ ! empty($app['database']['user']) ? $app['database']['user'] : $app['name'] }}
+       APP_DB_NAME: {{ ! empty($app['database']['name']) ? $app['database']['name'] : $app['name'] }}
        APP_DOMAIN: {{ $app['name'] }}.{{ $server['appDomain'] }}
        APP_ADMIN_USER: {{ $app['admin']['user'] }}
        APP_ADMIN_EMAIL: {{ $app['admin']['email'] }}

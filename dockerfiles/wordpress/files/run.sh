@@ -26,10 +26,7 @@ mkdir -p /tmp/nginx
 cd /var/www/html
 if ! [ -e index.php -a -e wp-includes/version.php ]; then
 
-    # Decode admin password
-    APP_ADMIN_PASS=`echo $APP_ADMIN_PASS | base64 -d`
-
-    if [[ -z $APP_NAME || -z $APP_DB_PASS  || -z $APP_ADMIN_USER || -z $APP_ADMIN_PASS || -z $APP_ADMIN_EMAIL ]]; then
+    if [[ -z $APP_NAME || -z $APP_DB_PASS || -z $APP_DB_NAME || -z $APP_DB_USER || -z $APP_DB_HOST || -z $APP_ADMIN_USER || -z $APP_ADMIN_EMAIL ]]; then
         echo "Can't install WordPress, missing environment variables."
         exit 1
     fi
@@ -38,10 +35,10 @@ if ! [ -e index.php -a -e wp-includes/version.php ]; then
     wp core download
 
     echo "Configure WordPress..."
-    wp config create --dbhost=$APP_DB_HOST --dbname=$APP_NAME --dbuser=$APP_NAME --dbpass=$APP_DB_PASS --dbprefix=sp_
+    wp config create --dbhost=$APP_DB_HOST --dbname=$APP_DB_NAME --dbuser=$APP_DB_USER --dbpass=$APP_DB_PASS --dbprefix=sp_
 
     echo "Installing WordPress..."
-    wp core install --url=$APP_DOMAIN --title=$APP_NAME --admin_user=$APP_ADMIN_USER --admin_password=$APP_ADMIN_PASS --admin_email=$APP_ADMIN_EMAIL
+    wp core install --url=$APP_DOMAIN --title=$APP_NAME --admin_user=$APP_ADMIN_USER --admin_email=$APP_ADMIN_EMAIL
 
     echo "Installing Sitepilot plugin..."
     wp plugin install https://update.sitepilot.io/download/sitepilot --activate

@@ -7,8 +7,9 @@ network:
 
 database:
   host: {{ $app['database']['host'] }}
-  user: {{ $app['name'] }}
+  user: {{ $app['database']['user'] }}
   password: {{ $app['database']['password'] }}
+  name: {{ $app['database']['name'] }}
 
 admin:
   user: {{ $app['admin']['user'] }}

@@ -5,12 +5,15 @@ services:
      image: {{ $app['image'] }}
      networks:
        - dockerpilot
-@if(!empty($app['environment']) && count($app['environment']) > 0)
      environment:
+        APP_NAME: {{ $app['name'] }}
+        APP_DB_HOST: {{ ! empty($app['database']['host']) ? $app['database']['host'] : 'db' }}
+        APP_DB_PASS: {{ ! empty($app['database']['password']) ? $app['database']['password'] : 'secret' }}
+        APP_DB_USER: {{ ! empty($app['database']['user']) ? $app['database']['user'] : $app['name'] }}
+        APP_DB_NAME: {{ ! empty($app['database']['name']) ? $app['database']['name'] : $app['name'] }}
 @foreach($app['environment'] as $item=>$value)
        {{ ! empty($item) ? $item . ": " . $value : "" }}
 @endforeach
-@endif
 
 @if(! empty($app['volumes']['data']) || ! empty($app['volumes']['logs'] || (! empty($app['volumes']['custom']) && count($app['volumes']['custom']) > 0)))
      volumes:
