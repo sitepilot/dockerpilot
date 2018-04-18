@@ -3,7 +3,13 @@
   - name: Check if application data dir exists.
     stat:
       path: "{{ appDataDir }}"
-    register: file_details
+    register: appDetails
+
+  - name: Backup application database of {{ app }}.
+    shell: CONTAINER=$(docker ps -f "name={{ app }}" -q) && if [ ! -z $CONTAINER ]; then docker exec $CONTAINER dp-backup; fi
+    args:
+      executable: /bin/bash
+    when: appDetails.stat.exists
 
   - name: Backup application data dir of {{ app }}.
     become: yes
@@ -12,4 +18,4 @@
     shell: source /home/{{ becomeUser }}/.restic-env && restic backup --tag {{ app }} {{ appDataDir }}
     args:
       executable: /bin/bash
-    when: file_details.stat.exists
+    when: appDetails.stat.exists

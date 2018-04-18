@@ -59,6 +59,11 @@ RUN chmod +x /run.sh
 RUN curl -O https://raw.githubusercontent.com/wp-cli/builds/gh-pages/phar/wp-cli.phar && chmod +x wp-cli.phar && mv wp-cli.phar /usr/bin/wp \
     && wp --version
 
+COPY files/dp-backup.sh /usr/bin/dp-backup
+COPY files/dp-restore.sh /usr/bin/dp-restore
+RUN chmod +x /usr/bin/dp-backup
+RUN chmod +x /usr/bin/dp-restore
+
 EXPOSE 80
 VOLUME ["/var/www/html"]
 WORKDIR "/var/www/html"
