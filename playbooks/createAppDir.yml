@@ -5,4 +5,4 @@
       path: "{{ app_dir }}/{{ item }}"
       recurse: yes
       state: directory
-    with_items: ["data", "logs"]
+    with_items: ["data", "logs", "backup"]

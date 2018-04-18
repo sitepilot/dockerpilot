@@ -15,7 +15,7 @@
     become: yes
     become_user: "{{ becomeUser }}"
     become_method: su
-    shell: source /home/{{ becomeUser }}/.restic-env && restic backup --tag {{ app }} {{ appDataDir }}
+    shell: source /home/{{ becomeUser }}/.restic-env && restic backup --tag {{ app }} {{ appDataDir }} {{appBackupDir}}
     args:
       executable: /bin/bash
     when: appDetails.stat.exists
