@@ -69,7 +69,7 @@ class AppRestoreCommand extends DockerpilotCommand
         $apps = dp_get_config('apps');
         $app = dp_get_app_config($this->appDir);
 
-        $output->writeln("[" . $app['name'] . "] Backup application...");
+        $output->writeln("[" . $app['name'] . "] Restore application...");
         $appDir = $apps['storagePath'] . '/' . $this->app;
         $appDataDir = $apps['storagePath'] . '/' . $this->app . '/data';
         $appRestoreDir = $apps['storagePath'] . '/' . $this->app . '/restore';
