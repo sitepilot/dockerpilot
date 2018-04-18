@@ -1,36 +1,28 @@
 - hosts: '{{ host }}'
 
   tasks:
-  - name: Check if application directory exists.
+  - name: [{{ app }}] Check if application directory exists.
     stat:
       path: "{{ appDataDir }}"
     register: appDetails
 
-  - name: Remove application data directory content.
-    file:
-      state: absent
-      path: "{{ appDataDir }}/"
+  - name: [{{ app }}] Remove application data.
+    shell: rm -rf {{ appDataDir }}/* && rm -rf {{ appRestoreDir }}/*
     when: appDetails.stat.exists
 
-  - name: Remove application restore directory content.
-    file:
-      state: absent
-      path: "{{ appRestoreDir }}/"
-    when: appDetails.stat.exists
-
-  - name: Restore application data {{ app }}.
+  - name: [{{ app }}] Restore application data.
     shell: source /home/{{ becomeUser }}/.restic-env && restic restore latest --tag {{ app }} --target={{ appDir }}
     args:
       executable: /bin/bash
     when: appDetails.stat.exists
 
-  - name: Restore application database of {{ app }}.
+  - name: [{{ app }}] Restore application database.
     shell: CONTAINER=$(docker ps -f "name={{ app }}" -q) && if [ ! -z $CONTAINER ]; then docker exec $CONTAINER dp-restore; fi
     args:
       executable: /bin/bash
     when: appDetails.stat.exists
 
-  - sname: Restoring file permissions of {{ app }}.
+  - sname: [{{ app }}] Restore file permissions.
     shell: chown -R {{ becomeUser }}:{{ becomeUser }} {{ appDataDir }} && chown -R {{ becomeUser }}:{{ becomeUser }} {{ appRestoreDir }}
     args:
       executable: /bin/bash
