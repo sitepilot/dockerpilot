@@ -5,7 +5,8 @@ image: jwilder/whoami:latest
 
 volumes:
   data: '/var/www/html'
-  logs: '/var/logs'
+  logs: '/var/www/logs'
+  backup: '/var/www/backup'
 
 database:
   host: {{ $app['database']['host'] }}

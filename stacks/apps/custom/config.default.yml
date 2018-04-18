@@ -5,8 +5,9 @@ host: node2
 
 volumes:
   data: '/var/www/html'
-  logs: '/var/logs'
-  # custom: # warning: custom volume mounts need to exist on the host (won't be created by dockerpilot)
+  logs: '/var/www/logs'
+  backup: '/var/www/backup'
+  # custom: # warning: custom volume mounts need to exist on the host (won't be created by Dockerpilot)
   #   - '{appDir}/custom:/var/custom'
 
 # environment:
