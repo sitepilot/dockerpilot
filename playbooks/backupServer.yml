@@ -10,24 +10,41 @@
       path: "{{ mysqlStoragePath }}"
     register: mysqlDetails
 
+  - name: Check if mysql backup dir exists.
+    stat:
+      path: "{{ mysqlBackupPath }}"
+    register: mysqlBackupDetails
+
   - name: Check if config data dir exists.
     stat:
       path: "{{ configStoragePath }}"
     register: configDetails
 
-  - name: Backup Portainer data dir.
+  - name: Backup Portainer data if Portainer data directory exists.
     shell: source /home/{{ serverUser }}/.restic-env && restic backup --tag portainer {{ portainerStoragePath }}
     args:
       executable: /bin/bash
     when: portainerDetails.stat.exists
 
-  - name: Backup MySQL data dir.
+  - name: Backup MySQL data if MySQL data directory exists.
     shell: source /home/{{ serverUser }}/.restic-env && restic backup --tag mysql {{ mysqlStoragePath }}
     args:
       executable: /bin/bash
     when: mysqlDetails.stat.exists
 
-  - name: Backup config data dir.
+  - name: Create MySQL dump if MySQL container exists.
+    shell: CONTAINER=$(docker ps -f "name=mysql_db" -q) && if [ ! -z $CONTAINER ]; then docker exec $CONTAINER backup; fi
+    args:
+      executable: /bin/bash
+    when: mysqlBackupDetails.stat.exists
+
+  - name: Backup MySQL dumps if MySQL dump directory exists.
+    shell: source /home/{{ serverUser }}/.restic-env && restic backup --tag mysql-dump {{ mysqlBackupPath }}
+    args:
+      executable: /bin/bash
+    when: mysqlBackupDetails.stat.exists
+
+  - name: Backup config data if config directory exists.
     shell: source /home/{{ serverUser }}/.restic-env && restic backup --tag config {{ configStoragePath }}
     args:
       executable: /bin/bash
