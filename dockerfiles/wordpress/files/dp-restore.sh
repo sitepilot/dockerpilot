@@ -1,6 +1,6 @@
 #! /bin/bash
 MYSQL=/usr/bin/mysql
-BACKUP_FILE="/var/www/restore/mysql/$APP_DB_NAME.gz"
+BACKUP_FILE="/var/www/backup/mysql/$APP_DB_NAME.gz"
 
 if [ -f $BACKUP_FILE ]; then
     echo "Restoring database backup ($BACKUP_FILE)..."

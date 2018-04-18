@@ -7,7 +7,7 @@
     register: appDetails
 
   - name: "[{{ app }}] Remove application data."
-    shell: rm -rf {{ appDataDir }}/* && rm -rf {{ appRestoreDir }}/*
+    shell: rm -rf {{ appDataDir }}/* && rm -rf {{ appBackupDir }}/*
     when: appDetails.stat.exists
 
   - name: "[{{ app }}] Restore application data."
@@ -23,7 +23,7 @@
     when: appDetails.stat.exists
 
   - sname: "[{{ app }}] Restore file permissions."
-    shell: chown -R {{ becomeUser }}:{{ becomeUser }} {{ appDataDir }} && chown -R {{ becomeUser }}:{{ becomeUser }} {{ appRestoreDir }}
+    shell: chown -R {{ becomeUser }}:{{ becomeUser }} {{ appDataDir }} && chown -R {{ becomeUser }}:{{ becomeUser }} {{ appBackupDir }}
     args:
       executable: /bin/bash
     hen: appDetails.stat.exists

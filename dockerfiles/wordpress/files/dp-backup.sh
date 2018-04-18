@@ -1,6 +1,6 @@
 #! /bin/bash
 MYSQLDUMP=/usr/bin/mysqldump
-BACKUP_DIR="/var/www/restore/mysql"
+BACKUP_DIR="/var/www/backup/mysql"
 BACKUP_FILE="$BACKUP_DIR/$APP_DB_NAME.gz"
 
 echo "Backup database ($BACKUP_FILE)..."

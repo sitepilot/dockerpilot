@@ -72,9 +72,9 @@ class AppRestoreCommand extends DockerpilotCommand
         $output->writeln("[" . $app['name'] . "] Restore application...");
         $appDir = $apps['storagePath'] . '/' . $this->app;
         $appDataDir = $apps['storagePath'] . '/' . $this->app . '/data';
-        $appRestoreDir = $apps['storagePath'] . '/' . $this->app . '/restore';
+        $appBackupDir = $apps['storagePath'] . '/' . $this->app . '/backup';
         if ($server['useAnsible'] == 'true') {
-            $process = new Process('ansible-playbook ' . SERVER_WORKDIR . '/playbooks/restoreApp.yml --extra-vars "becomeUser=' . $server['user'] . ' app=' . $app['name'] . ' host=' . $app['host'] . ' appDir=' . $appDir . ' appDataDir=' . $appDataDir . ' appRestoreDir=' . $appRestoreDir . '"');
+            $process = new Process('ansible-playbook ' . SERVER_WORKDIR . '/playbooks/restoreApp.yml --extra-vars "becomeUser=' . $server['user'] . ' app=' . $app['name'] . ' host=' . $app['host'] . ' appDir=' . $appDir . ' appDataDir=' . $appDataDir . ' appBackupDir=' . $appBackupDir . '"');
             $process->setTimeout(3600);
 
             try {
