@@ -58,7 +58,7 @@ class BackupRunCommand extends DockerpilotCommand
 
         $output->writeln("Backup server data, please wait...");
         if ($server['useAnsible'] == 'true') {
-            $process = new Process('ansible-playbook ' . SERVER_WORKDIR . '/playbooks/backupServer.yml --extra-vars "serverUser=' . $server['user'] . ' portainerStoragePath=' . $portainer['storagePath'] . ' mysqlStoragePath=' . $mysql['storagePath'] . ' configStoragePath=' . $apps['configPath'] . '"');
+            $process = new Process('ansible-playbook ' . SERVER_WORKDIR . '/playbooks/backupServer.yml --extra-vars "serverUser=' . $server['user'] . ' portainerStoragePath=' . $portainer['storagePath'] . ' mysqlStoragePath=' . $mysql['storagePath'] . ' mysqlBackupPath=' . $mysql['backupPath'] . ' configStoragePath=' . $apps['configPath'] . '"');
             $process->setTimeout(3600);
 
             try {
