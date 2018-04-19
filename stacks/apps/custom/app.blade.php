@@ -11,9 +11,11 @@ services:
         APP_DB_PASS: {{ ! empty($app['database']['password']) ? $app['database']['password'] : 'secret' }}
         APP_DB_USER: {{ ! empty($app['database']['user']) ? $app['database']['user'] : $app['name'] }}
         APP_DB_NAME: {{ ! empty($app['database']['name']) ? $app['database']['name'] : $app['name'] }}
+@if(! empty($app['environment']) && is_array($app['environment']))
 @foreach($app['environment'] as $item=>$value)
        {{ ! empty($item) ? $item . ": " . $value : "" }}
 @endforeach
+@endif
 
 @if(! empty($app['volumes']['data']) || ! empty($app['volumes']['backup']) || ! empty($app['volumes']['logs'] || (! empty($app['volumes']['custom']) && count($app['volumes']['custom']) > 0)))
      volumes:
