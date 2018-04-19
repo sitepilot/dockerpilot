@@ -17,6 +17,7 @@ database:
 network:
   domains: {{ $app['name'] }}.{{ $server['appDomain'] }}
   port: 8000
+  httpsOnly: false
 
 monitor:
   domain: http://{{ $app['name'] }}.{{ $server['appDomain'] }}

@@ -22,6 +22,7 @@ database:
 network:
   port: 80
   domains: appXXXX.getsitepilot.com
+  httpsOnly: false
 
 limits:
   cpu: 1
