@@ -12,7 +12,7 @@
     when: appDetails.stat.exists
 
   - name: Update WordPress core.
-    shell: CONTAINER=$(docker ps -f "name={{ app }}" -q) && if [ ! -z $CONTAINER ]; then docker exec --user={{ becomeUser }} $CONTAINER wp core update --format=json; fi
+    shell: CONTAINER=$(docker ps -f "name={{ app }}" -q) && if [ ! -z $CONTAINER ]; then docker exec --user={{ becomeUser }} $CONTAINER wp core update; fi
     args:
       executable: /bin/bash
     when: appDetails.stat.exists
@@ -30,7 +30,7 @@
     when: appDetails.stat.exists
 
   - name: Store last update date.
-    shell: CONTAINER=$(docker ps -f "name={{ app }}" -q) && if [ ! -z $CONTAINER ]; then docker exec --user={{ becomeUser }} $CONTAINER option update sitepilot_last_update {{ time }} --format=json; fi
+    shell: CONTAINER=$(docker ps -f "name={{ app }}" -q) && if [ ! -z $CONTAINER ]; then docker exec --user={{ becomeUser }} $CONTAINER option update sitepilot_last_update {{ time }}; fi
     args:
       executable: /bin/bash
     when: appDetails.stat.exists
