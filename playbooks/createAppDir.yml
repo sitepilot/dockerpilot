@@ -8,6 +8,6 @@
     with_items: ["data", "logs", "backup"]
 
   - name: Reset data folder permissions.
-    shell: chown -R {{ becomeUser }}:{{ becomeUser }} {{ appDir }}/data
+    shell: chown -R {{ becomeUser }}:{{ becomeUser }} {{ appDir }}
     args:
       executable: /bin/bash
