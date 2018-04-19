@@ -32,6 +32,7 @@ RUN echo 'http://dl-4.alpinelinux.org/alpine/edge/testing' >> /etc/apk/repositor
     php7-xmlreader \
     php7-simplexml \
     php7-zip \
+    php7-bz2 \
     mysql-client \
     git \
     curl \
