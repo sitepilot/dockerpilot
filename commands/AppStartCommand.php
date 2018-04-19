@@ -99,7 +99,7 @@ class AppStartCommand extends DockerpilotCommand
             $output->writeln("Creating application storage dir on host...");
             $appStorageDir = $apps['storagePath'] . '/' . $this->app;
             if($server['useAnsible'] == 'true') {
-                $process = new Process('ansible-playbook ' . SERVER_WORKDIR . '/playbooks/createAppDir.yml --extra-vars "host=' . $appConfig['host'] . ' app_dir=' . $appStorageDir . '"');
+                $process = new Process('ansible-playbook ' . SERVER_WORKDIR . '/playbooks/createAppDir.yml --extra-vars "host=' . $appConfig['host'] . ' becomeUser=' . $server['user'] . ' appDir=' . $appStorageDir . '"');
                 $process->setTimeout(3600);
 
                 try {

@@ -2,7 +2,12 @@
   tasks:
   - name: Make sure the application directories exist.
     file:
-      path: "{{ app_dir }}/{{ item }}"
+      path: "{{ appDir }}/{{ item }}"
       recurse: yes
       state: directory
     with_items: ["data", "logs", "backup"]
+
+  - name: Reset data folder permissions.
+    shell: chown -R {{ becomeUser }}:{{ becomeUser }} {{ appDir }}/data
+    args:
+      executable: /bin/bash
