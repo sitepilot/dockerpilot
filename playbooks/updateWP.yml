@@ -1,0 +1,36 @@
+- hosts: '{{ host }}'
+  tasks:
+  - name: Check if application data dir exists.
+    stat:
+      path: "{{ appDataDir }}"
+    register: appDetails
+
+  - name: Check for WordPress updates.
+    shell: CONTAINER=$(docker ps -f "name={{ app }}" -q) && if [ ! -z $CONTAINER ]; then docker exec --user={{ becomeUser }} $CONTAINER wp core check-update --format=json; fi
+    args:
+      executable: /bin/bash
+    when: appDetails.stat.exists
+
+  - name: Update WordPress core.
+    shell: CONTAINER=$(docker ps -f "name={{ app }}" -q) && if [ ! -z $CONTAINER ]; then docker exec --user={{ becomeUser }} $CONTAINER wp core update --format=json; fi
+    args:
+      executable: /bin/bash
+    when: appDetails.stat.exists
+
+  - name: Update WordPress plugins.
+    shell: CONTAINER=$(docker ps -f "name={{ app }}" -q) && if [ ! -z $CONTAINER ]; then docker exec --user={{ becomeUser }} $CONTAINER wp plugin update --all --format=json; fi
+    args:
+      executable: /bin/bash
+    when: appDetails.stat.exists
+
+  - name: Update WordPress themes.
+    shell: CONTAINER=$(docker ps -f "name={{ app }}" -q) && if [ ! -z $CONTAINER ]; then docker exec --user={{ becomeUser }} $CONTAINER wp theme update --all --format=json; fi
+    args:
+      executable: /bin/bash
+    when: appDetails.stat.exists
+
+  - name: Store last update date.
+    shell: CONTAINER=$(docker ps -f "name={{ app }}" -q) && if [ ! -z $CONTAINER ]; then docker exec --user={{ becomeUser }} $CONTAINER option update sitepilot_last_update {{ time }} --format=json; fi
+    args:
+      executable: /bin/bash
+    when: appDetails.stat.exists
