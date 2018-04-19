@@ -36,6 +36,11 @@ portainer:
   httpsOnly: true
   storagePath: "/data/portainer"
 
+roundcube:
+  domain: webmail.getsitepilot.local
+  httpsOnly: true
+  storagePath: "/data/roundcube"
+
 uptimeRobot:
   apiKey: false
   contactID: false
