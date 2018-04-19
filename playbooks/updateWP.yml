@@ -29,6 +29,12 @@
       executable: /bin/bash
     when: appDetails.stat.exists
 
+  - name: Update WordPress translations.
+    shell: CONTAINER=$(docker ps -f "name={{ app }}" -q) && if [ ! -z $CONTAINER ]; then docker exec --user={{ becomeUser }} $CONTAINER wp core language update; fi
+    args:
+      executable: /bin/bash
+    when: appDetails.stat.exists
+
   - name: Store last update date.
     shell: CONTAINER=$(docker ps -f "name={{ app }}" -q) && if [ ! -z $CONTAINER ]; then docker exec --user={{ becomeUser }} $CONTAINER wp option update sitepilot_last_update {{ time }}; fi
     args:
