@@ -1,4 +1,4 @@
-- hosts: all
+- hosts: managers
   tasks:
   - name: Cleanup old backups
     become: yes
