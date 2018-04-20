@@ -6,6 +6,7 @@
         "josegonzalez/dotenv": "dev-master",
         "philo/laravel-blade": "3.*",
         "league/flysystem": "^1.0",
-        "ckdarby/php-uptimerobot": "^0.2.0"
+        "ckdarby/php-uptimerobot": "^0.2.0",
+        "maknz/slack": "^1.7"
     }
 }

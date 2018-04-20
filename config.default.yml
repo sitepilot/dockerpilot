@@ -39,3 +39,7 @@ portainer:
 uptimeRobot:
   apiKey: false
   contactID: false
+
+slack:
+  webhook: false
+  channel: false

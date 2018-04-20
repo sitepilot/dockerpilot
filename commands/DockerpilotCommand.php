@@ -3,7 +3,9 @@
 namespace Dockerpilot\Command;
 
 use Exception;
+use Maknz\Slack\Client;
 use Symfony\Component\Console\Command\Command;
+use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\Console\Question\ChoiceQuestion;
 use Symfony\Component\Process\Exception\ProcessFailedException;
 use Symfony\Component\Process\Process;
@@ -93,72 +95,138 @@ class DockerpilotCommand extends Command
      */
     public function askForApp($input, $output, $questionName, $state = false, $stack = false)
     {
-        $apps = dp_get_apps();
+        $apps = $this->getApps($state, $stack);
         $questionHelper = $this->getHelper('question');
 
-        if (is_array($apps) && count($apps) > 0) {
-            $questionApps = array();
-
-            // Check app state
-            foreach ($apps as $dir => $app) {
-                $id = $this->getDockerServiceID( $app );
-                switch ($state) {
-                    case 'running':
-                        if ($id) {
-                            $questionApps[] = $app;
-                        }
-                        break;
-                    case 'stopped':
-                        if (!$id) {
-                            $questionApps[] = $app;
-                        }
-                        break;
-                    default:
-                        $questionApps[] = $app;
-                        break;
-                }
-            }
-
-            if($stack) {
-                $apps = dp_get_config('apps');
-                $questionStackApps = [];
-                foreach($questionApps as $app) {
-                    $appConfig = dp_get_app_config($apps['configPath'] . '/' . $app);
-                    if($appConfig['stack'] == $stack) {
-                        $questionStackApps[] = $app;
-                    }
-                }
-                $questionApps = $questionStackApps;
-            }
-
-            if (count($questionApps) > 0) {
-                if (!$input->getOption('app')) {
-                    // Ask for appication
-                    $question = new ChoiceQuestion(
-                        $questionName,
-                        $questionApps, 0
-                    );
-                    $question->setErrorMessage('App %s is invalid.');
-                    $this->app = $questionHelper->ask($input, $output, $question);
-                } else {
-                    $this->app = $input->getOption('app');
-                }
-
-                $appsConfig = dp_get_config('apps');
-                $this->appDir = dp_path( $appsConfig['configPath'] . '/' . $this->app);
-                $this->appConfig = dp_get_app_config($this->appDir);
-                return true;
+        if (count($apps) > 0) {
+            if (!$input->getOption('app')) {
+                // Ask for appication
+                $question = new ChoiceQuestion(
+                    $questionName,
+                    $apps, 0
+                );
+                $question->setErrorMessage('App %s is invalid.');
+                $this->app = $questionHelper->ask($input, $output, $question);
             } else {
-                switch ($state) {
-                    case 'running':
-                        throw new Exception("All apps are stopped.");
-                        break;
-                    case 'stopped':
-                        throw new Exception("All apps are running.");
-                        break;
-                }
+                $this->app = $input->getOption('app');
+            }
+
+            $appsConfig = dp_get_config('apps');
+            $this->appDir = dp_path( $appsConfig['configPath'] . '/' . $this->app);
+            $this->appConfig = dp_get_app_config($this->appDir);
+            return true;
+        } else {
+            switch ($state) {
+                case 'running':
+                    throw new Exception("All apps are stopped.");
+                    break;
+                case 'stopped':
+                    throw new Exception("All apps are running.");
+                    break;
             }
         }
+
         throw new Exception("No apps found, create a new app with app:create.");
+    }
+
+    public function getApps($state = false, $stack = false)
+    {
+        $apps = dp_get_apps();
+        $returnApps = [];
+
+        foreach ($apps as $dir => $app) {
+            $id = $this->getDockerServiceID( $app );
+            switch ($state) {
+                case 'running':
+                    if ($id) {
+                        $returnApps[] = $app;
+                    }
+                    break;
+                case 'stopped':
+                    if (!$id) {
+                        $returnApps[] = $app;
+                    }
+                    break;
+                default:
+                    $returnApps[] = $app;
+                    break;
+            }
+        }
+
+        if($stack) {
+            $apps = dp_get_config('apps');
+            $returnStackApps = [];
+            foreach($returnApps as $app) {
+                $appConfig = dp_get_app_config($apps['configPath'] . '/' . $app);
+                if($appConfig['stack'] == $stack) {
+                    $returnStackApps[] = $app;
+                }
+            }
+            $returnApps = $returnStackApps;
+        }
+
+        return $returnApps;
+    }
+
+    /**
+     * Send a simple slack message.
+     *
+     * @param $title
+     * @param $text
+     * @param array $params
+     */
+    public function slackSendAttachment($title, $text, $params = array())
+    {
+        $slackConfig = dp_get_config('slack');
+
+        if(!empty($slackConfig['webhook']) && !empty($slackConfig['channel'])) {
+            $client = new Client($slackConfig['webhook']);
+            $defaults = [
+                'channel' => $slackConfig['channel'],
+                'color' => 'success',
+                'toText' => true
+            ];
+
+            if(!is_array($text)){
+                $params = $params + $defaults;
+                $client->to($params['channel'])->attach([
+                    'fallback' => $title,
+                    'text' => $text,
+                    'color' => $params['color'],
+                ])->send($title);
+            } else {
+                $client = $client->to($defaults['channel']);
+                foreach($text as $item) {
+                    $params = (isset($item['params']) && is_array($item['params']) ? $item['params'] : []);
+                    $params = $params + $defaults;
+                    $client = $client->attach([
+                        'fallback' => $title,
+                        'text' => $item['text'],
+                        'color' => $params['color'],
+                    ]);
+                }
+                $client->send($title);
+            }
+        }
+    }
+
+    public function notify(OutputInterface $output, $title, $content = '', $slack = false, $color = '#3498db') {
+        if(is_object($content)) {
+            $content = $content->getMessage();
+        }
+
+        $title = (! empty($this->app) ? '[' . $this->app . '] ' : '') . $title;
+        $contentOutput = (! empty($this->app) && ! empty($content) ? '[' . $this->app . '] ' : '') . $content;
+
+        if(! empty($title) && empty($contentOutput)) $output->writeln($title );
+        if(! empty($contentOutput)) $output->writeln($contentOutput);
+
+        if($slack) {
+            $this->slackSendAttachment(
+                $title,
+                $content,
+                ['color' => $color]
+            );
+        }
     }
 }
