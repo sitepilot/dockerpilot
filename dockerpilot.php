@@ -37,6 +37,7 @@ require_once 'commands/AppRestoreCommand.php';
 require_once 'commands/BackupCleanupCommand.php';
 require_once 'commands/BackupRunCommand.php';
 require_once 'commands/CleanupRunCommand.php';
+require_once 'commands/WordPressUpdateCommand.php';
 
 // Create application instance
 global $dockerpilot;
@@ -60,6 +61,7 @@ $dockerpilot->add( new Dockerpilot\Command\AppRestoreCommand() );
 $dockerpilot->add( new Dockerpilot\Command\BackupCleanupCommand() );
 $dockerpilot->add( new Dockerpilot\Command\BackupRunCommand() );
 $dockerpilot->add( new Dockerpilot\Command\CleanupRunCommand() );
+$dockerpilot->add( new Dockerpilot\Command\WordPressUpdateCommand() );
 
 // Run application
 $dockerpilot->run();

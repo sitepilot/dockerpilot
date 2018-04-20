@@ -190,3 +190,27 @@ function dp_get_app_stacks()
     }
     return false;
 }
+
+/**
+ * Returns code screenshot by a given URL.
+ *
+ * @param $url
+ * @return bool|string
+ */
+function dp_get_code($url)
+{
+    $url = trim($url);
+    $arrContextOptions = array(
+        "ssl" => array(
+            "verify_peer" => false,
+            "verify_peer_name" => false,
+        ),
+    );
+    $query = parse_url($url, PHP_URL_QUERY);
+    if ($query) {
+        $url .= '&dockerpilot-timestamp=' . uniqid();
+    } else {
+        $url .= '?dockerpilot-timestamp=' . uniqid();
+    }
+    return @file_get_contents($url, false, stream_context_create($arrContextOptions));
+}

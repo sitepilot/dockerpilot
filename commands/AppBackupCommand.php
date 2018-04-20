@@ -37,8 +37,10 @@ class AppBackupCommand extends DockerpilotCommand
             $this->userInput($input, $output);
             $this->backupApp($output);
             $output->writeln("<info>[" . $this->app . "] Backup done!</info>");
+            return 1;
         } catch (Exception $e) {
             $output->writeln("<error>[" . $this->app . "] Backup failed: \n" . $e->getMessage() . "</error>");
+            return 0;
         }
     }
 

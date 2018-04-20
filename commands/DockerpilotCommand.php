@@ -12,6 +12,7 @@ class DockerpilotCommand extends Command
 {
     protected $app = '';
     protected $appDir = '';
+    protected $appConfig = '';
 
     /**
      * Get Docker secret ID by name.
@@ -90,7 +91,7 @@ class DockerpilotCommand extends Command
      * @return array $app
      * @throws Exception
      */
-    public function askForApp($input, $output, $questionName, $state = false)
+    public function askForApp($input, $output, $questionName, $state = false, $stack = false)
     {
         $apps = dp_get_apps();
         $questionHelper = $this->getHelper('question');
@@ -118,6 +119,18 @@ class DockerpilotCommand extends Command
                 }
             }
 
+            if($stack) {
+                $apps = dp_get_config('apps');
+                $questionStackApps = [];
+                foreach($questionApps as $app) {
+                    $appConfig = dp_get_app_config($apps['configPath'] . '/' . $app);
+                    if($appConfig['stack'] == $stack) {
+                        $questionStackApps[] = $app;
+                    }
+                }
+                $questionApps = $questionStackApps;
+            }
+
             if (count($questionApps) > 0) {
                 if (!$input->getOption('app')) {
                     // Ask for appication
@@ -133,6 +146,7 @@ class DockerpilotCommand extends Command
 
                 $appsConfig = dp_get_config('apps');
                 $this->appDir = dp_path( $appsConfig['configPath'] . '/' . $this->app);
+                $this->appConfig = dp_get_app_config($this->appDir);
                 return true;
             } else {
                 switch ($state) {

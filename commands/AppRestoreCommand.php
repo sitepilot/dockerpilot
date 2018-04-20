@@ -37,8 +37,10 @@ class AppRestoreCommand extends DockerpilotCommand
             $this->userInput($input, $output);
             $this->restoreApp($output);
             $output->writeln("<info>[" . $this->app . "] Restore done!</info>");
+            return 1;
         } catch (Exception $e) {
             $output->writeln("<error>[" . $this->app . "] Restore failed: \n" . $e->getMessage() . "</error>");
+            return 0;
         }
     }
 
