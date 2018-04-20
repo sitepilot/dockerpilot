@@ -36,10 +36,10 @@ class AppRestoreCommand extends DockerpilotCommand
         try {
             $this->userInput($input, $output);
             $this->restoreApp($output);
-            $output->writeln("<info>[" . $this->app . "] Restore done!</info>");
+            $this->notify($output, "Dockerpilot Restore", "Successfully restored application.", true, "#2ecc71");
             return 1;
         } catch (Exception $e) {
-            $output->writeln("<error>[" . $this->app . "] Restore failed: \n" . $e->getMessage() . "</error>");
+            $this->notify($output, "Dockerpilot Restore", $e, true, '#e74c3c');
             return 0;
         }
     }
@@ -71,7 +71,7 @@ class AppRestoreCommand extends DockerpilotCommand
         $apps = dp_get_config('apps');
         $app = dp_get_app_config($this->appDir);
 
-        $output->writeln("[" . $app['name'] . "] Restore application...");
+        $this->notify($output, "Restoring application.");
         $appDir = $apps['storagePath'] . '/' . $this->app;
         $appDataDir = $apps['storagePath'] . '/' . $this->app . '/data';
         $appBackupDir = $apps['storagePath'] . '/' . $this->app . '/backup';
@@ -81,7 +81,7 @@ class AppRestoreCommand extends DockerpilotCommand
 
             try {
                 $process->mustRun();
-                echo $process->getOutput();
+                $this->notify($output, "Restore result", $process->getOutput());
             } catch (ProcessFailedException $e) {
                 throw new Exception($e->getMessage());
             }

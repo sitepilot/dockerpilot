@@ -25,7 +25,8 @@ class WordPressUpdateCommand extends DockerpilotCommand
         $this->setName('wp:update')
             ->setDescription('Update a WordPress application.')
             ->setHelp('This command updates a WordPress application.')
-            ->addOption('app', null, InputOption::VALUE_OPTIONAL);
+            ->addOption('app', null, InputOption::VALUE_OPTIONAL)
+            ->addOption('all', null, InputOption::VALUE_OPTIONAL);
     }
 
     /**
@@ -37,16 +38,55 @@ class WordPressUpdateCommand extends DockerpilotCommand
      */
     protected function execute(InputInterface $input, OutputInterface $output)
     {
-        try {
-            $this->userInput($input, $output);
-            $this->codeScreenshotBefore($output);
-            $this->backupApp($output);
-            $this->updateApp($output);
-            $this->codeScreenshotAfter($output);
-            $this->restoreApp($output);
-            $output->writeln("<info>[" . $this->app . "] Update done!</info>");
-        } catch (Exception $e) {
-            $output->writeln("<error>[" . $this->app . "] Update failed: \n" . $e->getMessage() . "</error>");
+        if($input->getOption('all') == 'true') {
+            $apps = $this->getApps('running', 'apps/wordpress');
+            $slackMessages = [];
+            foreach ($apps as $app) {
+                $command = $this->getApplication()->find('wp:update');
+                $arguments = array(
+                    '--app' => $app
+                );
+                $commandInput = new ArrayInput($arguments);
+                $returnCode = $command->run($commandInput, $output);
+
+                if ($returnCode) {
+                    $slackMessages[] = [
+                        "text" => "Update of " . $app . " succeeded.\n",
+                        "params" => [
+                            "color" => "#2ecc71"
+                        ]
+                    ];
+                } else {
+                    $slackMessages[] = [
+                        "text" => "Update of " . $app . " failed.\n",
+                        "params" => [
+                            "color" => "#e74c3c"
+                        ]
+                    ];
+                }
+            }
+            $this->slackSendAttachment(
+                "Autopilot Report " . date('Y-m-d H:i:s'),
+                $slackMessages
+            );
+        } else {
+            try {
+                $this->userInput($input, $output);
+                $this->codeScreenshotBefore($output);
+                $this->backupApp($output);
+                $this->updateApp($output);
+                $this->codeScreenshotAfter($output);
+                $this->restoreApp($output);
+                $this->notify($output, "Update done!");
+                if(! $this->restore) {
+                    return 1;
+                }
+                $this->restore = false;
+                return 0;
+            } catch (Exception $e) {
+                $this->notify($output, "Dockerpilot Update", $e, true, '#e74c3c');
+                return 0;
+            }
         }
     }
 
@@ -73,10 +113,9 @@ class WordPressUpdateCommand extends DockerpilotCommand
     {
         $domains = $this->appConfig['network']['domains'];
         $domains = explode(',', $domains);
-        $this->domain = reset($domains);
+        $this->domain = 'http://' . reset($domains);
 
-        $output->writeln("Creating code screenshot of: " . $this->domain);
-
+        $this->notify($output, "Creating code screenshot of: " . $this->domain . ".");
         $this->codeBefore = dp_get_code($this->domain);
 
         if (empty($this->codeBefore)) {
@@ -99,8 +138,8 @@ class WordPressUpdateCommand extends DockerpilotCommand
         $commandInput = new ArrayInput($arguments);
         $returnCode = $command->run($commandInput, $output);
 
-        if(! $returnCode) {
-            throw new Exception("Updated aborted, backup failed.");
+        if (!$returnCode) {
+            throw new Exception("Update aborted, backup failed.");
         }
     }
 
@@ -116,7 +155,7 @@ class WordPressUpdateCommand extends DockerpilotCommand
         $server = dp_get_config('server');
         $apps = dp_get_config('apps');
 
-        $output->writeln("[" . $this->appConfig['name'] . "] Updating application...");
+        $this->notify($output, "Updating application.");
         $appDataDir = $apps['storagePath'] . '/' . $this->app . '/data';
 
         if ($server['useAnsible'] == 'true') {
@@ -125,10 +164,10 @@ class WordPressUpdateCommand extends DockerpilotCommand
 
             try {
                 $process->mustRun();
-                echo $process->getOutput();
+                $this->notify($output, "Dockerpilot Update", $process->getOutput());
             } catch (ProcessFailedException $e) {
                 $this->restore = true;
-                $output->writeln($e->getMessage());
+                $this->notify($output, "Dockerpilot Update", $e, true, '#e74c3c');
             }
         } else {
             throw new Exception("[" . $this->appConfig['name'] . "] Please enable Ansible in config.yml to use the update functionality!");
@@ -143,21 +182,16 @@ class WordPressUpdateCommand extends DockerpilotCommand
      */
     protected function codeScreenshotAfter(OutputInterface $output)
     {
-        $output->writeln("Creating code screenshot of: " . $this->domain);
-
+        $this->notify($output, "Creating code screenshot of: " . $this->domain . ".");
         $codeAfter = dp_get_code($this->domain);
 
-        if (empty($this->codeBefore)) {
-            $this->restore = true;
-            $output->writeln('<error>Could not get code screenshot after update from ' . $this->domain . '.</error>');
+        similar_text($this->codeBefore, $codeAfter, $percent);
+        if ($percent > 96) {
+            $this->notify($output, "Code compare OK, compare result: " . $percent . "%.");
         } else {
-            similar_text($this->codeBefore, $codeAfter, $percent);
-            if ($percent > 96) {
-                $output->writeln("<info>Code compare OK</info>");
-            } else {
-                $output->writeln("<error>Code compare NOT OK</error>");
-                $this->restore = true;
-            }
+            $this->notify($output, "Dockerpilot Update",
+                'Code compare after update failed, compare result: ' . $percent . '%.', true, '#e74c3c');
+            $this->restore = true;
         }
     }
 
@@ -169,16 +203,18 @@ class WordPressUpdateCommand extends DockerpilotCommand
      */
     protected function restoreApp(OutputInterface $output)
     {
-        if ($this->restore = true) {
+        if ($this->restore == true) {
             $command = $this->getApplication()->find('app:restore');
             $arguments = array(
                 '--app' => $this->app
             );
 
+            $this->notify($output, "Dockerpilot Update", "Restoring last backup.", true, "#f1c40f");
+
             $commandInput = new ArrayInput($arguments);
             $returnCode = $command->run($commandInput, $output);
 
-            if(! $returnCode) {
+            if (!$returnCode) {
                 throw new Exception("Restore failed, inform an admin!");
             }
         }

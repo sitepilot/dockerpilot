@@ -36,10 +36,10 @@ class AppBackupCommand extends DockerpilotCommand
         try {
             $this->userInput($input, $output);
             $this->backupApp($output);
-            $output->writeln("<info>[" . $this->app . "] Backup done!</info>");
+            $this->notify($output, "Backup done!");
             return 1;
         } catch (Exception $e) {
-            $output->writeln("<error>[" . $this->app . "] Backup failed: \n" . $e->getMessage() . "</error>");
+            $this->notify($output, "Dockerpilot Backup", $e, true, '#e74c3c');
             return 0;
         }
     }
@@ -71,7 +71,7 @@ class AppBackupCommand extends DockerpilotCommand
         $apps = dp_get_config('apps');
         $app = dp_get_app_config($this->appDir);
 
-        $output->writeln("[" . $app['name'] . "] Backup application...");
+        $this->notify($output, "Backing up application.");
         $appDataDir = $apps['storagePath'] . '/' . $this->app . '/data';
         $appBackupDir = $apps['storagePath'] . '/' . $this->app . '/backup';
         if ($server['useAnsible'] == 'true') {
@@ -80,7 +80,7 @@ class AppBackupCommand extends DockerpilotCommand
 
             try {
                 $process->mustRun();
-                echo $process->getOutput();
+                $this->notify($output, "Backup result", $process->getOutput());
             } catch (ProcessFailedException $e) {
                 throw new Exception($e->getMessage());
             }
