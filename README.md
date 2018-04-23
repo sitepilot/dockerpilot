@@ -30,6 +30,7 @@ In order to use Dockerpilot you need to install the following software on your l
 * [Git](https://git-scm.com)
 * [Composer](https://getcomposer.org)
 * [Ansible (production servers only)](https://www.ansible.com/)
+* [Restic (production servers only)](https://restic.net/)
 
 ## Documentation
 Full documentation - including installation docs - are available [here](https://sitepilot.github.io/dockerpilot/).
