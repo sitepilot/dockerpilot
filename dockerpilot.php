@@ -22,6 +22,7 @@ $serverConfig = dp_get_config('server');
 require_once 'commands/DockerpilotCommand.php';
 require_once 'commands/ServerStartCommand.php';
 require_once 'commands/ServerStopCommand.php';
+require_once 'commands/ServerCleanupCommand.php';
 require_once 'commands/MysqlStartCommand.php';
 require_once 'commands/MysqlStopCommand.php';
 require_once 'commands/MailStartCommand.php';
@@ -36,7 +37,6 @@ require_once 'commands/AppBackupCommand.php';
 require_once 'commands/AppRestoreCommand.php';
 require_once 'commands/BackupCleanupCommand.php';
 require_once 'commands/BackupRunCommand.php';
-require_once 'commands/CleanupRunCommand.php';
 require_once 'commands/WordPressUpdateCommand.php';
 
 // Create application instance
@@ -46,6 +46,7 @@ $dockerpilot = new Application( $serverConfig['cliName'], 'v1.0.0' );
 // Register commands
 $dockerpilot->add( new Dockerpilot\Command\ServerStartCommand() );
 $dockerpilot->add( new Dockerpilot\Command\ServerStopCommand() );
+$dockerpilot->add( new Dockerpilot\Command\ServerCleanupCommand() );
 $dockerpilot->add( new Dockerpilot\Command\MysqlStartCommand() );
 $dockerpilot->add( new Dockerpilot\Command\MysqlStopCommand() );
 $dockerpilot->add( new Dockerpilot\Command\MailStartCommand() );
@@ -60,7 +61,6 @@ $dockerpilot->add( new Dockerpilot\Command\AppBackupCommand() );
 $dockerpilot->add( new Dockerpilot\Command\AppRestoreCommand() );
 $dockerpilot->add( new Dockerpilot\Command\BackupCleanupCommand() );
 $dockerpilot->add( new Dockerpilot\Command\BackupRunCommand() );
-$dockerpilot->add( new Dockerpilot\Command\CleanupRunCommand() );
 $dockerpilot->add( new Dockerpilot\Command\WordPressUpdateCommand() );
 
 // Run application

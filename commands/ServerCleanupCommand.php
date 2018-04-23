@@ -8,7 +8,7 @@ use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\Process\Exception\ProcessFailedException;
 use Symfony\Component\Process\Process;
 
-class CleanupRunCommand extends DockerpilotCommand
+class ServerCleanupCommand extends DockerpilotCommand
 {
     /**
      * Command configuration.
@@ -17,7 +17,7 @@ class CleanupRunCommand extends DockerpilotCommand
      */
     protected function configure()
     {
-        $this->setName('cleanup:run')
+        $this->setName('server:cleanup')
             ->setDescription('Remove unused data from servers.')
             ->setHelp('This command removes unused data from servers.');
     }
