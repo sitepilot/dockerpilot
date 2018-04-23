@@ -56,6 +56,10 @@ COPY files/dp-restore.sh /usr/bin/dp-restore
 RUN chmod +x /usr/bin/dp-backup
 RUN chmod +x /usr/bin/dp-restore
 
+COPY files/ioncube/00-ioncube.ini /etc/php7/conf.d/00-ioncube.ini
+COPY files/ioncube/ioncube_loader_lin_7.1.so /usr/lib/php7/modules/ioncube_loader_lin_7.1.so
+COPY files/ioncube/ioncube_loader_lin_7.1_ts.so /usr/lib/php7/modules/ioncube_loader_lin_7.1_ts.so
+
 EXPOSE 80
 VOLUME ["/var/www/html"]
 WORKDIR "/var/www/html"
