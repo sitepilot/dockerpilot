@@ -2,8 +2,9 @@ server {
     listen 443 ssl http2;
     listen [::]:443 ssl http2;
     resolver 127.0.0.11;
+    ssl on;
 
-    include /etc/nginx/vhosts.d/ssl.d/{{ $app['name'] }}.*.conf;
+    include /etc/letsencrypt/nginx/ssl.d/{{ $app['name'] }}.*.conf;
 
     root   /srv/users/{{ $app['user'] }}/apps/{{ $app['name'] }}/public;
 
