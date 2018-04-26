@@ -4,6 +4,12 @@ server {
     resolver 127.0.0.11;
     ssl on;
 
+    server_name
+        {{ $app['name'] }}.{{ $server['domain'] }}
+        www.{{ $app['name'] }}.{{ $server['domain'] }}
+        {{ $app['network']['domains'] }}
+    ;
+
     include /etc/letsencrypt/nginx/ssl.d/{{ $app['name'] }}.*.conf;
 
     root   /srv/users/{{ $app['user'] }}/apps/{{ $app['name'] }}/public;
