@@ -2,6 +2,11 @@ server {
     listen 443 ssl http2;
     listen [::]:443 ssl http2;
     resolver 127.0.0.11;
+    server_name
+        {{ $app['name'] }}.{{ $server['domain'] }}
+        www.{{ $app['name'] }}.{{ $server['domain'] }}
+        {{ $app['network']['domains'] }};
+
     ssl on;
 
     include /etc/letsencrypt/nginx/ssl.d/{{ $app['name'] }}.ssl.conf;
