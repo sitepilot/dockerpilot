@@ -9,7 +9,7 @@ server {
 
     ssl on;
 
-    include /etc/letsencrypt/nginx/ssl.d/{{ $app['name'] }}.ssl.conf;
+    include /etc/letsencrypt/nginx/{{ $app['name'] }}.ssl.conf;
 
     root   /srv/users/{{ $app['user'] }}/apps/{{ $app['name'] }}/public;
 
