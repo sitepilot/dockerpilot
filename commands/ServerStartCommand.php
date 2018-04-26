@@ -79,7 +79,7 @@ class ServerStartCommand extends DockerpilotCommand
         $backupDir = $server['storagePath'] . '/backup';
 
         if ($server['useAnsible'] == 'true') {
-            $process = new Process('ansible-playbook ' . SERVER_WORKDIR . '/playbooks/createServerDirs.yml --extra-vars "host=all serverUser=' . $server['user'] . ' usersDir=' . $usersDir . ' mysqlDir=' . $mysqlDir . ' backupDir=' . $backupDir . '"');
+            $process = new Process('ansible-playbook ' . SERVER_WORKDIR . '/playbooks/createServerDir.yml --extra-vars "host=all serverUser=' . $server['user'] . ' usersDir=' . $usersDir . ' mysqlDir=' . $mysqlDir . ' backupDir=' . $backupDir . '"');
             $process->setTimeout(3600);
 
             try {
