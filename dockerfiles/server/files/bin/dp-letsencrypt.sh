@@ -14,7 +14,7 @@
 # Settings
 certbotfolder=/usr/local/bin/certbot-auto
 appfolder=/srv/users/$username/apps
-conffolder=/etc/letsencrypt/nginx/ssl.d
+conffolder=/etc/letsencrypt/nginx
 acmeconfigfolder=/etc/nginx/letsencrypt.d
 acmeconfigfile="$acmeconfigfolder/letsencrypt-acme-challenge.conf"
 
@@ -78,6 +78,11 @@ if [ -f $certFile ]; then
     echo ""
     echo "Creating configuration file for $appname in the $conffolder"
     touch $configfile
+    echo "   server_name " | tee -a $configfile
+    for domain in $domains; do
+      echo -n $domain" " | tee -a $configfile
+    done
+    echo ";" | tee -a $configfile
     echo "" | tee -a $configfile
     echo "# letsencrypt certificates" | tee -a $configfile
     echo "ssl_certificate      /etc/letsencrypt/live/${APPDOMAINS[0]}/fullchain.pem;" | tee -a $configfile

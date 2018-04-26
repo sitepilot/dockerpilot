@@ -4,17 +4,7 @@ server {
     resolver 127.0.0.11;
     ssl on;
 
-    server_name
-        {{ $app['name'] }}.{{ $server['domain'] }}
-        www.{{ $app['name'] }}.{{ $server['domain'] }}
-        {{ $app['network']['domains'] }}
-    ;
-
-    # default certificate
-    ssl_certificate /etc/nginx/ssl/_default.crt;
-    ssl_certificate_key /etc/nginx/ssl/_default.key;
-
-    include /etc/letsencrypt/nginx/ssl.d/{{ $app['name'] }}.*.conf;
+    include /etc/letsencrypt/nginx/ssl.d/{{ $app['name'] }}.ssl.conf;
 
     root   /srv/users/{{ $app['user'] }}/apps/{{ $app['name'] }}/public;
 

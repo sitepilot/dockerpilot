@@ -83,20 +83,28 @@ class AppStartCommand extends DockerpilotCommand
             $generateConfig = ['app', 'nginx', 'nginx-ssl'];
             foreach ($generateConfig as $config) {
                 $configPath = $bladeFolder . '/' . $config . '.blade.php';
+                $writeFile = true;
 
                 if (file_exists($configPath)) {
                     if ($config == 'app') {
                         $destFile = dp_path($this->appDir . '/app.yml');
                     } elseif ($config == 'nginx-ssl') {
+                        $checkConfig = $serverConfig['storagePath'] . '/config/letsencrypt/nginx/' . $this->appConfig['name'] . '.ssl.conf';
+                        if(! file_exists($checkConfig)) {
+                            $writeFile = false;
+                        }
                         $destFile = dp_path($serverConfig['storagePath'] . '/config/nginx/' . $this->appConfig['name'] . '.ssl.conf');
                     } else {
                         $destFile = dp_path($serverConfig['storagePath'] . '/config/' . $config . '/' . $this->appConfig['name'] . '.conf');
                     }
-                    $content = $blade->view()->make($config,
-                        ['app' => $this->appConfig, 'server' => $serverConfig])->render();
-                    $writeFile = fopen($destFile, "w") or die("Unable to open file!");
-                    fwrite($writeFile, $content);
-                    fclose($writeFile);
+
+                    if($writeFile) {
+                        $content = $blade->view()->make($config,
+                            ['app' => $this->appConfig, 'server' => $serverConfig])->render();
+                        $writeFile = fopen($destFile, "w") or die("Unable to open file!");
+                        fwrite($writeFile, $content);
+                        fclose($writeFile);
+                    }
                 } else {
                     throw new Exception('Can\'t find ' . $config . '.blade.php in stack folder.');
                 }
