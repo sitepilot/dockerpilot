@@ -19,6 +19,6 @@
       state: directory
 
   - name: Reset folder permissions.
-    shell: chown -R {{ serverUser }}:{{ serverUser }} {{ userDir }} && chown -R {{ serverUser }}:{{ serverUser }} {{ mysqlDir }} && chown -R {{ serverUser }}:{{ serverUser }} {{ backupDir }}
+    shell: chown -R {{ serverUser }}:{{ serverUser }} {{ usersDir }} && chown -R {{ serverUser }}:{{ serverUser }} {{ mysqlDir }} && chown -R {{ serverUser }}:{{ serverUser }} {{ backupDir }}
     args:
       executable: /bin/bash
