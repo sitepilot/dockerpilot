@@ -117,7 +117,7 @@ class AppStartCommand extends DockerpilotCommand
             $tmpDir = $serverConfig['storagePath'] . '/users/' . $this->appConfig['user'] . '/tmp/' . $this->appConfig['name'];
 
             if ($serverConfig['useAnsible'] == 'true') {
-                $process = new Process('ansible-playbook ' . SERVER_WORKDIR . '/playbooks/createAppDir.yml --extra-vars "host=' . $this->appConfig['host'] . ' serverUser=' . $server['user'] . ' publicDir=' . $publicDir . ' logDir=' . $logDir . ' tmpDir=' . $tmpDir . '"');
+                $process = new Process('ansible-playbook ' . SERVER_WORKDIR . '/playbooks/createAppDir.yml --extra-vars "host=' . $this->appConfig['host'] . ' serverUser=' . $serverConfig['user'] . ' publicDir=' . $publicDir . ' logDir=' . $logDir . ' tmpDir=' . $tmpDir . '"');
                 $process->setTimeout(3600);
 
                 try {
