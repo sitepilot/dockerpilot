@@ -1,4 +1,4 @@
-version: '3.6'
+version: '3.5'
 services:
 
 @foreach($mysql['servers'] as $mysqlServer)
