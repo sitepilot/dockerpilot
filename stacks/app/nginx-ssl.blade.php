@@ -13,8 +13,8 @@ server {
 
     root   /srv/users/{{ $app['user'] }}/apps/{{ $app['name'] }}/public;
 
-    access_log  /srv/users/{{ $app['user'] }}/log/{{ $app['name'] }}/{{ $app['name'] }}_nginx.access.log  main;
-    error_log  /srv/users/{{ $app['user'] }}/log/{{ $app['name'] }}/{{ $app['name'] }}_nginx.error.log;
+    # access_log  /srv/users/{{ $app['user'] }}/log/{{ $app['name'] }}/{{ $app['name'] }}_nginx.access.log  main;
+    # error_log  /srv/users/{{ $app['user'] }}/log/{{ $app['name'] }}/{{ $app['name'] }}_nginx.error.log;
 
     proxy_set_header Host $host;
     proxy_set_header X-Real-IP $remote_addr;
