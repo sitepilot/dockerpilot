@@ -1,9 +1,17 @@
 {
     "require": {
-        "symfony/console": "3.3.*",
-        "symfony/process": "3.3.*",
+        "symfony/console": "3.*.*",
+        "symfony/process": "3.*.*",
+        "symfony/yaml": "3.*.*",
         "josegonzalez/dotenv": "dev-master",
         "philo/laravel-blade": "3.*",
-        "league/flysystem": "^1.0"
+        "league/flysystem": "^1.0",
+        "ckdarby/php-uptimerobot": "^0.2.0",
+        "maknz/slack": "^1.7"
+    },
+    "autoload": {
+        "psr-4": {
+            "Dockerpilot\\Command\\": "commands/"
+        }
     }
 }

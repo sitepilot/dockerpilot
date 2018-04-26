@@ -1,0 +1,19 @@
+server:
+  user: sitepilot
+  cliName: Dockerpilot
+  storagePath: "/home/sitepilot/data"
+  domain: "getsitepilot.local"
+  useAnsible: true
+
+mysql:
+  servers:
+    - name: "db1"
+      placement: "manager"
+      rootPassSecret: "db-root-pass"
+      userPassSecret: "db-user-pass"
+      userNameSecret: "db-user-name"
+      defaultDatabase: "server"
+
+uptimeRobot:
+  apiKey: false
+  contactID: false

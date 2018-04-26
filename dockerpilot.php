@@ -1,0 +1,35 @@
+<?php
+// Load composer packages
+require __DIR__.'/vendor/autoload.php';
+
+use Symfony\Component\Console\Application;
+
+// Set max execution time (5 min)
+ini_set('max_execution_time', 300);
+
+// Define workdir
+if(! defined('SERVER_WORKDIR')) {
+    define( 'SERVER_WORKDIR', __DIR__ );
+}
+
+// Include helpers
+require_once 'helpers/HelperGeneral.php';
+
+// Get server configuration
+$serverConfig = dp_get_config('server');
+
+// Create application instance
+global $dockerpilot;
+$dockerpilot = new Application( $serverConfig['cliName'], 'v1.0.0' );
+
+// Register commands
+$dockerpilot->add( new Dockerpilot\Command\ServerStartCommand() );
+$dockerpilot->add( new Dockerpilot\Command\ServerStopCommand() );
+$dockerpilot->add( new Dockerpilot\Command\AppCreateCommand() );
+$dockerpilot->add( new Dockerpilot\Command\AppStartCommand() );
+$dockerpilot->add( new Dockerpilot\Command\AppStopCommand() );
+$dockerpilot->add( new Dockerpilot\Command\MysqlStartCommand() );
+$dockerpilot->add( new Dockerpilot\Command\MysqlStopCommand() );
+
+// Run application
+$dockerpilot->run();

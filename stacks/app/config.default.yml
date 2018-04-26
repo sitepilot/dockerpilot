@@ -1,0 +1,17 @@
+name: appXXXX
+host: node2
+user: sitepilot
+varnish: yes
+
+database:
+  host: db
+  user: appXXXX
+  password: secret
+  name: appXXXX
+
+network:
+  domains:
+
+limits:
+  cpu: 1
+  memory: 512M

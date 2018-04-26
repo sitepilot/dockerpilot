@@ -1,0 +1,24 @@
+- hosts: '{{ host }}'
+  tasks:
+  - name: Create application public directory.
+    file:
+      path: "{{ publicDir }}"
+      recurse: yes
+      state: directory
+
+  - name: Create application log directory.
+    file:
+      path: "{{ logDir }}"
+      recurse: yes
+      state: directory
+
+  - name: Create application tmp directory.
+    file:
+      path: "{{ tmpDir }}"
+      recurse: yes
+      state: directory
+
+  - name: Reset folder permissions.
+    shell: chown -R {{ serverUser }}:{{ serverUser }} {{ publicDir }} && chown -R {{ serverUser }}:{{ serverUser }} {{ logDir }}
+    args:
+      executable: /bin/bash

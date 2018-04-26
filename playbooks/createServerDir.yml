@@ -1,0 +1,24 @@
+- hosts: '{{ host }}'
+  tasks:
+  - name: Create users directory.
+    file:
+      path: "{{ usersDir }}"
+      recurse: yes
+      state: directory
+
+  - name: Create mysql directory.
+    file:
+      path: "{{ mysqlDir }}"
+      recurse: yes
+      state: directory
+
+  - name: Create backup directory.
+    file:
+      path: "{{ backupDir }}"
+      recurse: yes
+      state: directory
+
+  - name: Reset folder permissions.
+    shell: chown -R {{ serverUser }}:{{ serverUser }} {{ userDir }} && chown -R {{ serverUser }}:{{ serverUser }} {{ mysqlDir }} && chown -R {{ serverUser }}:{{ serverUser }} {{ backupDir }}
+    args:
+      executable: /bin/bash

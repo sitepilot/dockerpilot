@@ -1,13 +1,17 @@
-*.log
-
-vendor
-config.php
-
+config.yml
 .idea
+
+cache/*
+!cache/.gitkeep
+
+stacks/*/config/*
+!stacks/*/config/.gitkeep
+
 .DS_Store
 
-docs/_site
-docs/.sass-cache
+data/cache/*
+!data/cache/.gitkeep
 
-apps/*
-!apps/.gitkeep
+*.retry
+
+vendor
