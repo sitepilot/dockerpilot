@@ -10,6 +10,10 @@ server {
         {{ $app['network']['domains'] }}
     ;
 
+    # default certificate
+    ssl_certificate /etc/nginx/ssl/_default.crt;
+    ssl_certificate_key /etc/nginx/ssl/_default.key;
+
     include /etc/letsencrypt/nginx/ssl.d/{{ $app['name'] }}.*.conf;
 
     root   /srv/users/{{ $app['user'] }}/apps/{{ $app['name'] }}/public;
