@@ -22,3 +22,10 @@
     shell: chown -R {{ serverUser }}:{{ serverUser }} {{ publicDir }} && chown -R {{ serverUser }}:{{ serverUser }} {{ logDir }}
     args:
       executable: /bin/bash
+
+- hosts: 'managers'
+  tasks:
+    - name: Synchronize config files using rsync.
+      shell: dp-sync
+      args:
+        executable: /bin/bash

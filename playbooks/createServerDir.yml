@@ -22,3 +22,10 @@
     shell: chown -R {{ serverUser }}:{{ serverUser }} {{ usersDir }} && chown -R {{ serverUser }}:{{ serverUser }} {{ mysqlDir }} && chown -R {{ serverUser }}:{{ serverUser }} {{ backupDir }}
     args:
       executable: /bin/bash
+
+- hosts: 'managers'
+  tasks:
+    - name: Synchronize config files using rsync.
+      shell: dp-sync
+      args:
+        executable: /bin/bash
