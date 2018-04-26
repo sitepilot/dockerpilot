@@ -80,17 +80,20 @@ class AppStartCommand extends DockerpilotCommand
             $views = dp_path($bladeFolder);
             $blade = new Blade($views, $cache);
 
-            $generateConfig = ['app', 'nginx'];
-            foreach($generateConfig as $config) {
+            $generateConfig = ['app', 'nginx', 'nginx-ssl'];
+            foreach ($generateConfig as $config) {
                 $configPath = $bladeFolder . '/' . $config . '.blade.php';
 
                 if (file_exists($configPath)) {
-                    if($config == 'app') {
+                    if ($config == 'app') {
                         $destFile = dp_path($this->appDir . '/app.yml');
+                    } elseif ($config == 'nginx-ssl') {
+                        $destFile = dp_path($serverConfig['storagePath'] . '/config/nginx/' . $this->appConfig['name'] . '.ssl.conf');
                     } else {
                         $destFile = dp_path($serverConfig['storagePath'] . '/config/' . $config . '/' . $this->appConfig['name'] . '.conf');
                     }
-                    $content = $blade->view()->make($config, ['app' => $this->appConfig, 'server' => $serverConfig])->render();
+                    $content = $blade->view()->make($config,
+                        ['app' => $this->appConfig, 'server' => $serverConfig])->render();
                     $writeFile = fopen($destFile, "w") or die("Unable to open file!");
                     fwrite($writeFile, $content);
                     fclose($writeFile);
@@ -105,7 +108,7 @@ class AppStartCommand extends DockerpilotCommand
             $publicDir = $serverConfig['storagePath'] . '/users/' . $this->appConfig['user'] . '/apps/' . $this->appConfig['name'] . '/public';
             $tmpDir = $serverConfig['storagePath'] . '/users/' . $this->appConfig['user'] . '/tmp/' . $this->appConfig['name'];
 
-            if($serverConfig['useAnsible'] == 'true') {
+            if ($serverConfig['useAnsible'] == 'true') {
                 $process = new Process('ansible-playbook ' . SERVER_WORKDIR . '/playbooks/createAppDir.yml --extra-vars "host=' . $this->appConfig['host'] . ' serverUser=' . $server['user'] . ' publicDir=' . $publicDir . ' logDir=' . $logDir . ' tmpDir=' . $tmpDir . '"');
                 $process->setTimeout(3600);
 
@@ -117,9 +120,15 @@ class AppStartCommand extends DockerpilotCommand
                 }
             } else {
                 try {
-                    if(! file_exists($logDir)) mkdir($logDir, 0750, true);
-                    if(! file_exists($publicDir)) mkdir($publicDir, 0750, true);
-                    if(! file_exists($tmpDir)) mkdir($tmpDir, 0750, true);
+                    if (!file_exists($logDir)) {
+                        mkdir($logDir, 0750, true);
+                    }
+                    if (!file_exists($publicDir)) {
+                        mkdir($publicDir, 0750, true);
+                    }
+                    if (!file_exists($tmpDir)) {
+                        mkdir($tmpDir, 0750, true);
+                    }
                 } catch (Exception $e) {
                     throw new Exception($e->getMessage());
                 }
@@ -158,10 +167,9 @@ class AppStartCommand extends DockerpilotCommand
     protected function reloadProxy(OutputInterface $output)
     {
         $server = dp_get_config('server');
-        if(! $server['useAnsible'] == 'true')
-        {
+        if (!$server['useAnsible'] == 'true') {
             $proxyID = $this->getDockerContainerID('server_proxy');
-            if(! empty($proxyID)) {
+            if (!empty($proxyID)) {
                 $process = new Process("docker exec $proxyID dp-reload");
                 $process->setTimeout(3600);
 
@@ -187,7 +195,7 @@ class AppStartCommand extends DockerpilotCommand
     {
         $uptimeRobot = dp_get_config('uptimeRobot');
 
-        if(!empty($uptimeRobot['apiKey']) && !empty($uptimeRobot['contactID']) && !empty($this->appConfig['monitor']['domain'])) {
+        if (!empty($uptimeRobot['apiKey']) && !empty($uptimeRobot['contactID']) && !empty($this->appConfig['monitor']['domain'])) {
             $output->writeln('Setting up monitor...');
             try {
                 // Check if monitor already exists
@@ -197,7 +205,7 @@ class AppStartCommand extends DockerpilotCommand
                 ];
                 $api = new API($config);
                 $result = $api->request('/getMonitors');
-                if(!empty($result['stat']) && $result['stat'] == 'fail') {
+                if (!empty($result['stat']) && $result['stat'] == 'fail') {
                     $output->writeln('<error> Setup monitor failed: ' . $result['message'] . '.</error>');
                 } else {
                     $found = false;
@@ -219,11 +227,11 @@ class AppStartCommand extends DockerpilotCommand
                         ];
 
                         $result = $api->request('/newMonitor', $args);
-                        if(!empty($result['stat']) && $result['stat'] == 'fail') {
+                        if (!empty($result['stat']) && $result['stat'] == 'fail') {
                             $output->writeln('<error>Setup monitor failed: ' . $result['message'] . '.</error>');
                         }
                     } else {
-                        if($foundDomain != $this->appConfig['monitor']['domain']) {
+                        if ($foundDomain != $this->appConfig['monitor']['domain']) {
                             $output->writeln('Monitor found, updating monitor...');
                             $args = [
                                 'monitorID' => $found,
